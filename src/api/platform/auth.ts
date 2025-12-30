@@ -2,23 +2,23 @@
  * ============================================================
  * PLATFORM AUTHENTICATION API
  * ============================================================
- * 
- * Handles authentication for the Kaukus platform.
+ *
+ * Handles authentication for the ContisX platform.
  * Used by: Login, Signup, and auth-protected pages.
- * 
+ *
  * To integrate real API:
  *   1. Replace mock responses with fetch calls
  *   2. Handle tokens/sessions appropriately
  *   3. Add proper error handling
  */
 
-import { mockResponse, generateId, DELAYS } from '../client';
+import { mockResponse, generateId, DELAYS } from "../client";
 
 // ============================================================
 // TYPES
 // ============================================================
 
-export type UserRole = 'broker' | 'dealer' | null;
+export type UserRole = "broker" | "dealer" | null;
 
 export interface User {
   id: string;
@@ -55,17 +55,17 @@ export interface AuthResponse {
 export async function login(request: LoginRequest): Promise<AuthResponse> {
   // TODO: Replace with real API call
   // return fetch('/api/auth/login', { method: 'POST', body: JSON.stringify(request) });
-  
+
   const user: User = {
-    id: generateId('user'),
+    id: generateId("user"),
     email: request.email,
-    name: request.email.split('@')[0],
+    name: request.email.split("@")[0],
     role: null,
     createdAt: new Date(),
     isVerified: true,
   };
 
-  return mockResponse({ user, token: 'mock_token_' + user.id }, DELAYS.LONG);
+  return mockResponse({ user, token: "mock_token_" + user.id }, DELAYS.LONG);
 }
 
 /**
@@ -73,9 +73,9 @@ export async function login(request: LoginRequest): Promise<AuthResponse> {
  */
 export async function signup(request: SignupRequest): Promise<AuthResponse> {
   // TODO: Replace with real API call
-  
+
   const user: User = {
-    id: generateId('user'),
+    id: generateId("user"),
     email: request.email,
     name: request.name,
     role: null,
@@ -83,7 +83,7 @@ export async function signup(request: SignupRequest): Promise<AuthResponse> {
     isVerified: false,
   };
 
-  return mockResponse({ user, token: 'mock_token_' + user.id }, DELAYS.LONG);
+  return mockResponse({ user, token: "mock_token_" + user.id }, DELAYS.LONG);
 }
 
 /**

@@ -3,9 +3,9 @@
  * PLATFORM AUTH STORE
  * ============================================================
  *
- * Manages authentication state for the Kaukus platform.
+ * Manages authentication state for the ContisX platform.
  * Uses Zustand persist middleware for session persistence.
- * 
+ *
  * Usage:
  *   import { useAuthStore } from '@/stores/authStore';
  *   const { user, login, logout } = useAuthStore();
@@ -81,7 +81,11 @@ export const useAuthStore = create<AuthStore>()(
         set({ isLoading: true });
 
         try {
-          const response = await platformApi.auth.signup({ email, password, name });
+          const response = await platformApi.auth.signup({
+            email,
+            password,
+            name,
+          });
 
           set({
             user: response.user,

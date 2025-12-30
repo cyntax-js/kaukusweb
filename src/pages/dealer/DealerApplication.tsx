@@ -64,8 +64,8 @@ export default function DealerApplication() {
             Apply as a Dealer
           </h1>
           <p className="text-muted-foreground max-w-xl mx-auto">
-            Provide liquidity to the Kaukus marketplace. Complete the form below
-            to apply.
+            Provide liquidity to the ContisX marketplace. Complete the form
+            below to apply.
           </p>
         </div>
 

@@ -93,7 +93,7 @@ export interface Dealer {
 }
 
 // Service Types
-export interface KaukusService {
+export interface ContisXService {
   id: string;
   name: string;
   description: string;

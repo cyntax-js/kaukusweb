@@ -63,7 +63,7 @@ export default function DealerAwaitingApproval() {
                   Application Approved!
                 </h1>
                 <p className="text-muted-foreground">
-                  Welcome to Kaukus! Your dealer application has been approved.
+                  Welcome to ContisX! Your dealer application has been approved.
                 </p>
               </>
             ) : (

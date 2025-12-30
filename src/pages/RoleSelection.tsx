@@ -21,7 +21,7 @@ export default function RoleSelection() {
         <div className="text-center mb-12">
           <h1 className="text-3xl font-bold mb-4">Choose Your Path</h1>
           <p className="text-muted-foreground">
-            Select how you want to participate in the Kaukus ecosystem
+            Select how you want to participate in the ContisX ecosystem
           </p>
         </div>
 

@@ -19,7 +19,8 @@ broker-theme/
 
 ### 1. Understanding the System
 
-Each broker gets a unique subdomain (e.g., `fbs.kaukus.com`). When a user visits:
+Each broker gets a unique subdomain (e.g., `fbs.ContisX.com`). When a user visits:
+
 1. The theme engine detects the subdomain
 2. Loads the broker's configuration
 3. Applies their colors, fonts, and layout
@@ -60,11 +61,13 @@ Add a new entry to `mocks/brokers.ts`:
 ### 3. Testing Your Theme
 
 Open in browser:
+
 - `http://mybroker.localhost:8080/preview` - Landing page
 - `http://mybroker.localhost:8080/preview/login` - Login page
 - `http://mybroker.localhost:8080/preview/markets` - Markets page
 
 Or use query param:
+
 - `http://localhost:8080/preview?broker=mybroker`
 
 ### 4. Calling APIs in Theme Pages
@@ -72,24 +75,24 @@ Or use query param:
 All API calls go through `broker-theme/api/`:
 
 ```typescript
-import { marketsApi } from '@/broker-theme/api';
+import { marketsApi } from "@/broker-theme/api";
 
 // Fetch available markets
-const markets = await marketsApi.getMarkets('spot');
+const markets = await marketsApi.getMarkets("spot");
 
 // Get market details
-const details = await marketsApi.getMarketDetails('BTC-USDT');
+const details = await marketsApi.getMarketDetails("BTC-USDT");
 ```
 
 ### 5. Using Theme Components
 
 ```typescript
-import { ThemeHeader, ThemeFooter } from '@/broker-theme/components';
-import { useBrokerConfig } from '@/broker-theme/config';
+import { ThemeHeader, ThemeFooter } from "@/broker-theme/components";
+import { useBrokerConfig } from "@/broker-theme/config";
 
 function MyPage() {
   const config = useBrokerConfig();
-  
+
   return (
     <div>
       <ThemeHeader config={config} />
@@ -104,31 +107,31 @@ function MyPage() {
 
 ### Theme Configuration Hooks
 
-| Hook | Returns | Description |
-|------|---------|-------------|
-| `useBrokerConfig()` | `BrokerConfig` | Full broker configuration |
-| `useBrokerTheme()` | `BrokerTheme` | Just the theme (colors, fonts, layout) |
-| `useBrokerServices()` | `BrokerService[]` | Enabled services array |
-| `useServiceEnabled('spot')` | `boolean` | Check if a service is enabled |
-| `usePageEnabled('markets')` | `boolean` | Check if a page is enabled |
+| Hook                        | Returns           | Description                            |
+| --------------------------- | ----------------- | -------------------------------------- |
+| `useBrokerConfig()`         | `BrokerConfig`    | Full broker configuration              |
+| `useBrokerTheme()`          | `BrokerTheme`     | Just the theme (colors, fonts, layout) |
+| `useBrokerServices()`       | `BrokerService[]` | Enabled services array                 |
+| `useServiceEnabled('spot')` | `boolean`         | Check if a service is enabled          |
+| `usePageEnabled('markets')` | `boolean`         | Check if a page is enabled             |
 
 ### API Services
 
-| Service | Description |
-|---------|-------------|
-| `marketsApi` | Fetch markets, pairs, price data |
-| `tradingApi` | Place orders, manage positions |
-| `portfolioApi` | Holdings, transactions, P&L |
-| `userApi` | Profile, preferences, KYC |
+| Service        | Description                      |
+| -------------- | -------------------------------- |
+| `marketsApi`   | Fetch markets, pairs, price data |
+| `tradingApi`   | Place orders, manage positions   |
+| `portfolioApi` | Holdings, transactions, P&L      |
+| `userApi`      | Profile, preferences, KYC        |
 
 ## File Reference
 
-| File | Purpose |
-|------|---------|
-| `config/types.ts` | TypeScript types for broker config |
-| `config/defaults.ts` | Default values and template presets |
-| `config/engine.ts` | Theme store, loader, and CSS application |
-| `api/*.ts` | API service files (one per domain) |
-| `pages/*.tsx` | Broker page components |
-| `components/*.tsx` | Shared UI components |
-| `mocks/brokers.ts` | Mock broker data for development |
+| File                 | Purpose                                  |
+| -------------------- | ---------------------------------------- |
+| `config/types.ts`    | TypeScript types for broker config       |
+| `config/defaults.ts` | Default values and template presets      |
+| `config/engine.ts`   | Theme store, loader, and CSS application |
+| `api/*.ts`           | API service files (one per domain)       |
+| `pages/*.tsx`        | Broker page components                   |
+| `components/*.tsx`   | Shared UI components                     |
+| `mocks/brokers.ts`   | Mock broker data for development         |

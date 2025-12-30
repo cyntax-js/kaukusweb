@@ -4,11 +4,11 @@
  * Compatible with Zustand's createJSONStorage wrapper
  */
 
-import type { StateStorage } from 'zustand/middleware';
+import type { StateStorage } from "zustand/middleware";
 
-const DB_NAME = 'kaukus_storage';
+const DB_NAME = "ContisX_storage";
 const DB_VERSION = 1;
-const STORE_NAME = 'zustand_store';
+const STORE_NAME = "zustand_store";
 
 let dbInstance: IDBDatabase | null = null;
 let dbPromise: Promise<IDBDatabase> | null = null;
@@ -17,7 +17,7 @@ const getDB = (): Promise<IDBDatabase> => {
   if (dbInstance) {
     return Promise.resolve(dbInstance);
   }
-  
+
   if (dbPromise) {
     return dbPromise;
   }
@@ -29,7 +29,7 @@ const getDB = (): Promise<IDBDatabase> => {
       dbPromise = null;
       reject(request.error);
     };
-    
+
     request.onsuccess = () => {
       dbInstance = request.result;
       resolve(dbInstance);
@@ -55,7 +55,7 @@ export const indexedDBStateStorage: StateStorage = {
     try {
       const db = await getDB();
       return new Promise((resolve, reject) => {
-        const transaction = db.transaction(STORE_NAME, 'readonly');
+        const transaction = db.transaction(STORE_NAME, "readonly");
         const store = transaction.objectStore(STORE_NAME);
         const request = store.get(name);
 
@@ -65,7 +65,10 @@ export const indexedDBStateStorage: StateStorage = {
         };
       });
     } catch (error) {
-      console.warn('IndexedDB getItem failed, falling back to localStorage:', error);
+      console.warn(
+        "IndexedDB getItem failed, falling back to localStorage:",
+        error
+      );
       return localStorage.getItem(name);
     }
   },
@@ -74,7 +77,7 @@ export const indexedDBStateStorage: StateStorage = {
     try {
       const db = await getDB();
       return new Promise((resolve, reject) => {
-        const transaction = db.transaction(STORE_NAME, 'readwrite');
+        const transaction = db.transaction(STORE_NAME, "readwrite");
         const store = transaction.objectStore(STORE_NAME);
         const request = store.put(value, name);
 
@@ -82,7 +85,10 @@ export const indexedDBStateStorage: StateStorage = {
         request.onsuccess = () => resolve();
       });
     } catch (error) {
-      console.warn('IndexedDB setItem failed, falling back to localStorage:', error);
+      console.warn(
+        "IndexedDB setItem failed, falling back to localStorage:",
+        error
+      );
       localStorage.setItem(name, value);
     }
   },
@@ -91,7 +97,7 @@ export const indexedDBStateStorage: StateStorage = {
     try {
       const db = await getDB();
       return new Promise((resolve, reject) => {
-        const transaction = db.transaction(STORE_NAME, 'readwrite');
+        const transaction = db.transaction(STORE_NAME, "readwrite");
         const store = transaction.objectStore(STORE_NAME);
         const request = store.delete(name);
 
@@ -99,7 +105,10 @@ export const indexedDBStateStorage: StateStorage = {
         request.onsuccess = () => resolve();
       });
     } catch (error) {
-      console.warn('IndexedDB removeItem failed, falling back to localStorage:', error);
+      console.warn(
+        "IndexedDB removeItem failed, falling back to localStorage:",
+        error
+      );
       localStorage.removeItem(name);
     }
   },

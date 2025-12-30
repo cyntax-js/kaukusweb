@@ -23,7 +23,7 @@ export default function Signup() {
     <div className="animate-fade-in">
       <h1 className="text-2xl font-bold mb-2">Create your account</h1>
       <p className="text-muted-foreground mb-8">
-        Start your journey with Kaukus
+        Start your journey with ContisX
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">

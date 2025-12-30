@@ -1,15 +1,15 @@
-# Kaukus Platform Architecture
+# ContisX Platform Architecture
 
 ## Overview
 
-Kaukus is a **Shopify-like platform for stock brokers**. Brokers configure their trading platform through a dashboard, and the system generates a white-label trading platform based on their configuration.
+ContisX is a **Shopify-like platform for stock brokers**. Brokers configure their trading platform through a dashboard, and the system generates a white-label trading platform based on their configuration.
 
 ## Project Structure
 
 ```
 src/
 ├── api/                        # 🔌 PLATFORM API SERVICES
-│   └── platform/               # Kaukus admin APIs
+│   └── platform/               # ContisX admin APIs
 │       ├── auth.ts             # Broker/dealer login, signup
 │       ├── broker.ts           # Broker applications, management
 │       └── dealer.ts           # Dealer applications
@@ -47,9 +47,9 @@ src/
 │   └── README.md               # Detailed broker theme documentation
 │
 ├── pages/                      # 📄 PLATFORM PAGES
-│   ├── Landing.tsx             # Kaukus landing page
-│   ├── Login.tsx               # Kaukus login
-│   ├── Signup.tsx              # Kaukus signup
+│   ├── Landing.tsx             # ContisX landing page
+│   ├── Login.tsx               # ContisX login
+│   ├── Signup.tsx              # ContisX signup
 │   │
 │   ├── broker/                 # Broker-related pages
 │   │   ├── dashboard/          # Broker admin dashboard
@@ -79,12 +79,14 @@ src/
 
 ## Two Main Areas
 
-### 1. Platform (Kaukus Admin)
+### 1. Platform (ContisX Admin)
+
 - **Location**: `src/api/platform/`, `src/pages/`, `src/stores/`
 - **Purpose**: Broker registration, dashboard, deployment wizard
 - **APIs**: `@/api/platform`
 
 ### 2. Broker Themes (End User Trading)
+
 - **Location**: `src/broker-theme/` (self-contained)
 - **Purpose**: The white-label trading platform for end users
 - **APIs**: `@/broker-theme/api`
@@ -101,17 +103,17 @@ Every broker is defined by a `BrokerConfig` object:
 interface BrokerConfig {
   brokerId: string;
   brokerName: string;
-  subdomain: string;           // e.g., "fbs" → fbs.kaukus.com
-  
-  services: BrokerService[];   // ['spot', 'futures', 'options', 'private_markets']
-  
-  template: BrokerTemplate;    // 'classic' | 'modern' | 'professional' | etc.
-  theme: BrokerTheme;          // Colors, typography, layout variants
-  
-  pages: BrokerPages;          // Which pages are enabled
-  branding: { logoUrl?, faviconUrl? };
-  
-  status: 'draft' | 'active';
+  subdomain: string; // e.g., "fbs" → fbs.ContisX.com
+
+  services: BrokerService[]; // ['spot', 'futures', 'options', 'private_markets']
+
+  template: BrokerTemplate; // 'classic' | 'modern' | 'professional' | etc.
+  theme: BrokerTheme; // Colors, typography, layout variants
+
+  pages: BrokerPages; // Which pages are enabled
+  branding: { logoUrl?; faviconUrl? };
+
+  status: "draft" | "active";
 }
 ```
 
@@ -121,11 +123,11 @@ The theme engine loads and applies broker configuration:
 
 ```typescript
 // In any broker page:
-import { useTheme } from '@/broker-theme/config';
+import { useTheme } from "@/broker-theme/config";
 
 function MyPage() {
   const { config, isLoaded } = useTheme();
-  
+
   // Render based on config
   return <h1>{config.brokerName}</h1>;
 }
@@ -134,6 +136,7 @@ function MyPage() {
 ### Subdomain Routing
 
 Brokers are identified by subdomain:
+
 - `fbs.localhost:8080/preview` → loads FBS config
 - `cryptomax.localhost:8080/preview` → loads CryptoMax config
 
@@ -170,7 +173,8 @@ See `src/broker-theme/README.md` for full details.
 
 ## URL Structure
 
-### Platform (Kaukus Admin)
+### Platform (ContisX Admin)
+
 - `/` - Landing page
 - `/login` - Platform login
 - `/signup` - Platform signup
@@ -178,6 +182,7 @@ See `src/broker-theme/README.md` for full details.
 - `/broker/dashboard/deploy` - Deployment wizard
 
 ### Broker Themes (End Users)
+
 - `/preview` - Broker landing page
 - `/preview/login` - Broker login
 - `/preview/signup` - Broker signup
@@ -196,6 +201,7 @@ See `src/broker-theme/README.md` for full details.
 3. Keep the same function signatures for compatibility
 
 Example:
+
 ```typescript
 // Before (mock)
 export async function login(request: LoginRequest): Promise<AuthResponse> {
@@ -204,8 +210,8 @@ export async function login(request: LoginRequest): Promise<AuthResponse> {
 
 // After (real)
 export async function login(request: LoginRequest): Promise<AuthResponse> {
-  const response = await fetch('/api/auth/login', {
-    method: 'POST',
+  const response = await fetch("/api/auth/login", {
+    method: "POST",
     body: JSON.stringify(request),
   });
   return response.json();

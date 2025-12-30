@@ -15,7 +15,7 @@ const milestones = [
     year: "2019",
     title: "Founded",
     description:
-      "Kaukus was founded with a vision to democratize trading infrastructure.",
+      "ContisX was founded with a vision to democratize trading infrastructure.",
   },
   {
     year: "2020",
@@ -55,7 +55,7 @@ export default function About() {
             <span className="gradient-text">Trading Infrastructure</span>
           </h1>
           <p className="text-lg text-muted-foreground opacity-0 animate-fade-in stagger-1">
-            Kaukus is on a mission to democratize access to institutional-grade
+            ContisX is on a mission to democratize access to institutional-grade
             trading infrastructure, empowering brokers and dealers worldwide to
             compete at the highest level.
           </p>

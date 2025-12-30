@@ -1,13 +1,13 @@
 import type {
-  KaukusService,
+  ContisXService,
   BrokerTemplate,
   ColorTheme,
   TradingLayout,
   MarketSymbol,
 } from "@/types";
 
-// Kaukus Services (Shopify-like product catalog)
-export const mockServices: KaukusService[] = [
+// ContisX Services (Shopify-like product catalog)
+export const mockServices: ContisXService[] = [
   {
     id: "spot",
     name: "Spot Trading",

@@ -6,7 +6,7 @@ This folder contains all API services for the application. APIs are separated in
 
 ```
 api/
-├── platform/        # Kaukus platform APIs (used by main platform)
+├── platform/        # ContisX platform APIs (used by main platform)
 │   ├── auth.ts      # Authentication (login, signup, logout)
 │   ├── broker.ts    # Broker management (applications, dashboard)
 │   └── dealer.ts    # Dealer management (applications)
@@ -22,9 +22,10 @@ api/
 
 ## Usage
 
-### Platform APIs (for Kaukus admin/dashboard)
+### Platform APIs (for ContisX admin/dashboard)
+
 ```typescript
-import { platformApi } from '@/api/platform';
+import { platformApi } from "@/api/platform";
 
 // Authentication
 await platformApi.auth.login(email, password);
@@ -36,12 +37,13 @@ await platformApi.broker.getDashboardStats();
 ```
 
 ### Broker APIs (for broker themes)
+
 ```typescript
-import { brokerApi } from '@/api/broker';
+import { brokerApi } from "@/api/broker";
 
 // Markets
-const pairs = await brokerApi.markets.getPairs('spot');
-const pair = await brokerApi.markets.getPair('spot', 'BTC-USDT');
+const pairs = await brokerApi.markets.getPairs("spot");
+const pair = await brokerApi.markets.getPair("spot", "BTC-USDT");
 
 // Trading
 await brokerApi.trading.placeOrder(orderData);

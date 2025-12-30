@@ -9,9 +9,21 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useBrokerStore } from "@/stores/brokerStore";
 import { useBrokerDeploymentStore } from "@/stores/brokerDeploymentStore";
-import { 
-  Settings, Globe, Bell, Shield, Save, Building2, Mail, 
-  Lock, Key, Webhook, AlertTriangle, CheckCircle, ExternalLink, Palette 
+import {
+  Settings,
+  Globe,
+  Bell,
+  Shield,
+  Save,
+  Building2,
+  Mail,
+  Lock,
+  Key,
+  Webhook,
+  AlertTriangle,
+  CheckCircle,
+  ExternalLink,
+  Palette,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -70,7 +82,10 @@ export default function BrokerSettings() {
     setIsSaving(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
     setIsSaving(false);
-    toast({ title: "Settings Saved", description: "Your settings have been updated successfully." });
+    toast({
+      title: "Settings Saved",
+      description: "Your settings have been updated successfully.",
+    });
   };
 
   return (
@@ -78,10 +93,13 @@ export default function BrokerSettings() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Settings</h1>
-          <p className="text-muted-foreground">Configure your broker platform settings</p>
+          <p className="text-muted-foreground">
+            Configure your broker platform settings
+          </p>
         </div>
         <Button onClick={handleSave} disabled={isSaving}>
-          <Save className="w-4 h-4 mr-2" /> {isSaving ? "Saving..." : "Save Changes"}
+          <Save className="w-4 h-4 mr-2" />{" "}
+          {isSaving ? "Saving..." : "Save Changes"}
         </Button>
       </div>
 
@@ -164,33 +182,92 @@ export default function BrokerSettings() {
               </div>
               <div>
                 <h2 className="font-semibold">Company Information</h2>
-                <p className="text-sm text-muted-foreground">Basic business details</p>
+                <p className="text-sm text-muted-foreground">
+                  Basic business details
+                </p>
               </div>
             </div>
             <div className="grid md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="companyName">Display Name</Label>
-                <Input id="companyName" value={generalSettings.companyName} onChange={(e) => setGeneralSettings({ ...generalSettings, companyName: e.target.value })} />
+                <Input
+                  id="companyName"
+                  value={generalSettings.companyName}
+                  onChange={(e) =>
+                    setGeneralSettings({
+                      ...generalSettings,
+                      companyName: e.target.value,
+                    })
+                  }
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="legalName">Legal Name</Label>
-                <Input id="legalName" value={generalSettings.legalName} onChange={(e) => setGeneralSettings({ ...generalSettings, legalName: e.target.value })} />
+                <Input
+                  id="legalName"
+                  value={generalSettings.legalName}
+                  onChange={(e) =>
+                    setGeneralSettings({
+                      ...generalSettings,
+                      legalName: e.target.value,
+                    })
+                  }
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="contactEmail">Contact Email</Label>
-                <Input id="contactEmail" type="email" value={generalSettings.contactEmail} onChange={(e) => setGeneralSettings({ ...generalSettings, contactEmail: e.target.value })} />
+                <Input
+                  id="contactEmail"
+                  type="email"
+                  value={generalSettings.contactEmail}
+                  onChange={(e) =>
+                    setGeneralSettings({
+                      ...generalSettings,
+                      contactEmail: e.target.value,
+                    })
+                  }
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="supportEmail">Support Email</Label>
-                <Input id="supportEmail" type="email" value={generalSettings.supportEmail} onChange={(e) => setGeneralSettings({ ...generalSettings, supportEmail: e.target.value })} />
+                <Input
+                  id="supportEmail"
+                  type="email"
+                  value={generalSettings.supportEmail}
+                  onChange={(e) =>
+                    setGeneralSettings({
+                      ...generalSettings,
+                      supportEmail: e.target.value,
+                    })
+                  }
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone Number</Label>
-                <Input id="phone" value={generalSettings.phone} onChange={(e) => setGeneralSettings({ ...generalSettings, phone: e.target.value })} />
+                <Input
+                  id="phone"
+                  value={generalSettings.phone}
+                  onChange={(e) =>
+                    setGeneralSettings({
+                      ...generalSettings,
+                      phone: e.target.value,
+                    })
+                  }
+                />
               </div>
               <div className="space-y-2 md:col-span-2">
                 <Label htmlFor="address">Business Address</Label>
-                <Textarea id="address" value={generalSettings.address} onChange={(e) => setGeneralSettings({ ...generalSettings, address: e.target.value })} rows={2} />
+                <Textarea
+                  id="address"
+                  value={generalSettings.address}
+                  onChange={(e) =>
+                    setGeneralSettings({
+                      ...generalSettings,
+                      address: e.target.value,
+                    })
+                  }
+                  rows={2}
+                />
               </div>
             </div>
           </Card>
@@ -204,14 +281,16 @@ export default function BrokerSettings() {
               </div>
               <div>
                 <h2 className="font-semibold">Domain Settings</h2>
-                <p className="text-sm text-muted-foreground">Configure your platform domain</p>
+                <p className="text-sm text-muted-foreground">
+                  Configure your platform domain
+                </p>
               </div>
             </div>
             <div className="space-y-4">
               <div className="p-4 rounded-lg bg-secondary/50">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-medium">Kaukus Subdomain</div>
+                    <div className="font-medium">ContisX Subdomain</div>
                     <div className="text-sm text-muted-foreground">
                       {config.subdomain ? platformLabel : "Not configured"}
                     </div>
@@ -223,9 +302,13 @@ export default function BrokerSettings() {
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="font-medium">Custom Domain</div>
-                    <div className="text-sm text-muted-foreground">Connect your own domain</div>
+                    <div className="text-sm text-muted-foreground">
+                      Connect your own domain
+                    </div>
                   </div>
-                  <Button variant="outline" size="sm">Configure</Button>
+                  <Button variant="outline" size="sm">
+                    Configure
+                  </Button>
                 </div>
               </div>
             </div>
@@ -237,20 +320,36 @@ export default function BrokerSettings() {
               </div>
               <div>
                 <h2 className="font-semibold">Theme & Branding</h2>
-                <p className="text-sm text-muted-foreground">Customize your platform appearance</p>
+                <p className="text-sm text-muted-foreground">
+                  Customize your platform appearance
+                </p>
               </div>
             </div>
             <div className="grid md:grid-cols-2 gap-4">
               <div className="p-4 rounded-lg bg-secondary/50">
-                <div className="text-sm text-muted-foreground mb-2">Primary Color</div>
+                <div className="text-sm text-muted-foreground mb-2">
+                  Primary Color
+                </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg" style={{ backgroundColor: config.theme?.colors?.primary || '#6366f1' }} />
-                  <span className="font-mono text-sm">{config.theme?.colors?.primary || '#6366f1'}</span>
+                  <div
+                    className="w-8 h-8 rounded-lg"
+                    style={{
+                      backgroundColor:
+                        config.theme?.colors?.primary || "#6366f1",
+                    }}
+                  />
+                  <span className="font-mono text-sm">
+                    {config.theme?.colors?.primary || "#6366f1"}
+                  </span>
                 </div>
               </div>
               <div className="p-4 rounded-lg bg-secondary/50">
-                <div className="text-sm text-muted-foreground mb-2">Template</div>
-                <div className="font-medium capitalize">{config.template || 'modern'}</div>
+                <div className="text-sm text-muted-foreground mb-2">
+                  Template
+                </div>
+                <div className="font-medium capitalize">
+                  {config.template || "modern"}
+                </div>
               </div>
             </div>
           </Card>
@@ -264,26 +363,66 @@ export default function BrokerSettings() {
               </div>
               <div>
                 <h2 className="font-semibold">Email Notifications</h2>
-                <p className="text-sm text-muted-foreground">Configure which emails you receive</p>
+                <p className="text-sm text-muted-foreground">
+                  Configure which emails you receive
+                </p>
               </div>
             </div>
             <div className="space-y-4">
               {[
-                { key: 'tradeAlerts', label: 'Trade Alerts', desc: 'Get notified for large or unusual trades' },
-                { key: 'userRegistrations', label: 'New User Registrations', desc: 'Receive alerts when new users sign up' },
-                { key: 'largeDeposits', label: 'Large Deposits', desc: 'Notifications for deposits over $10,000' },
-                { key: 'securityAlerts', label: 'Security Alerts', desc: 'Critical security notifications' },
-                { key: 'weeklyDigest', label: 'Weekly Digest', desc: 'Weekly summary of platform activity' },
-                { key: 'marketingUpdates', label: 'Marketing Updates', desc: 'Platform updates and feature announcements' },
+                {
+                  key: "tradeAlerts",
+                  label: "Trade Alerts",
+                  desc: "Get notified for large or unusual trades",
+                },
+                {
+                  key: "userRegistrations",
+                  label: "New User Registrations",
+                  desc: "Receive alerts when new users sign up",
+                },
+                {
+                  key: "largeDeposits",
+                  label: "Large Deposits",
+                  desc: "Notifications for deposits over $10,000",
+                },
+                {
+                  key: "securityAlerts",
+                  label: "Security Alerts",
+                  desc: "Critical security notifications",
+                },
+                {
+                  key: "weeklyDigest",
+                  label: "Weekly Digest",
+                  desc: "Weekly summary of platform activity",
+                },
+                {
+                  key: "marketingUpdates",
+                  label: "Marketing Updates",
+                  desc: "Platform updates and feature announcements",
+                },
               ].map((item) => (
-                <div key={item.key} className="flex items-center justify-between p-4 rounded-lg bg-secondary/30">
+                <div
+                  key={item.key}
+                  className="flex items-center justify-between p-4 rounded-lg bg-secondary/30"
+                >
                   <div>
                     <div className="font-medium">{item.label}</div>
-                    <div className="text-sm text-muted-foreground">{item.desc}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {item.desc}
+                    </div>
                   </div>
-                  <Switch 
-                    checked={notificationSettings[item.key as keyof typeof notificationSettings]} 
-                    onCheckedChange={(checked) => setNotificationSettings({ ...notificationSettings, [item.key]: checked })} 
+                  <Switch
+                    checked={
+                      notificationSettings[
+                        item.key as keyof typeof notificationSettings
+                      ]
+                    }
+                    onCheckedChange={(checked) =>
+                      setNotificationSettings({
+                        ...notificationSettings,
+                        [item.key]: checked,
+                      })
+                    }
                   />
                 </div>
               ))}
@@ -299,39 +438,93 @@ export default function BrokerSettings() {
               </div>
               <div>
                 <h2 className="font-semibold">Authentication</h2>
-                <p className="text-sm text-muted-foreground">Configure login and authentication settings</p>
+                <p className="text-sm text-muted-foreground">
+                  Configure login and authentication settings
+                </p>
               </div>
             </div>
             <div className="space-y-4">
               <div className="flex items-center justify-between p-4 rounded-lg bg-secondary/30">
                 <div>
                   <div className="font-medium">Require 2FA for All Users</div>
-                  <div className="text-sm text-muted-foreground">Force two-factor authentication</div>
+                  <div className="text-sm text-muted-foreground">
+                    Force two-factor authentication
+                  </div>
                 </div>
-                <Switch checked={securitySettings.require2FA} onCheckedChange={(checked) => setSecuritySettings({ ...securitySettings, require2FA: checked })} />
+                <Switch
+                  checked={securitySettings.require2FA}
+                  onCheckedChange={(checked) =>
+                    setSecuritySettings({
+                      ...securitySettings,
+                      require2FA: checked,
+                    })
+                  }
+                />
               </div>
               <div className="flex items-center justify-between p-4 rounded-lg bg-secondary/30">
                 <div>
                   <div className="font-medium">IP Whitelist</div>
-                  <div className="text-sm text-muted-foreground">Only allow access from specific IPs</div>
+                  <div className="text-sm text-muted-foreground">
+                    Only allow access from specific IPs
+                  </div>
                 </div>
-                <Switch checked={securitySettings.ipWhitelist} onCheckedChange={(checked) => setSecuritySettings({ ...securitySettings, ipWhitelist: checked })} />
+                <Switch
+                  checked={securitySettings.ipWhitelist}
+                  onCheckedChange={(checked) =>
+                    setSecuritySettings({
+                      ...securitySettings,
+                      ipWhitelist: checked,
+                    })
+                  }
+                />
               </div>
               <div className="flex items-center justify-between p-4 rounded-lg bg-secondary/30">
                 <div>
                   <div className="font-medium">Audit Logging</div>
-                  <div className="text-sm text-muted-foreground">Log all admin actions</div>
+                  <div className="text-sm text-muted-foreground">
+                    Log all admin actions
+                  </div>
                 </div>
-                <Switch checked={securitySettings.auditLogging} onCheckedChange={(checked) => setSecuritySettings({ ...securitySettings, auditLogging: checked })} />
+                <Switch
+                  checked={securitySettings.auditLogging}
+                  onCheckedChange={(checked) =>
+                    setSecuritySettings({
+                      ...securitySettings,
+                      auditLogging: checked,
+                    })
+                  }
+                />
               </div>
               <div className="grid md:grid-cols-2 gap-4 pt-4">
                 <div className="space-y-2">
-                  <Label htmlFor="sessionTimeout">Session Timeout (minutes)</Label>
-                  <Input id="sessionTimeout" type="number" value={securitySettings.sessionTimeout} onChange={(e) => setSecuritySettings({ ...securitySettings, sessionTimeout: parseInt(e.target.value) })} />
+                  <Label htmlFor="sessionTimeout">
+                    Session Timeout (minutes)
+                  </Label>
+                  <Input
+                    id="sessionTimeout"
+                    type="number"
+                    value={securitySettings.sessionTimeout}
+                    onChange={(e) =>
+                      setSecuritySettings({
+                        ...securitySettings,
+                        sessionTimeout: parseInt(e.target.value),
+                      })
+                    }
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="loginAttempts">Max Login Attempts</Label>
-                  <Input id="loginAttempts" type="number" value={securitySettings.loginAttempts} onChange={(e) => setSecuritySettings({ ...securitySettings, loginAttempts: parseInt(e.target.value) })} />
+                  <Input
+                    id="loginAttempts"
+                    type="number"
+                    value={securitySettings.loginAttempts}
+                    onChange={(e) =>
+                      setSecuritySettings({
+                        ...securitySettings,
+                        loginAttempts: parseInt(e.target.value),
+                      })
+                    }
+                  />
                 </div>
               </div>
             </div>
@@ -346,33 +539,73 @@ export default function BrokerSettings() {
               </div>
               <div>
                 <h2 className="font-semibold">API Configuration</h2>
-                <p className="text-sm text-muted-foreground">Manage API access and webhooks</p>
+                <p className="text-sm text-muted-foreground">
+                  Manage API access and webhooks
+                </p>
               </div>
             </div>
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="webhookUrl">Webhook URL</Label>
-                <Input id="webhookUrl" placeholder="https://your-server.com/webhook" value={integrationSettings.webhookUrl} onChange={(e) => setIntegrationSettings({ ...integrationSettings, webhookUrl: e.target.value })} />
-                <p className="text-xs text-muted-foreground">Receive real-time notifications for trades and user events</p>
+                <Input
+                  id="webhookUrl"
+                  placeholder="https://your-server.com/webhook"
+                  value={integrationSettings.webhookUrl}
+                  onChange={(e) =>
+                    setIntegrationSettings({
+                      ...integrationSettings,
+                      webhookUrl: e.target.value,
+                    })
+                  }
+                />
+                <p className="text-xs text-muted-foreground">
+                  Receive real-time notifications for trades and user events
+                </p>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="apiRateLimit">API Rate Limit (requests/min)</Label>
-                <Input id="apiRateLimit" type="number" value={integrationSettings.apiRateLimit} onChange={(e) => setIntegrationSettings({ ...integrationSettings, apiRateLimit: parseInt(e.target.value) })} />
+                <Label htmlFor="apiRateLimit">
+                  API Rate Limit (requests/min)
+                </Label>
+                <Input
+                  id="apiRateLimit"
+                  type="number"
+                  value={integrationSettings.apiRateLimit}
+                  onChange={(e) =>
+                    setIntegrationSettings({
+                      ...integrationSettings,
+                      apiRateLimit: parseInt(e.target.value),
+                    })
+                  }
+                />
               </div>
               <div className="flex items-center justify-between p-4 rounded-lg bg-secondary/30">
                 <div>
                   <div className="font-medium">Sandbox Mode</div>
-                  <div className="text-sm text-muted-foreground">Enable test environment for API development</div>
+                  <div className="text-sm text-muted-foreground">
+                    Enable test environment for API development
+                  </div>
                 </div>
-                <Switch checked={integrationSettings.sandboxMode} onCheckedChange={(checked) => setIntegrationSettings({ ...integrationSettings, sandboxMode: checked })} />
+                <Switch
+                  checked={integrationSettings.sandboxMode}
+                  onCheckedChange={(checked) =>
+                    setIntegrationSettings({
+                      ...integrationSettings,
+                      sandboxMode: checked,
+                    })
+                  }
+                />
               </div>
               <div className="p-4 rounded-lg border border-dashed">
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="font-medium">API Keys</div>
-                    <div className="text-sm text-muted-foreground">Manage API keys for external access</div>
+                    <div className="text-sm text-muted-foreground">
+                      Manage API keys for external access
+                    </div>
                   </div>
-                  <Button variant="outline" size="sm">Manage Keys</Button>
+                  <Button variant="outline" size="sm">
+                    Manage Keys
+                  </Button>
                 </div>
               </div>
             </div>
