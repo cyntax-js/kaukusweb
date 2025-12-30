@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import { mockStats, mockMarkets } from "@/mocks/data";
 import { useState, useEffect } from "react";
-import avatarGroup from "@/assets/avatargroup.png";
 
 // Market Ticker Component
 function MarketTicker() {
@@ -230,34 +229,28 @@ export default function Landing() {
             </div>
 
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight opacity-0 animate-fade-in stagger-1">
-              Market Infrastructure for Brokers &
-              <span className="gradient-text"> Institutions.</span>
+              The Infrastructure for{" "}
+              <span className="gradient-text">Global Trading</span>
             </h1>
 
             <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto opacity-0 animate-fade-in stagger-2">
-              ContisX provides the liquidity, execution, and platform
-              infrastructure that powers broker trading platforms, without being
-              visible to end users.
+              Enterprise-grade stock liquidity provider powering brokers and
+              dealers. Access deep liquidity, deploy your platform, and scale to
+              millions of users.
             </p>
-            <img
-              src={avatarGroup}
-              alt="avatarGroup"
-              className="w-25 h-10 justify-self-center mx-auto mb-8 opacity-0 animate-fade-in stagger-3"
-            />
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center opacity-0 animate-fade-in stagger-3">
               <Button
                 size="lg"
                 asChild
-                className="shadow-glow hover:shadow-glow-lg transition-shadow px-4"
+                className="shadow-glow hover:shadow-glow-lg transition-shadow"
               >
                 <Link to="/signup">
-                  Continue as Broker
-                  <ArrowRight className="w-4 h-4 ml-1" />
+                  Start Trading <ArrowRight className="w-4 h-4 ml-2" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <Link to="/pricing">Apply as Dealer</Link>
+                <Link to="/pricing">View Pricing</Link>
               </Button>
             </div>
           </div>
