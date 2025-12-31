@@ -11,7 +11,7 @@ import { mockBrokerConfigs } from "@/broker-theme/mocks";
 
 // Platform Pages
 import Landing from "./pages/Landing";
-import About from "./pages/About";
+import Services from "./pages/Services";
 import Pricing from "./pages/Pricing";
 import Legal from "./pages/Legal";
 import Login from "./pages/Login";
@@ -20,18 +20,22 @@ import RoleSelection from "./pages/RoleSelection";
 import NotFound from "./pages/NotFound";
 
 // Broker Onboarding
-import { BrokerRequirements, BrokerApplication, AwaitingApproval } from "./pages/broker";
+import {
+  BrokerRequirements,
+  BrokerApplication,
+  AwaitingApproval,
+} from "./pages/broker";
 
 // Broker Dashboard
-import { 
-  BrokerDashboard, 
-  BrokerUsers, 
-  BrokerFees, 
+import {
+  BrokerDashboard,
+  BrokerUsers,
+  BrokerFees,
   BrokerServices,
-  BrokerAnalytics, 
+  BrokerAnalytics,
   BrokerSettings,
   BrokerDeployment,
-  ThemeGallery
+  ThemeGallery,
 } from "./pages/broker/dashboard";
 
 // Dealer Pages
@@ -49,7 +53,12 @@ import {
   AboutPage as BrokerAboutPage,
   LegalPage as BrokerLegalPage,
 } from "@/broker-theme/pages";
-import { PreviewLayout, AppLayout, PublicLayout, AppRoutesLayout } from "@/broker-theme/layouts";
+import {
+  PreviewLayout,
+  AppLayout,
+  PublicLayout,
+  AppRoutesLayout,
+} from "@/broker-theme/layouts";
 
 // Register mock brokers for development
 registerMockBrokers(mockBrokerConfigs);
@@ -66,7 +75,7 @@ const App = () => (
           {/* Public pages */}
           <Route element={<MainLayout />}>
             <Route path="/" element={<Landing />} />
-            <Route path="/about" element={<About />} />
+            <Route path="/services" element={<Services />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/legal" element={<Legal />} />
           </Route>
@@ -83,7 +92,10 @@ const App = () => (
           {/* Broker onboarding */}
           <Route path="/broker/requirements" element={<BrokerRequirements />} />
           <Route path="/broker/application" element={<BrokerApplication />} />
-          <Route path="/broker/awaiting-approval" element={<AwaitingApproval />} />
+          <Route
+            path="/broker/awaiting-approval"
+            element={<AwaitingApproval />}
+          />
 
           {/* Broker Dashboard */}
           <Route path="/broker/dashboard" element={<BrokerAdminLayout />}>
@@ -99,7 +111,10 @@ const App = () => (
 
           {/* Dealer */}
           <Route path="/dealer/application" element={<DealerApplication />} />
-          <Route path="/dealer/awaiting-approval" element={<DealerAwaitingApproval />} />
+          <Route
+            path="/dealer/awaiting-approval"
+            element={<DealerAwaitingApproval />}
+          />
 
           {/* Config-driven Broker Preview (during deployment setup) */}
           <Route path="/preview" element={<PreviewLayout />}>
@@ -111,12 +126,18 @@ const App = () => (
               <Route path="login" element={<BrokerLoginPage />} />
               <Route path="signup" element={<BrokerSignupPage />} />
             </Route>
-            
+
             {/* App pages - use AppHeader (trading, markets, portfolio) */}
             <Route path="app" element={<AppRoutesLayout />}>
               <Route path="markets" element={<BrokerMarketsPage />} />
-              <Route path="markets/:marketType" element={<BrokerMarketsPage />} />
-              <Route path=":serviceType/trade/:marketType/:pair" element={<BrokerTradingPage />} />
+              <Route
+                path="markets/:marketType"
+                element={<BrokerMarketsPage />}
+              />
+              <Route
+                path=":serviceType/trade/:marketType/:pair"
+                element={<BrokerTradingPage />}
+              />
               <Route path="portfolio" element={<BrokerPortfolioPage />} />
               <Route path="settings" element={<BrokerSettingsPage />} />
             </Route>
@@ -132,12 +153,18 @@ const App = () => (
               <Route path="login" element={<BrokerLoginPage />} />
               <Route path="signup" element={<BrokerSignupPage />} />
             </Route>
-            
+
             {/* Trading pages - use AppHeader */}
             <Route element={<AppRoutesLayout />}>
               <Route path="markets" element={<BrokerMarketsPage />} />
-              <Route path="markets/:marketType" element={<BrokerMarketsPage />} />
-              <Route path=":serviceType/trade/:marketType/:pair" element={<BrokerTradingPage />} />
+              <Route
+                path="markets/:marketType"
+                element={<BrokerMarketsPage />}
+              />
+              <Route
+                path=":serviceType/trade/:marketType/:pair"
+                element={<BrokerTradingPage />}
+              />
               <Route path="portfolio" element={<BrokerPortfolioPage />} />
               <Route path="settings" element={<BrokerSettingsPage />} />
             </Route>

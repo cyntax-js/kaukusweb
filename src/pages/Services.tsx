@@ -183,13 +183,13 @@ const complianceDetails = [
   },
 ];
 
-export default function About() {
+export default function Services() {
   return (
-    <div className="pt-20">
+    <div className="xl:pt-20">
       {/* Hero */}
       <section
         style={{ backgroundImage: `url('${HeroBg}')` }}
-        className="container mx-auto lg:pt-24 px-4 mb-20"
+        className="container mx-auto lg:pt-44 px-4 mb-20"
       >
         <div className="max-w-2xl mx-auto text-center">
           <img src={BadgeGroup} alt="" className="mx-auto mb-4" />
@@ -219,9 +219,9 @@ export default function About() {
       </section>
 
       {/* BaaS info */}
-      <section className="bg-secondary-dark py-20 mb-20">
-        <div className="mx-auto mb-20 px-4 text-secondary-dark-foreground max-w-7xl">
-          <small className="uppercase text-secondary-dark-foreground/60">
+      <section className="bg-secondary-blue py-20 mb-20">
+        <div className="mx-auto mb-20 px-4 text-secondary-blue-foreground max-w-7xl">
+          <small className="uppercase text-secondary-blue-foreground/60">
             Stay Updated
           </small>
           <h3 className="text-3xl font-bold my-3">
@@ -234,17 +234,20 @@ export default function About() {
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-y-3 justify-between text-secondary-dark-foreground max-w-7xl mx-auto px-6">
-          {BaaSInfo.map((item) => (
-            <div className="flex flex-[0_0_100%] lg:flex-[0_0_33%] bg-secondary-dark-foreground/5 lg:last:flex-[0_0_100%] gap-4 border-[0.5px] border-solid border-secondary-dark-border rounded-2xl px-7 pt-7 pb-14">
+        <div className="flex flex-wrap gap-y-3 justify-between text-secondary-blue-foreground max-w-7xl mx-auto px-6">
+          {BaaSInfo.map((item, index) => (
+            <div
+              key={index}
+              className="flex flex-[0_0_100%] lg:flex-[0_0_33%] bg-secondary-blue-foreground/5 lg:last:flex-[0_0_100%] gap-4 border-[0.5px] border-solid border-secondary-blue-border rounded-2xl px-7 pt-7 pb-14"
+            >
               {item.icon}
               <div className="">
-                <p className="text-xs mb-2 text-secondary-dark-foreground/60">
+                <p className="text-xs mb-2 text-secondary-blue-foreground/60">
                   {item.digits}
                 </p>
                 <div className="flex flex-col">
                   <h4 className="font-medium text-lg">{item.header}</h4>
-                  <p className="text-secondary-dark-foreground/60">
+                  <p className="text-secondary-blue-foreground/60">
                     {item.paragraph}
                   </p>
                 </div>
@@ -256,7 +259,7 @@ export default function About() {
 
       <section className="py-20 px-4 mb-20">
         <div className="flex flex-wrap gap-y-6 items-center justify-between mx-auto max-w-7xl">
-          <div className="text-secondary-dark">
+          <div className="text-secondary-blue">
             <small className="uppercase opacity-30">Stay Updated</small>
             <h3 className="text-3xl font-bold my-3">
               Supported Trading Services
@@ -277,8 +280,11 @@ export default function About() {
         </div>
 
         <div className="pt-20">
-          {tradingServices.map((service) => (
-            <div className="flex flex-wrap lg:flex-nowrap items-center justify-center lg:justify-between gap-y-9 mx-auto max-w-7xl">
+          {tradingServices.map((service, index) => (
+            <div
+              key={index}
+              className="flex flex-wrap lg:flex-nowrap items-center justify-center lg:justify-between gap-y-9 mx-auto max-w-7xl"
+            >
               <img src={service.image} alt="abstract 3d model" />
               <div className="flex flex-col gap-5 max-w-xl">
                 <div className="">
@@ -327,9 +333,9 @@ export default function About() {
       </section>
 
       {/* BaaS Services */}
-      <section className="bg-secondary-dark py-20">
-        <div className="mx-auto mb-20 px-4 text-secondary-dark-foreground max-w-7xl">
-          <small className="uppercase text-secondary-dark-foreground/60">
+      <section className="bg-secondary-blue py-20">
+        <div className="mx-auto mb-20 px-4 text-secondary-blue-foreground max-w-7xl">
+          <small className="uppercase text-secondary-blue-foreground/60">
             Stay Updated
           </small>
           <h3 className="text-3xl font-bold my-3">
@@ -340,17 +346,20 @@ export default function About() {
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-y-3 justify-between text-secondary-dark-foreground max-w-7xl mx-auto px-6">
-          {BaaSService.map((item) => (
-            <div className="flex items-start flex-[0_0_100%] lg:flex-[0_0_33%] bg-secondary-dark-foreground/5 lg:last:flex-[0_0_50%] lg:[&:nth-child(4)]:flex-[0_0_49.5%] gap-4 border-[0.5px] border-solid border-secondary-dark-border rounded-2xl px-7 pt-7 pb-14">
+        <div className="flex flex-wrap gap-y-3 justify-between text-secondary-blue-foreground max-w-7xl mx-auto px-6">
+          {BaaSService.map((item, index) => (
+            <div
+              key={index}
+              className="flex items-start flex-[0_0_100%] lg:flex-[0_0_33%] bg-secondary-blue-foreground/5 lg:last:flex-[0_0_50%] lg:[&:nth-child(4)]:flex-[0_0_49.5%] gap-4 border-[0.5px] border-solid border-secondary-blue-border rounded-2xl px-7 pt-7 pb-14"
+            >
               {item.icon}
               <div className="">
-                <p className="text-xs mb-2 text-secondary-dark-foreground/60">
+                <p className="text-xs mb-2 text-secondary-blue-foreground/60">
                   {item.digits}
                 </p>
                 <div className="flex flex-col">
                   <h4 className="font-medium text-lg">{item.header}</h4>
-                  <p className="text-secondary-dark-foreground/60">
+                  <p className="text-secondary-blue-foreground/60">
                     {item.paragraph}
                   </p>
                 </div>
@@ -362,7 +371,7 @@ export default function About() {
 
       <section className="bg-white pt-36 px-4 py-24 lg:px-8">
         <div className="flex flex-wrap gap-y-6 items-center justify-between mx-auto max-w-7xl">
-          <div className="text-secondary-dark">
+          <div className="text-secondary-blue">
             <h3 className="text-3xl font-bold my-3">Compliance & Governance</h3>
             <p className="max-w-xl opacity-60">
               Built with institutional requirements at its core
@@ -379,8 +388,11 @@ export default function About() {
         </div>
 
         <div className="flex flex-wrap gap-x-3 gap-y-3 justify-center lg:justify-start mt-20 max-w-7xl mx-auto px-4 lg:px-0">
-          {complianceDetails.map((detail) => (
-            <div className="text-gray-900 bg-[#FAFAFA] p-8 flex flex-col gap-32 rounded-2xl md:max-w-[19.375rem]">
+          {complianceDetails.map((detail, index) => (
+            <div
+              key={index}
+              className="text-gray-900 bg-[#FAFAFA] p-8 flex flex-col gap-32 rounded-2xl md:max-w-[19.375rem]"
+            >
               <h3 className="text-4xl">{detail.heading}</h3>
               <p className="text-gray-400">{detail.paragraph}</p>
             </div>
