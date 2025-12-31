@@ -48,33 +48,32 @@ const BaaSService = [
   {
     icon: <img src={FanIconWhite} alt="Fan Icon" className="h-fit" />,
     digits: "01_",
-    header: "Market Infrastructure",
-    paragraph: "Execution, pricing, liquidity, and settlement.",
+    header: "Apply and get approved as a broker",
+    paragraph: "Submit your application and complete KYC requirements.",
   },
   {
     icon: <img src={FeatherIconWhite} alt="Fan Icon" className="h-fit" />,
     digits: "02_",
-    header: "White-Label Platform",
-    paragraph:
-      "Deploy branded trading interfaces without building from scratch.",
+    header: "Select desired trading services",
+    paragraph: "Choose from Spot, Futures, Options, or a combination.",
   },
   {
     icon: <img src={DotsSixIconWhite} alt="Fan Icon" className="h-fit" />,
     digits: "03_",
-    header: "Compliance-First Operations",
-    paragraph: "KYC/AML readiness, auditability, and reporting.",
+    header: "Choose platform template and branding",
+    paragraph: "Customize the white-label interface with your brand.",
   },
   {
-    icon: <img src={DiceFiveIconWhite} alt="Fan Icon" className="h-fit" />,
+    icon: <img src={FeatherIconWhite} alt="Fan Icon" className="h-fit" />,
     digits: "04_",
-    header: "Scalable Architecture",
-    paragraph: "Add markets, regions, and products as you grow.",
+    header: "Deploy platform",
+    paragraph: "Launch your branded trading platform live.",
   },
   {
-    icon: <img src={DiceFiveIconWhite} alt="Fan Icon" className="h-fit" />,
+    icon: <img src={DotsSixIconWhite} alt="Fan Icon" className="h-fit" />,
     digits: "05_",
-    header: "Scalable Architecture",
-    paragraph: "Add markets, regions, and products as you grow.",
+    header: "Manage users, fees, and analytics",
+    paragraph: "Operate your platform with full control and visibility.",
   },
 ];
 
@@ -301,7 +300,7 @@ export default function About() {
                   </h5>
                   <ul className="list-disc list-inside text-gray-500">
                     {service.listOne.map((item, index) => (
-                      <li key={index}>{item}</li>
+                      <li key={index}>• {item}</li>
                     ))}
                   </ul>
                 </div>
@@ -311,7 +310,7 @@ export default function About() {
                   </h5>
                   <ul className="list-disc list-inside text-gray-500">
                     {service.listTwo.map((item, index) => (
-                      <li key={index}>{item}</li>
+                      <li key={index}>• {item}</li>
                     ))}
                   </ul>
                 </div>
@@ -334,12 +333,10 @@ export default function About() {
             Stay Updated
           </small>
           <h3 className="text-3xl font-bold my-3">
-            Services are fully configurable to your business model
+            How Brokers Enable Services on Kaukus
           </h3>
           <p className="max-w-4xl">
-            Broker-as-a-Service means Kaukus provides the core infrastructure
-            required to operate a brokerage, while you control the brand, users,
-            fees, and market offering.
+            Services are fully configurable to your business model
           </p>
         </div>
 
