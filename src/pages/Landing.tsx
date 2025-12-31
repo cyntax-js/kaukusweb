@@ -333,7 +333,7 @@ function BrokerDealers() {
             asChild
             className="shadow-glow hover:shadow-glow-lg transition-shadow px-4 mt-10"
           >
-            <Link to="/signup">
+            <Link to="/services">
               Continue as Broker
               <ArrowRight className="w-4 h-4 ml-1" />
             </Link>
@@ -378,7 +378,7 @@ function BrokerDealers() {
             asChild
             className="py-6 hover:bg-black bg-[#fff] mt-10"
           >
-            <Link to="/pricing">Apply as Dealer</Link>
+            <Link to="/signup">Apply as Dealer</Link>
           </Button>
         </div>
       </div>
@@ -502,7 +502,7 @@ export default function Landing() {
   ];
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col bg-white">
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 overflow-hidden bg-[#fff] md:pb-10">
         <img
@@ -549,7 +549,7 @@ export default function Landing() {
                 asChild
                 className="shadow-glow hover:shadow-glow-lg transition-shadow px-4 py-6"
               >
-                <Link to="/signup">
+                <Link to="/services">
                   Continue as Broker
                   <ArrowRight className="w-4 h-4 ml-1" />
                 </Link>
@@ -560,7 +560,7 @@ export default function Landing() {
                 asChild
                 className="py-6 hover:bg-black bg-[#fff]"
               >
-                <Link to="/pricing">Apply as Dealer</Link>
+                <Link to="/signup">Apply as Dealer</Link>
               </Button>
             </div>
           </div>
@@ -677,7 +677,7 @@ export default function Landing() {
         <img
           src={bottomshape}
           alt=""
-          className="absolute bottom-0 left-0 w-full h-[220px]"
+          className="absolute bottom-0 left-0 w-full"
         />
         {/* Content */}
         <div className="relative z-10 container mx-auto px-8 py-32">
@@ -726,7 +726,7 @@ export default function Landing() {
               asChild
               className="shadow-glow hover:shadow-glow-lg transition-shadow px-4"
             >
-              <Link to="/signup">
+              <Link to="/services">
                 Continue as Broker
                 <ArrowRight className="w-4 h-4 ml-1" />
               </Link>
@@ -897,7 +897,7 @@ export default function Landing() {
                   asChild
                   className="hover:bg-black hover:text-white bg-white px-6 py-4 text-[#000]"
                 >
-                  <Link to="/signup">Continue as Broker</Link>
+                  <Link to="/services">Continue as Broker</Link>
                 </Button>
                 <Button
                   size="lg"
@@ -905,7 +905,7 @@ export default function Landing() {
                   className="border-white text-[#fff] bg-white/0 hover:bg-black hover:text-white"
                   asChild
                 >
-                  <Link to="/about">Apply as Dealer </Link>
+                  <Link to="/signup">Apply as Dealer </Link>
                 </Button>
               </div>
             </div>
