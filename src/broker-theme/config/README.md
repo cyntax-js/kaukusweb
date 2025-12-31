@@ -3,6 +3,7 @@
 ## Quick Start for Developers
 
 ### File Structure
+
 ```
 src/broker-theme/
 ├── config/
@@ -61,21 +62,25 @@ Open `src/broker-theme/config/themes.ts` and add to the `THEME_PRESETS` array:
 All customizable properties are defined in `types.ts`:
 
 ### Colors (HSL format)
+
 - `primary` - Main brand color (buttons, links)
 - `accent` - Secondary color (highlights, success states)
 - `background` - Page background
 - `foreground` - Text color
 
 ### Typography
+
 - `fontFamily` - Any font from `AVAILABLE_FONTS` in themes.ts
 - `scale` - Base font size: `'sm'` (14px) | `'md'` (16px) | `'lg'` (18px)
 
 ### Layout
+
 - `auth` - Login page layout: `'centered'` | `'split'` | `'image-left'`
 - `dashboard` - Dashboard navigation: `'sidebar'` | `'topnav'`
 - `orderBookPosition` - Trading page: `'left'` | `'right'`
 
 ### Components (NEW!)
+
 - `buttonSize` - Button sizing: `'sm'` | `'md'` | `'lg'`
 - `borderRadius` - Corner rounding: `'none'` | `'sm'` | `'md'` | `'lg'` | `'full'`
 - `cardStyle` - Card appearance: `'flat'` | `'bordered'` | `'elevated'`
@@ -91,7 +96,7 @@ Open `src/broker-theme/mocks/brokers.ts` and add to the array:
   brokerId: 'my-broker-001',
   brokerName: 'My Broker',
   subdomain: 'mybroker',           // Access via ?broker=mybroker
-  services: ['spot', 'futures'],
+  services: ['stock', 'futures'],
   template: 'my-new-theme',        // Reference a theme from themes.ts
   theme: { /* override theme here if needed */ },
   pages: { landing: true, about: true, /* ... */ },

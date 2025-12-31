@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { generateOrderBook, Market } from "@/data/mockTradingData";
 import { cn } from "@/lib/utils";
+import BuySellPressure from "./BuySellPressure";
 
 interface OrderBookProps {
   market?: Market | null;
@@ -8,7 +9,9 @@ interface OrderBookProps {
 }
 
 const OrderBook = ({ market, isDerivative }: OrderBookProps) => {
-  const [orderBook, setOrderBook] = useState(generateOrderBook(market?.price || 100));
+  const [orderBook, setOrderBook] = useState(
+    generateOrderBook(market?.price || 100)
+  );
   const [depth, setDepth] = useState("0.1");
   const [viewMode, setViewMode] = useState<"all" | "bids" | "asks">("all");
   const [activeTab, setActiveTab] = useState<"book" | "trades">("book");
@@ -70,11 +73,39 @@ const OrderBook = ({ market, isDerivative }: OrderBookProps) => {
               >
                 <svg width="16" height="16" viewBox="0 0 16 16">
                   <rect x="2" y="2" width="4" height="4" fill="#ef5350" />
-                  <rect x="7" y="2" width="7" height="2" fill="currentColor" opacity="0.3" />
-                  <rect x="7" y="5" width="7" height="1" fill="currentColor" opacity="0.3" />
+                  <rect
+                    x="7"
+                    y="2"
+                    width="7"
+                    height="2"
+                    fill="currentColor"
+                    opacity="0.3"
+                  />
+                  <rect
+                    x="7"
+                    y="5"
+                    width="7"
+                    height="1"
+                    fill="currentColor"
+                    opacity="0.3"
+                  />
                   <rect x="2" y="8" width="4" height="4" fill="#26a69a" />
-                  <rect x="7" y="8" width="7" height="2" fill="currentColor" opacity="0.3" />
-                  <rect x="7" y="11" width="7" height="1" fill="currentColor" opacity="0.3" />
+                  <rect
+                    x="7"
+                    y="8"
+                    width="7"
+                    height="2"
+                    fill="currentColor"
+                    opacity="0.3"
+                  />
+                  <rect
+                    x="7"
+                    y="11"
+                    width="7"
+                    height="1"
+                    fill="currentColor"
+                    opacity="0.3"
+                  />
                 </svg>
               </button>
               <button
@@ -88,10 +119,38 @@ const OrderBook = ({ market, isDerivative }: OrderBookProps) => {
               >
                 <svg width="16" height="16" viewBox="0 0 16 16">
                   <rect x="2" y="2" width="4" height="10" fill="#26a69a" />
-                  <rect x="7" y="2" width="7" height="2" fill="currentColor" opacity="0.3" />
-                  <rect x="7" y="5" width="7" height="2" fill="currentColor" opacity="0.3" />
-                  <rect x="7" y="8" width="7" height="2" fill="currentColor" opacity="0.3" />
-                  <rect x="7" y="11" width="7" height="1" fill="currentColor" opacity="0.3" />
+                  <rect
+                    x="7"
+                    y="2"
+                    width="7"
+                    height="2"
+                    fill="currentColor"
+                    opacity="0.3"
+                  />
+                  <rect
+                    x="7"
+                    y="5"
+                    width="7"
+                    height="2"
+                    fill="currentColor"
+                    opacity="0.3"
+                  />
+                  <rect
+                    x="7"
+                    y="8"
+                    width="7"
+                    height="2"
+                    fill="currentColor"
+                    opacity="0.3"
+                  />
+                  <rect
+                    x="7"
+                    y="11"
+                    width="7"
+                    height="1"
+                    fill="currentColor"
+                    opacity="0.3"
+                  />
                 </svg>
               </button>
               <button
@@ -105,10 +164,38 @@ const OrderBook = ({ market, isDerivative }: OrderBookProps) => {
               >
                 <svg width="16" height="16" viewBox="0 0 16 16">
                   <rect x="2" y="2" width="4" height="10" fill="#ef5350" />
-                  <rect x="7" y="2" width="7" height="2" fill="currentColor" opacity="0.3" />
-                  <rect x="7" y="5" width="7" height="2" fill="currentColor" opacity="0.3" />
-                  <rect x="7" y="8" width="7" height="2" fill="currentColor" opacity="0.3" />
-                  <rect x="7" y="11" width="7" height="1" fill="currentColor" opacity="0.3" />
+                  <rect
+                    x="7"
+                    y="2"
+                    width="7"
+                    height="2"
+                    fill="currentColor"
+                    opacity="0.3"
+                  />
+                  <rect
+                    x="7"
+                    y="5"
+                    width="7"
+                    height="2"
+                    fill="currentColor"
+                    opacity="0.3"
+                  />
+                  <rect
+                    x="7"
+                    y="8"
+                    width="7"
+                    height="2"
+                    fill="currentColor"
+                    opacity="0.3"
+                  />
+                  <rect
+                    x="7"
+                    y="11"
+                    width="7"
+                    height="1"
+                    fill="currentColor"
+                    opacity="0.3"
+                  />
                 </svg>
               </button>
             </div>
@@ -144,7 +231,8 @@ const OrderBook = ({ market, isDerivative }: OrderBookProps) => {
               onClick={() => {
                 const depths = ["0.01", "0.1", "1", "10", "100"];
                 const currentIndex = depths.indexOf(depth);
-                if (currentIndex < depths.length - 1) setDepth(depths[currentIndex + 1]);
+                if (currentIndex < depths.length - 1)
+                  setDepth(depths[currentIndex + 1]);
               }}
               className="text-xs bg-muted text-foreground px-2 py-1 rounded hover:bg-muted/80 transition-colors"
             >
@@ -174,7 +262,7 @@ const OrderBook = ({ market, isDerivative }: OrderBookProps) => {
             {(viewMode === "all" || viewMode === "asks") && (
               <div className="flex-1 flex flex-col-reverse overflow-auto hide-scrollbar">
                 {orderBook.asks
-                  .slice(0, viewMode === "all" ? 10 : 20)
+                  .slice(0, viewMode === "all" ? 150 : 150)
                   .reverse()
                   .map((ask, i) => (
                     <div
@@ -206,9 +294,10 @@ const OrderBook = ({ market, isDerivative }: OrderBookProps) => {
                 <div
                   className="text-lg font-bold"
                   style={{
-                    color: (market?.change24h ?? 0) < 0
-                      ? "hsl(var(--destructive))"
-                      : "hsl(var(--success))",
+                    color:
+                      (market?.change24h ?? 0) < 0
+                        ? "hsl(var(--destructive))"
+                        : "hsl(var(--success))",
                   }}
                 >
                   {market?.price?.toFixed(2) ?? "0.00"}
@@ -223,7 +312,7 @@ const OrderBook = ({ market, isDerivative }: OrderBookProps) => {
             {(viewMode === "all" || viewMode === "bids") && (
               <div className="flex-1 overflow-auto hide-scrollbar">
                 {orderBook.bids
-                  .slice(0, viewMode === "all" ? 10 : 20)
+                  .slice(0, viewMode === "all" ? 150 : 150)
                   .map((bid, i) => (
                     <div
                       key={`bid-${i}`}
@@ -256,7 +345,7 @@ const OrderBook = ({ market, isDerivative }: OrderBookProps) => {
               <div className="flex-1 text-right">Amount</div>
               <div className="flex-1 text-right">Time</div>
             </div>
-            {orderBook.bids.slice(0, 20).map((trade, i) => (
+            {orderBook.bids.slice(0, 150).map((trade, i) => (
               <div
                 key={`trade-${i}`}
                 className="px-3 py-1 text-xs hover:bg-muted/50 transition-colors cursor-pointer flex"
@@ -264,9 +353,7 @@ const OrderBook = ({ market, isDerivative }: OrderBookProps) => {
                 <div
                   className={cn(
                     "flex-1",
-                    i % 2 === 0
-                      ? "text-green-500"
-                      : "text-red-500"
+                    i % 2 === 0 ? "text-green-500" : "text-red-500"
                   )}
                 >
                   {trade.price.toFixed(2)}
@@ -285,6 +372,7 @@ const OrderBook = ({ market, isDerivative }: OrderBookProps) => {
             ))}
           </div>
         )}
+        <BuySellPressure />
       </div>
 
       <style>{`

@@ -3,23 +3,23 @@
  * Shows: Logo, Markets dropdown (click to open), Portfolio, Private Market
  */
 
-import { useMemo, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useTheme } from '@/broker-theme/config';
-import { useBrokerAuthStore } from '@/broker-theme/stores';
-import BrokerLogo from './BrokerLogo';
-import { Button } from '@/components/ui/button';
+import { useMemo, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useTheme } from "@/broker-theme/config";
+import { useBrokerAuthStore } from "@/broker-theme/stores";
+import BrokerLogo from "./BrokerLogo";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { cn } from '@/lib/utils';
-import { ChevronDown, Search, User, Wallet, LogOut } from 'lucide-react';
-import { toast } from 'sonner';
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
+import { ChevronDown, Search, User, Wallet, LogOut } from "lucide-react";
+import { toast } from "sonner";
 
 interface AppHeaderProps {
   className?: string;
@@ -32,9 +32,15 @@ const AppHeader = ({ className }: AppHeaderProps) => {
   const navigate = useNavigate();
 
   // For trading pages, use /preview/app or /app prefix
-  const isRuntime = location.pathname.startsWith('/app') && !location.pathname.startsWith('/app/');
-  const routePrefix = location.pathname.includes('/preview/app') ? '/preview/app' : '/app';
-  const publicPrefix = location.pathname.includes('/preview') ? '/preview' : '/app';
+  const isRuntime =
+    location.pathname.startsWith("/app") &&
+    !location.pathname.startsWith("/app/");
+  const routePrefix = location.pathname.includes("/preview/app")
+    ? "/preview/app"
+    : "/app";
+  const publicPrefix = location.pathname.includes("/preview")
+    ? "/preview"
+    : "/app";
 
   const [marketsOpen, setMarketsOpen] = useState(false);
   const [assetsOpen, setAssetsOpen] = useState(false);
@@ -42,22 +48,37 @@ const AppHeader = ({ className }: AppHeaderProps) => {
   const marketOptions = useMemo(
     () =>
       [
-        { id: 'spot', label: 'Spot', href: `${routePrefix}/markets/spot`, enabled: config.services.includes('spot') },
-        { id: 'futures', label: 'Futures / Derivatives', href: `${routePrefix}/markets/futures`, enabled: config.services.includes('futures') },
-        { id: 'options', label: 'Options', href: `${routePrefix}/markets/options`, enabled: config.services.includes('options') },
+        {
+          id: "stock",
+          label: "Stock",
+          href: `${routePrefix}/markets/stock`,
+          enabled: config.services.includes("stock"),
+        },
+        {
+          id: "futures",
+          label: "Futures / Derivatives",
+          href: `${routePrefix}/markets/futures`,
+          enabled: config.services.includes("futures"),
+        },
+        {
+          id: "options",
+          label: "Options",
+          href: `${routePrefix}/markets/options`,
+          enabled: config.services.includes("options"),
+        },
       ].filter((o) => o.enabled),
     [config.services, routePrefix]
   );
 
-  const hasPrivateMarkets = config.services.includes('private_markets');
+  const hasPrivateMarkets = config.services.includes("private_markets");
 
   const userInitials = user
     ? `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase()
-    : 'U';
+    : "U";
 
   const requireAuth = (action: () => void) => {
     if (!isAuthenticated) {
-      toast.error('Please login to continue');
+      toast.error("Please login to continue");
       navigate(`${publicPrefix}/login`);
       return;
     }
@@ -66,14 +87,14 @@ const AppHeader = ({ className }: AppHeaderProps) => {
 
   const handleLogout = () => {
     logout();
-    toast.success('Logged out successfully');
+    toast.success("Logged out successfully");
     navigate(publicPrefix);
   };
 
   return (
     <header
       className={cn(
-        'sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80',
+        "sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80",
         className
       )}
     >
@@ -90,14 +111,19 @@ const AppHeader = ({ className }: AppHeaderProps) => {
                 <button
                   onClick={() => setMarketsOpen(!marketsOpen)}
                   className={cn(
-                    'inline-flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium transition-colors',
-                    location.pathname.includes('/markets')
-                      ? 'text-foreground'
-                      : 'text-muted-foreground hover:text-foreground'
+                    "inline-flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                    location.pathname.includes("/markets")
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-foreground"
                   )}
                 >
                   Markets
-                  <ChevronDown className={cn("h-4 w-4 transition-transform", marketsOpen && "rotate-180")} />
+                  <ChevronDown
+                    className={cn(
+                      "h-4 w-4 transition-transform",
+                      marketsOpen && "rotate-180"
+                    )}
+                  />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -123,10 +149,10 @@ const AppHeader = ({ className }: AppHeaderProps) => {
             <Link
               to={`${routePrefix}/portfolio`}
               className={cn(
-                'inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors',
-                location.pathname.includes('/portfolio')
-                  ? 'text-foreground'
-                  : 'text-muted-foreground hover:text-foreground'
+                "inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                location.pathname.includes("/portfolio")
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
               )}
             >
               Portfolio
@@ -137,10 +163,10 @@ const AppHeader = ({ className }: AppHeaderProps) => {
               <Link
                 to={`${routePrefix}/markets/private`}
                 className={cn(
-                  'inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors',
-                  location.pathname.includes('/markets/private')
-                    ? 'text-foreground'
-                    : 'text-muted-foreground hover:text-foreground'
+                  "inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                  location.pathname.includes("/markets/private")
+                    ? "text-foreground"
+                    : "text-muted-foreground hover:text-foreground"
                 )}
               >
                 Private Market
@@ -165,7 +191,9 @@ const AppHeader = ({ className }: AppHeaderProps) => {
             size="sm"
             variant="secondary"
             className="h-9"
-            onClick={() => requireAuth(() => toast.success('Deposit flow coming soon'))}
+            onClick={() =>
+              requireAuth(() => toast.success("Deposit flow coming soon"))
+            }
           >
             Deposit
           </Button>
@@ -173,7 +201,11 @@ const AppHeader = ({ className }: AppHeaderProps) => {
           {/* Assets */}
           <DropdownMenu open={assetsOpen} onOpenChange={setAssetsOpen}>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-9 text-sm" onClick={() => setAssetsOpen(!assetsOpen)}>
+              <Button
+                variant="ghost"
+                className="h-9 text-sm"
+                onClick={() => setAssetsOpen(!assetsOpen)}
+              >
                 Assets <ChevronDown className="h-4 w-4 ml-1" />
               </Button>
             </DropdownMenuTrigger>
@@ -183,7 +215,9 @@ const AppHeader = ({ className }: AppHeaderProps) => {
             >
               <DropdownMenuItem
                 className="cursor-pointer"
-                onClick={() => requireAuth(() => navigate(`${routePrefix}/portfolio`))}
+                onClick={() =>
+                  requireAuth(() => navigate(`${routePrefix}/portfolio`))
+                }
               >
                 <Wallet className="h-4 w-4 mr-2" />
                 Portfolio
@@ -197,42 +231,61 @@ const AppHeader = ({ className }: AppHeaderProps) => {
               <Button variant="ghost" size="icon" className="h-9 w-9">
                 {isAuthenticated && user ? (
                   <Avatar className="h-8 w-8">
-                    <AvatarFallback className="bg-primary text-primary-foreground text-xs">{userInitials}</AvatarFallback>
+                    <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                      {userInitials}
+                    </AvatarFallback>
                   </Avatar>
                 ) : (
                   <User className="h-5 w-5 text-muted-foreground" />
                 )}
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="z-50 w-56 bg-popover border border-border shadow-md">
+            <DropdownMenuContent
+              align="end"
+              className="z-50 w-56 bg-popover border border-border shadow-md"
+            >
               {isAuthenticated && user ? (
                 <>
                   <div className="px-2 py-2">
                     <p className="text-sm font-medium">
                       {user.firstName} {user.lastName}
                     </p>
-                    <p className="text-xs text-muted-foreground">{user.email}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {user.email}
+                    </p>
                   </div>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className="cursor-pointer" onClick={() => navigate(`${routePrefix}/portfolio`)}>
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => navigate(`${routePrefix}/portfolio`)}
+                  >
                     <Wallet className="h-4 w-4 mr-2" />
                     Portfolio
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className="cursor-pointer text-destructive" onClick={handleLogout}>
+                  <DropdownMenuItem
+                    className="cursor-pointer text-destructive"
+                    onClick={handleLogout}
+                  >
                     <LogOut className="h-4 w-4 mr-2" />
                     Log out
                   </DropdownMenuItem>
                 </>
               ) : (
-              <>
-                <DropdownMenuItem className="cursor-pointer" onClick={() => navigate(`${publicPrefix}/login`)}>
-                  Login
-                </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer" onClick={() => navigate(`${publicPrefix}/signup`)}>
-                  Create account
-                </DropdownMenuItem>
-              </>
+                <>
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => navigate(`${publicPrefix}/login`)}
+                  >
+                    Login
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => navigate(`${publicPrefix}/signup`)}
+                  >
+                    Create account
+                  </DropdownMenuItem>
+                </>
               )}
             </DropdownMenuContent>
           </DropdownMenu>

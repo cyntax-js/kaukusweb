@@ -9,10 +9,10 @@ import type {
 // ContiSX Services (Shopify-like product catalog)
 export const mockServices: ContiSXService[] = [
   {
-    id: "spot",
-    name: "Spot Trading",
+    id: "stock",
+    name: "Stock Trading",
     description:
-      "Enable spot trading for your users with real-time order matching and market data.",
+      "Enable stock trading for your users with real-time order matching and market data.",
     price: 999,
     features: [
       "Real-time order book",

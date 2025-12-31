@@ -42,8 +42,8 @@ await platformApi.broker.getDashboardStats();
 import { brokerApi } from "@/api/broker";
 
 // Markets
-const pairs = await brokerApi.markets.getPairs("spot");
-const pair = await brokerApi.markets.getPair("spot", "BTC-USDT");
+const pairs = await brokerApi.markets.getPairs("stock");
+const pair = await brokerApi.markets.getPair("stock", "BTC-USDT");
 
 // Trading
 await brokerApi.trading.placeOrder(orderData);

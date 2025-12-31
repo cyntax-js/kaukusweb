@@ -35,7 +35,7 @@ Add a new entry to `mocks/brokers.ts`:
   brokerId: 'mybroke-001',
   brokerName: 'My Broker',
   subdomain: 'mybroker',          // Access via mybroker.localhost:8080
-  services: ['spot', 'futures'],  // What trading services are enabled
+  services: ['stock', 'futures'],  // What trading services are enabled
   template: 'modern',             // Base template
   theme: {
     colors: {
@@ -78,7 +78,7 @@ All API calls go through `broker-theme/api/`:
 import { marketsApi } from "@/broker-theme/api";
 
 // Fetch available markets
-const markets = await marketsApi.getMarkets("spot");
+const markets = await marketsApi.getMarkets("stock");
 
 // Get market details
 const details = await marketsApi.getMarketDetails("BTC-USDT");
@@ -107,13 +107,13 @@ function MyPage() {
 
 ### Theme Configuration Hooks
 
-| Hook                        | Returns           | Description                            |
-| --------------------------- | ----------------- | -------------------------------------- |
-| `useBrokerConfig()`         | `BrokerConfig`    | Full broker configuration              |
-| `useBrokerTheme()`          | `BrokerTheme`     | Just the theme (colors, fonts, layout) |
-| `useBrokerServices()`       | `BrokerService[]` | Enabled services array                 |
-| `useServiceEnabled('spot')` | `boolean`         | Check if a service is enabled          |
-| `usePageEnabled('markets')` | `boolean`         | Check if a page is enabled             |
+| Hook                         | Returns           | Description                            |
+| ---------------------------- | ----------------- | -------------------------------------- |
+| `useBrokerConfig()`          | `BrokerConfig`    | Full broker configuration              |
+| `useBrokerTheme()`           | `BrokerTheme`     | Just the theme (colors, fonts, layout) |
+| `useBrokerServices()`        | `BrokerService[]` | Enabled services array                 |
+| `useServiceEnabled('stock')` | `boolean`         | Check if a service is enabled          |
+| `usePageEnabled('markets')`  | `boolean`         | Check if a page is enabled             |
 
 ### API Services
 

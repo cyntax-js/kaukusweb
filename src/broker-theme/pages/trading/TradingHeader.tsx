@@ -53,7 +53,7 @@ const TradingHeader = () => {
           />
         </div>
         <Button className="bg-white text-black hover:bg-gray-200 text-sm px-4 py-2 h-9">
-          Deposit
+          Depositkk
         </Button>
         <Button
           variant="ghost"

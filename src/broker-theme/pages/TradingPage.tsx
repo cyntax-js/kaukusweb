@@ -46,14 +46,14 @@ const TradingPage = () => {
 
   const availableMarkets = useMemo(() => {
     return mockMarkets.filter((m) => {
-      if (m.type === "stock" && config.services.includes("spot")) return true;
+      if (m.type === "stock" && config.services.includes("stock")) return true;
       if (
         m.type === "derivative" &&
         (config.services.includes("futures") ||
           config.services.includes("options"))
       )
         return true;
-      if (m.type === "crypto" && config.services.includes("spot")) return true;
+      if (m.type === "crypto" && config.services.includes("stock")) return true;
       return false;
     });
   }, [config.services]);
@@ -75,7 +75,7 @@ const TradingPage = () => {
 
   const handleSelectMarket = (market: Market) => {
     setSelectedMarket(market);
-    const serviceType = market.type === "derivative" ? "futures" : "spot";
+    const serviceType = market.type === "derivative" ? "futures" : "stock";
     navigate(
       `${routePrefix}/${serviceType}/trade/${serviceType}/${market.symbol}`,
       { replace: true }
@@ -87,11 +87,11 @@ const TradingPage = () => {
     return { success: true };
   };
 
-  const getMarketType = (): "spot" | "futures" | "options" => {
+  const getMarketType = (): "stock" | "futures" | "options" => {
     if (marketTypeParam === "options") return "options";
     if (marketTypeParam === "futures" || selectedMarket?.type === "derivative")
       return "futures";
-    return "spot";
+    return "stock";
   };
 
   if (config.services.length === 0) {
@@ -139,7 +139,7 @@ const TradingPage = () => {
             {/* OrderBook - Left (2 cols) - swapped */}
             <div
               className="col-span-2 bg-card flex flex-col"
-              style={{ height: "500px" }}
+              style={{ height: "900px" }}
             >
               <OrderBook
                 market={selectedMarket}
@@ -150,15 +150,12 @@ const TradingPage = () => {
             {/* Chart + BuySell - Center (8 cols) */}
             <div
               className="col-span-8 bg-card flex flex-col"
-              style={{ height: "500px" }}
+              style={{ height: "900px", overflowY: "auto" }}
             >
-              <div className="flex-1 min-h-0">
+              <div className="" style={{ height: "100%" }}>
                 <TradingChart market={selectedMarket} />
               </div>
-              <div
-                className="border-t border-border"
-                style={{ height: "180px" }}
-              >
+              <div className="border-t border-border" style={{ height: "20%" }}>
                 <TradingPanel
                   market={selectedMarket}
                   onPlaceOrder={handlePlaceOrder}
@@ -172,7 +169,9 @@ const TradingPage = () => {
             {/* Markets - Right (2 cols) - swapped */}
             <div
               className="col-span-2 bg-card overflow-auto"
-              style={{ height: "500px" }}
+              style={{
+                height: "900px",
+              }}
             >
               <MarketsList
                 markets={availableMarkets}
@@ -187,7 +186,9 @@ const TradingPage = () => {
             {/* Markets - Left (2 cols) */}
             <div
               className="col-span-2 bg-card overflow-auto"
-              style={{ height: "500px" }}
+              style={{
+                height: "900px",
+              }}
             >
               <MarketsList
                 markets={availableMarkets}
@@ -200,15 +201,12 @@ const TradingPage = () => {
             {/* Chart + BuySell - Center (8 cols) */}
             <div
               className="col-span-8 bg-card flex flex-col"
-              style={{ height: "500px" }}
+              style={{ height: "900px", overflowY: "auto" }}
             >
-              <div className="flex-1 min-h-0">
+              <div className="" style={{ height: "100%" }}>
                 <TradingChart market={selectedMarket} />
               </div>
-              <div
-                className="border-t border-border"
-                style={{ height: "180px" }}
-              >
+              <div className="border-t border-border" style={{ height: "20%" }}>
                 <TradingPanel
                   market={selectedMarket}
                   onPlaceOrder={handlePlaceOrder}
@@ -222,7 +220,7 @@ const TradingPage = () => {
             {/* OrderBook - Right (2 cols) */}
             <div
               className="col-span-2 bg-card flex flex-col"
-              style={{ height: "500px" }}
+              style={{ height: "900px" }}
             >
               <OrderBook
                 market={selectedMarket}
@@ -239,7 +237,7 @@ const TradingPage = () => {
         style={{ minHeight: "200px" }}
       >
         {/* User Trades / Order History (9 cols) */}
-        <div className="col-span-9 bg-card overflow-hidden">
+        <div className="col-span-10 bg-card overflow-hidden">
           <OrderHistory
             userTrades={trades}
             isDerivative={selectedMarket.type === "derivative"}
@@ -247,7 +245,7 @@ const TradingPage = () => {
         </div>
 
         {/* Equity Balance Overview (3 cols) */}
-        <div className="col-span-3 bg-card overflow-hidden">
+        <div className="col-span-2 bg-card overflow-hidden">
           <EquityBalance
             ngnBalance={ngnBalance}
             portfolio={portfolio}

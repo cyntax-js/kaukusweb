@@ -103,8 +103,8 @@ const TEMPLATE_PRICE = 499;
 
 const SERVICE_OPTIONS: ServiceOption[] = [
   {
-    id: "spot",
-    name: "Spot Trading",
+    id: "stock",
+    name: "Stock Trading",
     description: "Buy and sell assets at current market prices",
     price: 299,
   },

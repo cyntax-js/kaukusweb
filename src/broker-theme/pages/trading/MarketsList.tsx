@@ -22,12 +22,17 @@ const MarketsList = ({
 
   // Filter markets by enabled services
   let sourceMarkets = markets ?? mockMarkets;
-  
+
   if (enabledServices && enabledServices.length > 0) {
-    sourceMarkets = sourceMarkets.filter(m => {
-      if (m.type === 'stock' && enabledServices.includes('spot')) return true;
-      if (m.type === 'derivative' && (enabledServices.includes('futures') || enabledServices.includes('options'))) return true;
-      if (m.type === 'crypto' && enabledServices.includes('spot')) return true;
+    sourceMarkets = sourceMarkets.filter((m) => {
+      if (m.type === "stock" && enabledServices.includes("stock")) return true;
+      if (
+        m.type === "derivative" &&
+        (enabledServices.includes("futures") ||
+          enabledServices.includes("options"))
+      )
+        return true;
+      if (m.type === "crypto" && enabledServices.includes("stock")) return true;
       return false;
     });
   }
@@ -42,9 +47,11 @@ const MarketsList = ({
   }, [selectedMarket]);
 
   // Determine available tabs based on filtered markets
-  const hasStocks = sourceMarkets.some(m => m.type === 'stock' || m.type === 'crypto');
-  const hasDerivatives = sourceMarkets.some(m => m.type === 'derivative');
-  const hasFavorites = sourceMarkets.some(m => m.isFavorite);
+  const hasStocks = sourceMarkets.some(
+    (m) => m.type === "stock" || m.type === "crypto"
+  );
+  const hasDerivatives = sourceMarkets.some((m) => m.type === "derivative");
+  const hasFavorites = sourceMarkets.some((m) => m.isFavorite);
 
   // Filter markets based on active tab
   let tabFilteredMarkets = sourceMarkets;
@@ -106,7 +113,7 @@ const MarketsList = ({
                 : "text-muted-foreground hover:text-foreground"
             )}
           >
-            Spot
+            Stock
           </button>
         )}
         {hasDerivatives && (
@@ -192,9 +199,7 @@ const MarketsList = ({
             <div
               className={cn(
                 "w-1/4 text-right text-xs font-medium",
-                market.change24h > 0
-                  ? "text-green-500"
-                  : "text-red-500"
+                market.change24h > 0 ? "text-green-500" : "text-red-500"
               )}
             >
               {market.change24h > 0 ? "+" : ""}

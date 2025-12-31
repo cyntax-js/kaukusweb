@@ -55,7 +55,7 @@ const BaaSService = [
     icon: <img src={FeatherIconWhite} alt="Fan Icon" className="h-fit" />,
     digits: "02_",
     header: "Select desired trading services",
-    paragraph: "Choose from Spot, Futures, Options, or a combination.",
+    paragraph: "Choose from Stock, Futures, Options, or a combination.",
   },
   {
     icon: <img src={DotsSixIconWhite} alt="Fan Icon" className="h-fit" />,
@@ -81,7 +81,7 @@ const tradingServices = [
   {
     image: Abstract,
     icon: <img src={FanIcon} alt="Fan Icon" />,
-    header: "Spot Trading",
+    header: "Stock Trading",
     itEnables:
       "Immediate buying and selling of assets at current market prices.",
     listOneHeader: "Broker value",

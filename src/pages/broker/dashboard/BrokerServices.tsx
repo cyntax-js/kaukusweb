@@ -18,8 +18,8 @@ const serviceInfo: Record<
   string,
   { name: string; description: string; icon: string }
 > = {
-  spot: {
-    name: "Spot Trading",
+  stock: {
+    name: "Stock Trading",
     description: "Buy and sell assets at current market prices",
     icon: "TrendingUp",
   },
