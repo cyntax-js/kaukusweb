@@ -747,7 +747,7 @@ export default function Landing() {
             {mockStats.map((stat) => (
               <div
                 key={stat.label}
-                className="text-left flex flex-col gap-[150px] border-l md:border-l-0 md:border-l border-gray-200 px-4 py-0"
+                className="text-left flex flex-col gap-[150px] border-l  md:border-l border-gray-200 px-4 py-0"
               >
                 <p className="text-gray-500 text-sm font-bold">{stat.label}</p>
                 <h3 className="text-4xl md:text-6xl font-bold text-[#1570EF] m=t-2 flex items-end">
@@ -895,7 +895,7 @@ export default function Landing() {
                   size="lg"
                   variant="secondary"
                   asChild
-                  className="hover:bg-black hover:text-white"
+                  className="hover:bg-black hover:text-white bg-white px-6 py-4 text-[#000]"
                 >
                   <Link to="/signup">Continue as Broker</Link>
                 </Button>

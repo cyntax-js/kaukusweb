@@ -219,9 +219,9 @@ export default function About() {
       </section>
 
       {/* BaaS info */}
-      <section className="bg-secondary py-20 mb-20">
-        <div className="mx-auto mb-20 px-4 text-secondary-foreground max-w-7xl">
-          <small className="uppercase text-secondary-foreground/60">
+      <section className="bg-secondary-dark py-20 mb-20">
+        <div className="mx-auto mb-20 px-4 text-secondary-dark-foreground max-w-7xl">
+          <small className="uppercase text-secondary-dark-foreground/60">
             Stay Updated
           </small>
           <h3 className="text-3xl font-bold my-3">
@@ -234,17 +234,17 @@ export default function About() {
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-y-3 justify-between text-secondary-foreground max-w-7xl mx-auto px-6">
+        <div className="flex flex-wrap gap-y-3 justify-between text-secondary-dark-foreground max-w-7xl mx-auto px-6">
           {BaaSInfo.map((item) => (
-            <div className="flex flex-[0_0_100%] lg:flex-[0_0_33%] bg-secondary-foreground/5 lg:last:flex-[0_0_100%] gap-4 border-[0.5px] border-solid border-secondary-border rounded-2xl px-7 pt-7 pb-14">
+            <div className="flex flex-[0_0_100%] lg:flex-[0_0_33%] bg-secondary-dark-foreground/5 lg:last:flex-[0_0_100%] gap-4 border-[0.5px] border-solid border-secondary-dark-border rounded-2xl px-7 pt-7 pb-14">
               {item.icon}
               <div className="">
-                <p className="text-xs mb-2 text-secondary-foreground/60">
+                <p className="text-xs mb-2 text-secondary-dark-foreground/60">
                   {item.digits}
                 </p>
                 <div className="flex flex-col">
                   <h4 className="font-medium text-lg">{item.header}</h4>
-                  <p className="text-secondary-foreground/60">
+                  <p className="text-secondary-dark-foreground/60">
                     {item.paragraph}
                   </p>
                 </div>
@@ -256,7 +256,7 @@ export default function About() {
 
       <section className="py-20 px-4 mb-20">
         <div className="flex flex-wrap gap-y-6 items-center justify-between mx-auto max-w-7xl">
-          <div className="text-secondary">
+          <div className="text-secondary-dark">
             <small className="uppercase opacity-30">Stay Updated</small>
             <h3 className="text-3xl font-bold my-3">
               Supported Trading Services
@@ -327,9 +327,9 @@ export default function About() {
       </section>
 
       {/* BaaS Services */}
-      <section className="bg-secondary py-20">
-        <div className="mx-auto mb-20 px-4 text-secondary-foreground max-w-7xl">
-          <small className="uppercase text-secondary-foreground/60">
+      <section className="bg-secondary-dark py-20">
+        <div className="mx-auto mb-20 px-4 text-secondary-dark-foreground max-w-7xl">
+          <small className="uppercase text-secondary-dark-foreground/60">
             Stay Updated
           </small>
           <h3 className="text-3xl font-bold my-3">
@@ -340,17 +340,17 @@ export default function About() {
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-y-3 justify-between text-secondary-foreground max-w-7xl mx-auto px-6">
+        <div className="flex flex-wrap gap-y-3 justify-between text-secondary-dark-foreground max-w-7xl mx-auto px-6">
           {BaaSService.map((item) => (
-            <div className="flex items-start flex-[0_0_100%] lg:flex-[0_0_33%] bg-secondary-foreground/5 lg:last:flex-[0_0_50%] lg:[&:nth-child(4)]:flex-[0_0_49.5%] gap-4 border-[0.5px] border-solid border-secondary-border rounded-2xl px-7 pt-7 pb-14">
+            <div className="flex items-start flex-[0_0_100%] lg:flex-[0_0_33%] bg-secondary-dark-foreground/5 lg:last:flex-[0_0_50%] lg:[&:nth-child(4)]:flex-[0_0_49.5%] gap-4 border-[0.5px] border-solid border-secondary-dark-border rounded-2xl px-7 pt-7 pb-14">
               {item.icon}
               <div className="">
-                <p className="text-xs mb-2 text-secondary-foreground/60">
+                <p className="text-xs mb-2 text-secondary-dark-foreground/60">
                   {item.digits}
                 </p>
                 <div className="flex flex-col">
                   <h4 className="font-medium text-lg">{item.header}</h4>
-                  <p className="text-secondary-foreground/60">
+                  <p className="text-secondary-dark-foreground/60">
                     {item.paragraph}
                   </p>
                 </div>
@@ -362,7 +362,7 @@ export default function About() {
 
       <section className="bg-white pt-36 px-4 py-24 lg:px-8">
         <div className="flex flex-wrap gap-y-6 items-center justify-between mx-auto max-w-7xl">
-          <div className="text-secondary">
+          <div className="text-secondary-dark">
             <h3 className="text-3xl font-bold my-3">Compliance & Governance</h3>
             <p className="max-w-xl opacity-60">
               Built with institutional requirements at its core
