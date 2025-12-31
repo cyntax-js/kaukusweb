@@ -255,8 +255,8 @@ export default function About() {
         </div>
       </section>
 
-      <section className="py-20 mb-20">
-        <div className="flex items-center justify-between mx-auto max-w-7xl">
+      <section className="py-20 px-4 mb-20">
+        <div className="flex flex-wrap gap-y-6 items-center justify-between mx-auto max-w-7xl">
           <div className="text-secondary">
             <small className="uppercase opacity-30">Stay Updated</small>
             <h3 className="text-3xl font-bold my-3">
@@ -279,7 +279,7 @@ export default function About() {
 
         <div className="pt-20">
           {tradingServices.map((service) => (
-            <div className="flex flex-wrap items-center justify-between gap-y-9 mx-auto max-w-7xl">
+            <div className="flex flex-wrap lg:flex-nowrap items-center justify-center lg:justify-between gap-y-9 mx-auto max-w-7xl">
               <img src={service.image} alt="abstract 3d model" />
               <div className="flex flex-col gap-5 max-w-xl">
                 <div className="">
@@ -363,8 +363,8 @@ export default function About() {
         </div>
       </section>
 
-      <section className="bg-white pt-36 py-24">
-        <div className="flex items-center justify-between mx-auto max-w-7xl">
+      <section className="bg-white pt-36 px-4 py-24 lg:px-8">
+        <div className="flex flex-wrap gap-y-6 items-center justify-between mx-auto max-w-7xl">
           <div className="text-secondary">
             <h3 className="text-3xl font-bold my-3">Compliance & Governance</h3>
             <p className="max-w-xl opacity-60">
@@ -381,9 +381,9 @@ export default function About() {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-x-3 gap-y-3 justify-center lg:justify-start mt-20 max-w-7xl mx-auto px-6 lg:px-0">
+        <div className="flex flex-wrap gap-x-3 gap-y-3 justify-center lg:justify-start mt-20 max-w-7xl mx-auto px-4 lg:px-0">
           {complianceDetails.map((detail) => (
-            <div className="text-gray-900 bg-[#FAFAFA] p-8 flex flex-col gap-32 rounded-2xl max-w-[19.375rem]">
+            <div className="text-gray-900 bg-[#FAFAFA] p-8 flex flex-col gap-32 rounded-2xl md:max-w-[19.375rem]">
               <h3 className="text-4xl">{detail.heading}</h3>
               <p className="text-gray-400">{detail.paragraph}</p>
             </div>
@@ -393,15 +393,19 @@ export default function About() {
 
       {/* CTA */}
       <section className="py-4 bg-white">
-        <Card className="bg-[#1570EF] p-16 text-center text-white flex justify-between max-w-7xl mx-auto">
+        <Card className="bg-[#1570EF] p-8 lg:p-16 text-white flex flex-wrap md:gap-9 md:flex-nowrap gap-y-6 justify-between max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold mb-4">
             Start with the Role that Fits Your Institution
           </h2>
-          <div className="flex gap-3">
-            <Button size="lg" className="bg-white text-black">
+          <div className="flex flex-wrap md:flex-nowrap gap-3">
+            <Button size="lg" className="bg-white text-black w-full md:w-auto">
               <Link to="#">Continue as Broker</Link>
             </Button>
-            <Button size="lg" variant="outline" className="bg-transparent">
+            <Button
+              size="lg"
+              variant="outline"
+              className="bg-transparent w-full md:w-auto"
+            >
               <Link to="#">Apply as Dealer</Link>
             </Button>
           </div>
