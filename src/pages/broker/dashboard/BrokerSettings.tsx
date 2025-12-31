@@ -290,7 +290,7 @@ export default function BrokerSettings() {
               <div className="p-4 rounded-lg bg-secondary/50">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-medium">ContisX Subdomain</div>
+                    <div className="font-medium">ContiSX Subdomain</div>
                     <div className="text-sm text-muted-foreground">
                       {config.subdomain ? platformLabel : "Not configured"}
                     </div>

@@ -93,7 +93,7 @@ export interface Dealer {
 }
 
 // Service Types
-export interface ContisXService {
+export interface ContiSXService {
   id: string;
   name: string;
   description: string;

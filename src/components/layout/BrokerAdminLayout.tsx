@@ -52,7 +52,7 @@ function BrokerSidebar() {
             <TrendingUp className="w-5 h-5 text-primary-foreground" />
           </div>
           <div>
-            <span className="font-bold text-sidebar-foreground">ContisX</span>
+            <span className="font-bold text-sidebar-foreground">ContiSX</span>
             <span className="text-xs block text-sidebar-foreground/60">
               Broker Admin
             </span>
@@ -101,12 +101,12 @@ function BrokerSidebar() {
                   <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
                 </div>
                 <a
-                  href={`https://${config.subdomain}.ContisX.com`}
+                  href={`https://${config.subdomain}.ContiSX.com`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-sidebar-primary hover:underline flex items-center gap-1"
                 >
-                  {config.subdomain}.ContisX.com
+                  {config.subdomain}.ContiSX.com
                   <ExternalLink className="w-3 h-3" />
                 </a>
               </div>

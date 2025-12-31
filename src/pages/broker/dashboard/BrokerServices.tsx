@@ -66,12 +66,12 @@ export default function BrokerServices() {
               <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
               <span className="font-medium">Platform Live</span>
               <span className="text-sm text-muted-foreground">
-                {config.subdomain}.ContisX.com
+                {config.subdomain}.ContiSX.com
               </span>
             </div>
             <Button variant="outline" size="sm" asChild>
               <a
-                href={`https://${config.subdomain}.ContisX.com`}
+                href={`https://${config.subdomain}.ContiSX.com`}
                 target="_blank"
                 rel="noopener noreferrer"
               >

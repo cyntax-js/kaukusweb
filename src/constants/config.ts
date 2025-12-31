@@ -4,7 +4,7 @@
 
 export const APP_CONFIG = {
   // App metadata
-  NAME: "ContisX",
+  NAME: "ContiSX",
   DESCRIPTION: "White-label trading infrastructure platform",
   VERSION: "1.0.0",
 

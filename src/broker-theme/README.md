@@ -19,7 +19,7 @@ broker-theme/
 
 ### 1. Understanding the System
 
-Each broker gets a unique subdomain (e.g., `fbs.ContisX.com`). When a user visits:
+Each broker gets a unique subdomain (e.g., `fbs.ContiSX.com`). When a user visits:
 
 1. The theme engine detects the subdomain
 2. Loads the broker's configuration

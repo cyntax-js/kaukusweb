@@ -3,7 +3,7 @@
  * PLATFORM API EXPORTS
  * ============================================================
  *
- * Main entry point for platform APIs (ContisX admin).
+ * Main entry point for platform APIs (ContiSX admin).
  * Broker theme APIs are in @/broker-theme/api
  *
  * Usage:

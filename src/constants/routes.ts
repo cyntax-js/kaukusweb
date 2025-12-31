@@ -1,5 +1,5 @@
 /**
- * Centralized route definitions for the ContisX platform
+ * Centralized route definitions for the ContiSX platform
  * Use these constants instead of hardcoding paths throughout the app
  */
 

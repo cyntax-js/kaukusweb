@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ContisX - Modern Fintech Design System */
+/* ContiSX - Modern Fintech Design System */
 
 /* @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"); */
 
@@ -67,7 +67,7 @@
     --sidebar-border: 217 32% 17%;
     --sidebar-ring: 217 91% 60%;
 
-    /* Custom ContisX tokens */
+    /* Custom ContiSX tokens */
     --gradient-start: 217 91% 50%;
     --gradient-end: 262 83% 58%;
     --surface-elevated: 0 0% 100%;

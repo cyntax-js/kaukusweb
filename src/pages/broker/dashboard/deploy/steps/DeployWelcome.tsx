@@ -92,7 +92,7 @@ export default function DeployWelcome() {
                   Your Platform URL
                 </div>
                 <div className="font-mono text-primary font-medium">
-                  https://{config.subdomain}.ContisX.com
+                  https://{config.subdomain}.ContiSX.com
                 </div>
               </div>
             )}

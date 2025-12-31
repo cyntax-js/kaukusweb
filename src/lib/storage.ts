@@ -65,11 +65,11 @@ export function isStorageAvailable(): boolean {
 
 // Storage keys used throughout the app
 export const STORAGE_KEYS = {
-  AUTH_TOKEN: "ContisX_auth_token",
-  USER: "ContisX_user",
-  THEME: "ContisX_theme",
-  SIDEBAR_STATE: "ContisX_sidebar_state",
-  RECENT_SEARCHES: "ContisX_recent_searches",
-  WATCHLIST: "ContisX_watchlist",
-  TRADING_PREFERENCES: "ContisX_trading_preferences",
+  AUTH_TOKEN: "ContiSX_auth_token",
+  USER: "ContiSX_user",
+  THEME: "ContiSX_theme",
+  SIDEBAR_STATE: "ContiSX_sidebar_state",
+  RECENT_SEARCHES: "ContiSX_recent_searches",
+  WATCHLIST: "ContiSX_watchlist",
+  TRADING_PREFERENCES: "ContiSX_trading_preferences",
 } as const;

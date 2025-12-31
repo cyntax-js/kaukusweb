@@ -22,7 +22,7 @@ export default function Login() {
     <div className="animate-fade-in">
       <h1 className="text-2xl font-bold mb-2">Welcome back</h1>
       <p className="text-muted-foreground mb-8">
-        Sign in to your ContisX account
+        Sign in to your ContiSX account
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">

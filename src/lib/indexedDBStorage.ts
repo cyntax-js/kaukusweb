@@ -6,7 +6,7 @@
 
 import type { StateStorage } from "zustand/middleware";
 
-const DB_NAME = "ContisX_storage";
+const DB_NAME = "ContiSX_storage";
 const DB_VERSION = 1;
 const STORE_NAME = "zustand_store";
 

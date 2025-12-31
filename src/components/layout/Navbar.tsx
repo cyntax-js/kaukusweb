@@ -24,7 +24,7 @@ export function Navbar() {
             <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center shadow-glow group-hover:shadow-glow-lg transition-shadow">
               <TrendingUp className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold tracking-tight">ContisX</span>
+            <span className="text-xl font-bold tracking-tight">ContiSX</span>
           </Link>
 
           {/* Desktop Navigation */}

@@ -13,7 +13,7 @@ import {
 } from "@/broker-theme/config";
 import { indexedDBStateStorage } from "@/lib/indexedDBStorage";
 
-const STORAGE_KEY = "ContisX_broker_deployment_draft";
+const STORAGE_KEY = "ContiSX_broker_deployment_draft";
 
 type DeploymentStep =
   | "welcome"

@@ -16,7 +16,7 @@ export function AuthLayout() {
             <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
               <TrendingUp className="w-6 h-6" />
             </div>
-            <span className="text-2xl font-bold">ContisX</span>
+            <span className="text-2xl font-bold">ContiSX</span>
           </Link>
 
           <div className="max-w-md">
@@ -49,7 +49,7 @@ export function AuthLayout() {
               <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
                 <TrendingUp className="w-5 h-5 text-primary-foreground" />
               </div>
-              <span className="text-xl font-bold">ContisX</span>
+              <span className="text-xl font-bold">ContiSX</span>
             </Link>
           </div>
 

@@ -3,7 +3,7 @@
  * PLATFORM AUTHENTICATION API
  * ============================================================
  *
- * Handles authentication for the ContisX platform.
+ * Handles authentication for the ContiSX platform.
  * Used by: Login, Signup, and auth-protected pages.
  *
  * To integrate real API:

@@ -8,11 +8,11 @@ const legalDocs = {
     content: [
       {
         heading: "1. Acceptance of Terms",
-        text: "By accessing or using ContisX services, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this service.",
+        text: "By accessing or using ContiSX services, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this service.",
       },
       {
         heading: "2. Use License",
-        text: "Permission is granted to temporarily access the materials on ContisX for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title.",
+        text: "Permission is granted to temporarily access the materials on ContiSX for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title.",
       },
       {
         heading: "3. Broker Responsibilities",
@@ -24,7 +24,7 @@ const legalDocs = {
       },
       {
         heading: "5. Service Availability",
-        text: "While we strive for 99.9% uptime, ContisX does not guarantee uninterrupted access to our services. Scheduled maintenance will be communicated in advance.",
+        text: "While we strive for 99.9% uptime, ContiSX does not guarantee uninterrupted access to our services. Scheduled maintenance will be communicated in advance.",
       },
       {
         heading: "6. Fees and Payments",
@@ -32,7 +32,7 @@ const legalDocs = {
       },
       {
         heading: "7. Limitation of Liability",
-        text: "ContisX shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of the service.",
+        text: "ContiSX shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of the service.",
       },
     ],
   },
@@ -72,7 +72,7 @@ const legalDocs = {
     content: [
       {
         heading: "1. Regulatory Status",
-        text: "ContisX operates under regulatory oversight in multiple jurisdictions including SEC (US), FCA (UK), ASIC (Australia), and other regulatory bodies.",
+        text: "ContiSX operates under regulatory oversight in multiple jurisdictions including SEC (US), FCA (UK), ASIC (Australia), and other regulatory bodies.",
       },
       {
         heading: "2. AML/KYC Requirements",

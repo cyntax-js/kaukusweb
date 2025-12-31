@@ -1,15 +1,15 @@
-# ContisX Platform Architecture
+# ContiSX Platform Architecture
 
 ## Overview
 
-ContisX is a **Shopify-like platform for stock brokers**. Brokers configure their trading platform through a dashboard, and the system generates a white-label trading platform based on their configuration.
+ContiSX is a **Shopify-like platform for stock brokers**. Brokers configure their trading platform through a dashboard, and the system generates a white-label trading platform based on their configuration.
 
 ## Project Structure
 
 ```
 src/
 ├── api/                        # 🔌 PLATFORM API SERVICES
-│   └── platform/               # ContisX admin APIs
+│   └── platform/               # ContiSX admin APIs
 │       ├── auth.ts             # Broker/dealer login, signup
 │       ├── broker.ts           # Broker applications, management
 │       └── dealer.ts           # Dealer applications
@@ -47,9 +47,9 @@ src/
 │   └── README.md               # Detailed broker theme documentation
 │
 ├── pages/                      # 📄 PLATFORM PAGES
-│   ├── Landing.tsx             # ContisX landing page
-│   ├── Login.tsx               # ContisX login
-│   ├── Signup.tsx              # ContisX signup
+│   ├── Landing.tsx             # ContiSX landing page
+│   ├── Login.tsx               # ContiSX login
+│   ├── Signup.tsx              # ContiSX signup
 │   │
 │   ├── broker/                 # Broker-related pages
 │   │   ├── dashboard/          # Broker admin dashboard
@@ -79,7 +79,7 @@ src/
 
 ## Two Main Areas
 
-### 1. Platform (ContisX Admin)
+### 1. Platform (ContiSX Admin)
 
 - **Location**: `src/api/platform/`, `src/pages/`, `src/stores/`
 - **Purpose**: Broker registration, dashboard, deployment wizard
@@ -103,7 +103,7 @@ Every broker is defined by a `BrokerConfig` object:
 interface BrokerConfig {
   brokerId: string;
   brokerName: string;
-  subdomain: string; // e.g., "fbs" → fbs.ContisX.com
+  subdomain: string; // e.g., "fbs" → fbs.ContiSX.com
 
   services: BrokerService[]; // ['spot', 'futures', 'options', 'private_markets']
 
@@ -173,7 +173,7 @@ See `src/broker-theme/README.md` for full details.
 
 ## URL Structure
 
-### Platform (ContisX Admin)
+### Platform (ContiSX Admin)
 
 - `/` - Landing page
 - `/login` - Platform login

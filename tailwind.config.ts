@@ -2,20 +2,25 @@ import type { Config } from "tailwindcss";
 
 export default {
   darkMode: ["class"],
-  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  content: [
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
   prefix: "",
   theme: {
     container: {
       center: true,
       padding: "2rem",
       screens: {
-        "2xl": "1400px",
+        "2xl": "1200px",
       },
     },
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
+        sans: ["Inter", "system-ui", "sans-serif"],
+        mono: ["JetBrains Mono", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -83,11 +88,11 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       boxShadow: {
-        'soft': '0 2px 8px -2px hsl(var(--foreground) / 0.08)',
-        'medium': '0 4px 16px -4px hsl(var(--foreground) / 0.12)',
-        'strong': '0 8px 32px -8px hsl(var(--foreground) / 0.16)',
-        'glow': '0 0 24px -4px hsl(var(--primary) / 0.3)',
-        'glow-lg': '0 0 48px -8px hsl(var(--primary) / 0.4)',
+        soft: "0 2px 8px -2px hsl(var(--foreground) / 0.08)",
+        medium: "0 4px 16px -4px hsl(var(--foreground) / 0.12)",
+        strong: "0 8px 32px -8px hsl(var(--foreground) / 0.16)",
+        glow: "0 0 24px -4px hsl(var(--primary) / 0.3)",
+        "glow-lg": "0 0 48px -8px hsl(var(--primary) / 0.4)",
       },
       keyframes: {
         "accordion-down": {
@@ -110,7 +115,7 @@ export default {
           "0%, 100%": { boxShadow: "0 0 20px -4px hsl(var(--primary) / 0.3)" },
           "50%": { boxShadow: "0 0 30px -2px hsl(var(--primary) / 0.5)" },
         },
-        "ticker": {
+        ticker: {
           from: { transform: "translateX(0)" },
           to: { transform: "translateX(-50%)" },
         },
@@ -121,7 +126,7 @@ export default {
         "fade-in": "fade-in 0.5s ease-out forwards",
         "slide-in-right": "slide-in-right 0.5s ease-out forwards",
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
-        "ticker": "ticker 30s linear infinite",
+        ticker: "ticker 30s linear infinite",
       },
     },
   },

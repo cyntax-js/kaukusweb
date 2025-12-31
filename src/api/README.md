@@ -6,7 +6,7 @@ This folder contains all API services for the application. APIs are separated in
 
 ```
 api/
-├── platform/        # ContisX platform APIs (used by main platform)
+├── platform/        # ContiSX platform APIs (used by main platform)
 │   ├── auth.ts      # Authentication (login, signup, logout)
 │   ├── broker.ts    # Broker management (applications, dashboard)
 │   └── dealer.ts    # Dealer management (applications)
@@ -22,7 +22,7 @@ api/
 
 ## Usage
 
-### Platform APIs (for ContisX admin/dashboard)
+### Platform APIs (for ContiSX admin/dashboard)
 
 ```typescript
 import { platformApi } from "@/api/platform";

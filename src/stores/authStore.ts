@@ -3,7 +3,7 @@
  * PLATFORM AUTH STORE
  * ============================================================
  *
- * Manages authentication state for the ContisX platform.
+ * Manages authentication state for the ContiSX platform.
  * Uses Zustand persist middleware for session persistence.
  *
  * Usage:

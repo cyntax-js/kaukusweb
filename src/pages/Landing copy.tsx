@@ -292,7 +292,7 @@ export default function Landing() {
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Whether you're a broker serving retail traders or a dealer
-              providing liquidity, ContisX has the infrastructure you need.
+              providing liquidity, ContiSX has the infrastructure you need.
             </p>
           </div>
           <AudienceCards />
@@ -312,7 +312,7 @@ export default function Landing() {
                 Ready to Get Started?
               </h2>
               <p className="text-lg text-white/80 mb-8 max-w-xl mx-auto">
-                Join thousands of brokers and dealers already using ContisX to
+                Join thousands of brokers and dealers already using ContiSX to
                 power their trading operations.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
