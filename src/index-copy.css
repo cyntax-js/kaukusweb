@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ContiSX - Modern Fintech Design System */
+/* ContisX - Modern Fintech Design System */
 
 /* @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"); */
 
@@ -22,10 +22,9 @@
     --primary: 217 91% 50%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary - Dark Blue */
-    --secondary: 218.18, 21.57%, 10%;
-    --secondary-foreground: 0 0% 100%;
-    --secondary-border: 0, 0%, 99.22%;
+    /* Secondary - Soft Gray */
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 222 47% 11%;
 
     --muted: 220 14% 96%;
     --muted-foreground: 220 9% 46%;
