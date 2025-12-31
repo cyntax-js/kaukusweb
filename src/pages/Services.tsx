@@ -212,13 +212,13 @@ export default function Services() {
               variant="outline"
               className="px-5 py-4 h-fit w-full md:w-auto"
             >
-              Apply as Dealer
+              <Link to="/signup">Apply as Dealer </Link>
             </Button>
             <Button
               variant="default"
               className="px-5 py-4 h-fit w-full md:w-auto"
             >
-              Continue as Broker
+              <Link to="/services">Continue as Broker</Link>
             </Button>
           </div>
         </div>
@@ -280,13 +280,13 @@ export default function Services() {
               variant="outline"
               className="px-5 py-4 h-fit w-full md:w-auto"
             >
-              Apply as Dealer
+              <Link to="/signup">Apply as Dealer </Link>
             </Button>
             <Button
               variant="default"
               className="px-5 py-4 h-fit w-full md:w-auto"
             >
-              Continue as Broker
+              <Link to="/services">Continue as Broker</Link>
             </Button>
           </div>
         </div>
@@ -433,7 +433,7 @@ export default function Services() {
               variant="outline"
               className="bg-transparent w-full md:w-auto"
             >
-              <Link to="#">Apply as Dealer</Link>
+              <Link to="/signup">Apply as Dealer </Link>
             </Button>
           </div>
         </Card>
