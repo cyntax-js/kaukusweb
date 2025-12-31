@@ -1,85 +1,43 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import {
-  Users,
-  Shield,
-  Globe,
-  Award,
-  ArrowRight,
-  Fan,
-  Feather,
-  Dice5,
-} from "lucide-react";
+import { Fan, Feather, Dice5 } from "lucide-react";
 
 import HeroBg from "@/assets/about-background-pattern.png";
 import BadgeGroup from "@/assets/badge-group.png";
 import AvatarGroup from "@/assets/avatargroup.png";
 import Abstract from "@/assets/abstract-i.png";
-
-const team = [
-  { name: "Sarah Chen", role: "CEO & Co-founder", image: "SC" },
-  { name: "Michael Torres", role: "CTO & Co-founder", image: "MT" },
-  { name: "Emily Watson", role: "Chief Risk Officer", image: "EW" },
-  { name: "James Park", role: "Head of Product", image: "JP" },
-];
-
-const milestones = [
-  {
-    year: "2019",
-    title: "Founded",
-    description:
-      "ContisX was founded with a vision to democratize trading infrastructure.",
-  },
-  {
-    year: "2020",
-    title: "First Broker",
-    description: "Onboarded our first broker partner, proving the concept.",
-  },
-  {
-    year: "2021",
-    title: "Series A",
-    description: "Raised $25M to expand globally and build BaaS platform.",
-  },
-  {
-    year: "2022",
-    title: "Global Expansion",
-    description: "Expanded to 50+ countries with regulatory approvals.",
-  },
-  {
-    year: "2023",
-    title: "1000 Brokers",
-    description: "Reached milestone of 1000+ active broker partners.",
-  },
-  {
-    year: "2024",
-    title: "Series B",
-    description: "Raised $100M to accelerate growth and innovation.",
-  },
-];
+import AbstractII from "@/assets/abstract-ii.png";
+import AbstractIII from "@/assets/abstract-iii.png";
+import AbstractIV from "@/assets/abstract-iv.png";
+import FanIcon from "@/assets/fan.svg";
+import FanIconWhite from "@/assets/fan-white.svg";
+import FeatherIconWhite from "@/assets/feather-white.svg";
+import DotsSixIconWhite from "@/assets/dots-six-white.svg";
+import DiceFiveIconWhite from "@/assets/dice-five-white.svg";
 
 const BaaSInfo = [
   {
-    icon: <Fan />,
+    icon: <img src={FanIconWhite} alt="Fan Icon" className="h-fit" />,
     digits: "01_",
     header: "Market Infrastructure",
     paragraph: "Execution, pricing, liquidity, and settlement.",
   },
   {
-    icon: <Feather />,
+    icon: <img src={FeatherIconWhite} alt="Fan Icon" className="h-fit" />,
     digits: "02_",
     header: "White-Label Platform",
     paragraph:
       "Deploy branded trading interfaces without building from scratch.",
   },
   {
-    icon: <Dice5 />,
+    icon: <img src={DotsSixIconWhite} alt="Fan Icon" className="h-fit" />,
     digits: "03_",
     header: "Compliance-First Operations",
     paragraph: "KYC/AML readiness, auditability, and reporting.",
   },
   {
-    icon: <Dice5 />,
+    icon: <img src={DiceFiveIconWhite} alt="Fan Icon" className="h-fit" />,
     digits: "04_",
     header: "Scalable Architecture",
     paragraph: "Add markets, regions, and products as you grow.",
@@ -88,32 +46,32 @@ const BaaSInfo = [
 
 const BaaSService = [
   {
-    icon: <Fan />,
+    icon: <img src={FanIconWhite} alt="Fan Icon" className="h-fit" />,
     digits: "01_",
     header: "Market Infrastructure",
     paragraph: "Execution, pricing, liquidity, and settlement.",
   },
   {
-    icon: <Feather />,
+    icon: <img src={FeatherIconWhite} alt="Fan Icon" className="h-fit" />,
     digits: "02_",
     header: "White-Label Platform",
     paragraph:
       "Deploy branded trading interfaces without building from scratch.",
   },
   {
-    icon: <Dice5 />,
+    icon: <img src={DotsSixIconWhite} alt="Fan Icon" className="h-fit" />,
     digits: "03_",
     header: "Compliance-First Operations",
     paragraph: "KYC/AML readiness, auditability, and reporting.",
   },
   {
-    icon: <Dice5 />,
+    icon: <img src={DiceFiveIconWhite} alt="Fan Icon" className="h-fit" />,
     digits: "04_",
     header: "Scalable Architecture",
     paragraph: "Add markets, regions, and products as you grow.",
   },
   {
-    icon: <Dice5 />,
+    icon: <img src={DiceFiveIconWhite} alt="Fan Icon" className="h-fit" />,
     digits: "05_",
     header: "Scalable Architecture",
     paragraph: "Add markets, regions, and products as you grow.",
@@ -123,7 +81,7 @@ const BaaSService = [
 const tradingServices = [
   {
     image: Abstract,
-    icon: <Fan />,
+    icon: <img src={FanIcon} alt="Fan Icon" />,
     header: "Spot Trading",
     itEnables:
       "Immediate buying and selling of assets at current market prices.",
@@ -144,8 +102,8 @@ const tradingServices = [
       "Ideal for brokers targeting direct asset ownership and high-volume trading.",
   },
   {
-    image: Abstract,
-    icon: <Fan />,
+    image: AbstractII,
+    icon: <img src={FanIcon} alt="Fan Icon" />,
     header: "Derivatives Trading",
     itEnables:
       "Derivatives allow traders to gain exposure to asset price movements without owning the underlying asset.",
@@ -160,8 +118,8 @@ const tradingServices = [
     useCase: "Derivatives are a parent service category.",
   },
   {
-    image: Abstract,
-    icon: <Fan />,
+    image: AbstractIII,
+    icon: <img src={FanIcon} alt="Fan Icon" />,
     header: "Futures Trading",
     itEnables:
       "Contracts to buy or sell assets at a predetermined price on a future date.",
@@ -182,8 +140,8 @@ const tradingServices = [
       "Suitable for brokers serving professional and high-frequency traders.",
   },
   {
-    image: Abstract,
-    icon: <Fan />,
+    image: AbstractIV,
+    icon: <img src={FanIcon} alt="Fan Icon" />,
     header: "Private Market",
     itEnables:
       "Immediate buying and selling of assets at current market prices.",
@@ -202,6 +160,27 @@ const tradingServices = [
     ],
     useCase:
       "Ideal for brokers targeting direct asset ownership and high-volume trading.",
+  },
+];
+
+const complianceDetails = [
+  {
+    heading: "KYC / AML Readiness",
+    paragraph:
+      "Full compliance with know-your-customer and anti-money laundering requirements",
+  },
+  {
+    heading: "Audit-Friendly Reporting",
+    paragraph: "Transparent, auditable transaction and settlement records",
+  },
+  {
+    heading: "Transparent Settlement",
+    paragraph: "Clear, real-time settlement visibility for all participants",
+  },
+  {
+    heading: "Institutional Controls",
+    paragraph:
+      "Risk management and exposure controls for institutional participants",
   },
 ];
 
@@ -256,14 +235,14 @@ export default function About() {
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-y-3 justify-between text-secondary-foreground max-w-7xl mx-auto">
+        <div className="flex flex-wrap gap-y-3 justify-between text-secondary-foreground max-w-7xl mx-auto px-6">
           {BaaSInfo.map((item) => (
-            <div className="flex flex-[0_0_33%] bg-secondary-foreground/5 last:flex-[0_0_100%] gap-4 border-[0.5px] border-solid border-secondary-border rounded-2xl px-7 pt-7 pb-14">
+            <div className="flex flex-[0_0_100%] lg:flex-[0_0_33%] bg-secondary-foreground/5 lg:last:flex-[0_0_100%] gap-4 border-[0.5px] border-solid border-secondary-border rounded-2xl px-7 pt-7 pb-14">
               {item.icon}
               <div className="">
-                <small className="mb-2 text-secondary-foreground/60">
+                <p className="text-xs mb-2 text-secondary-foreground/60">
                   {item.digits}
-                </small>
+                </p>
                 <div className="flex flex-col">
                   <h4 className="font-medium text-lg">{item.header}</h4>
                   <p className="text-secondary-foreground/60">
@@ -300,7 +279,7 @@ export default function About() {
 
         <div className="pt-20">
           {tradingServices.map((service) => (
-            <div className="flex flex-wrap justify-between gap-y-9 mx-auto max-w-7xl">
+            <div className="flex flex-wrap items-center justify-between gap-y-9 mx-auto max-w-7xl">
               <img src={service.image} alt="abstract 3d model" />
               <div className="flex flex-col gap-5 max-w-xl">
                 <div className="">
@@ -349,7 +328,7 @@ export default function About() {
       </section>
 
       {/* BaaS Services */}
-      <section className="bg-secondary py-20 mb-20">
+      <section className="bg-secondary py-20">
         <div className="mx-auto mb-20 px-4 text-secondary-foreground max-w-7xl">
           <small className="uppercase text-secondary-foreground/60">
             Stay Updated
@@ -364,14 +343,14 @@ export default function About() {
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-y-3 justify-between text-secondary-foreground max-w-7xl mx-auto">
+        <div className="flex flex-wrap gap-y-3 justify-between text-secondary-foreground max-w-7xl mx-auto px-6">
           {BaaSService.map((item) => (
-            <div className="flex flex-[0_0_33%] bg-secondary-foreground/5 last:flex-[0_0_50%] [&:nth-child(4)]:flex-[0_0_49.5%] gap-4 border-[0.5px] border-solid border-secondary-border rounded-2xl px-7 pt-7 pb-14">
+            <div className="flex items-start flex-[0_0_100%] lg:flex-[0_0_33%] bg-secondary-foreground/5 lg:last:flex-[0_0_50%] lg:[&:nth-child(4)]:flex-[0_0_49.5%] gap-4 border-[0.5px] border-solid border-secondary-border rounded-2xl px-7 pt-7 pb-14">
               {item.icon}
               <div className="">
-                <small className="mb-2 text-secondary-foreground/60">
+                <p className="text-xs mb-2 text-secondary-foreground/60">
                   {item.digits}
-                </small>
+                </p>
                 <div className="flex flex-col">
                   <h4 className="font-medium text-lg">{item.header}</h4>
                   <p className="text-secondary-foreground/60">
@@ -384,7 +363,7 @@ export default function About() {
         </div>
       </section>
 
-      <section className="bg-white py-24">
+      <section className="bg-white pt-36 py-24">
         <div className="flex items-center justify-between mx-auto max-w-7xl">
           <div className="text-secondary">
             <h3 className="text-3xl font-bold my-3">Compliance & Governance</h3>
@@ -402,30 +381,30 @@ export default function About() {
           </div>
         </div>
 
-        <div className="flex flex-wrap mt-20 max-w-7xl mx-auto">
-          <div className="text-gray-900 bg-[#FAFAFA] p-8 flex flex-col gap-32 rounded-2xl w-80">
-            <h3 className="text-4xl">KYC / AML Readiness</h3>
-            <p className="text-gray-400">
-              Full compliance with know-your-customer and anti-money laundering
-              requirements
-            </p>
-          </div>
+        <div className="flex flex-wrap gap-x-3 gap-y-3 justify-center lg:justify-start mt-20 max-w-7xl mx-auto px-6 lg:px-0">
+          {complianceDetails.map((detail) => (
+            <div className="text-gray-900 bg-[#FAFAFA] p-8 flex flex-col gap-32 rounded-2xl max-w-[19.375rem]">
+              <h3 className="text-4xl">{detail.heading}</h3>
+              <p className="text-gray-400">{detail.paragraph}</p>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* CTA */}
-      <section className="container mx-auto px-4">
-        <Card className="bg-[#1570EF] p-12 text-center text-white">
-          <h2 className="text-3xl font-bold mb-4">Join Our Team</h2>
-          <p className="text-white/80 mb-6 max-w-xl mx-auto">
-            We're always looking for talented individuals who share our passion
-            for transforming financial infrastructure.
-          </p>
-          <Button size="lg" variant="secondary" asChild>
-            <Link to="#">
-              View Careers <ArrowRight className="w-4 h-4 ml-2" />
-            </Link>
-          </Button>
+      <section className="py-4 bg-white">
+        <Card className="bg-[#1570EF] p-16 text-center text-white flex justify-between max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold mb-4">
+            Start with the Role that Fits Your Institution
+          </h2>
+          <div className="flex gap-3">
+            <Button size="lg" className="bg-white text-black">
+              <Link to="#">Continue as Broker</Link>
+            </Button>
+            <Button size="lg" variant="outline" className="bg-transparent">
+              <Link to="#">Apply as Dealer</Link>
+            </Button>
+          </div>
         </Card>
       </section>
     </div>
