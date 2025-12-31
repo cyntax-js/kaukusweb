@@ -133,12 +133,12 @@ const TradingPage = () => {
       />
 
       {/* DIV1: Main Trading Workspace */}
-      <div className="grid grid-cols-12 gap-px bg-border">
+      <div className="grid grid-cols-12 gap-px bg-border scrollbar-hide">
         {orderBookPosition === "left" ? (
           <>
             {/* OrderBook - Left (2 cols) - swapped */}
             <div
-              className="col-span-2 bg-card flex flex-col"
+              className="col-span-2 bg-card flex flex-col scrollbar-hide"
               style={{ height: "900px" }}
             >
               <OrderBook
@@ -149,7 +149,7 @@ const TradingPage = () => {
 
             {/* Chart + BuySell - Center (8 cols) */}
             <div
-              className="col-span-8 bg-card flex flex-col"
+              className="col-span-8 bg-card flex flex-col scrollbar-hide"
               style={{ height: "900px", overflowY: "auto" }}
             >
               <div className="" style={{ height: "100%" }}>
@@ -168,7 +168,7 @@ const TradingPage = () => {
 
             {/* Markets - Right (2 cols) - swapped */}
             <div
-              className="col-span-2 bg-card overflow-auto"
+              className="col-span-2 bg-card overflow-auto scrollbar-hide"
               style={{
                 height: "900px",
               }}
@@ -185,7 +185,7 @@ const TradingPage = () => {
           <>
             {/* Markets - Left (2 cols) */}
             <div
-              className="col-span-2 bg-card overflow-auto"
+              className="col-span-2 bg-card overflow-auto scrollbar-hide"
               style={{
                 height: "900px",
               }}
@@ -200,7 +200,7 @@ const TradingPage = () => {
 
             {/* Chart + BuySell - Center (8 cols) */}
             <div
-              className="col-span-8 bg-card flex flex-col"
+              className="col-span-8 bg-card flex flex-col scrollbar-hide"
               style={{ height: "900px", overflowY: "auto" }}
             >
               <div className="" style={{ height: "100%" }}>
@@ -219,7 +219,7 @@ const TradingPage = () => {
 
             {/* OrderBook - Right (2 cols) */}
             <div
-              className="col-span-2 bg-card flex flex-col"
+              className="col-span-2 bg-card flex flex-col scrollbar-hide"
               style={{ height: "900px" }}
             >
               <OrderBook

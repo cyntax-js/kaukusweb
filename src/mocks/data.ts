@@ -447,19 +447,20 @@ export const mockStats = {
 
 // Regulatory bodies for broker application
 export const regulatoryBodies = [
-  "SEC (U.S. Securities and Exchange Commission)",
+  "SEC Nigeria (Securities and Exchange Commission Nigeria)",
+  "NGX RegCo (Nigerian Exchange Regulation Company)",
+  "CBN (Central Bank of Nigeria)",
   "FCA (UK Financial Conduct Authority)",
-  "ASIC (Australian Securities & Investments Commission)",
   "CySEC (Cyprus Securities and Exchange Commission)",
-  "BaFin (German Federal Financial Supervisory Authority)",
-  "MAS (Monetary Authority of Singapore)",
-  "FSA (Japan Financial Services Agency)",
-  "FINMA (Swiss Financial Market Supervisory Authority)",
+  "FSCA (Financial Sector Conduct Authority, South Africa)",
+  "ASIC (Australian Securities & Investments Commission)",
+  "CMA Kenya (Capital Markets Authority, Kenya)",
   "Other",
 ];
 
 // Countries list
 export const countries = [
+  "Nigeria",
   "United States",
   "United Kingdom",
   "Germany",

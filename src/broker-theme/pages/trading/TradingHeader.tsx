@@ -52,9 +52,7 @@ const TradingHeader = () => {
             className="bg-[hsl(var(--trading-panel))] text-sm text-[hsl(var(--trading-text-primary))] pl-10 pr-4 py-2 rounded border border-[hsl(var(--trading-border))] w-48 focus:outline-none focus:border-[hsl(var(--trading-text-secondary))]"
           />
         </div>
-        <Button className="bg-white text-black hover:bg-gray-200 text-sm px-4 py-2 h-9">
-          Depositkk
-        </Button>
+
         <Button
           variant="ghost"
           className="text-sm text-[hsl(var(--trading-text-primary))]"

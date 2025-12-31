@@ -76,7 +76,7 @@ const AboutPage = () => {
 
   const stats = [
     { label: "Active Traders", value: "250K+", icon: Users },
-    { label: "Daily Volume", value: "$5B+", icon: BarChart3 },
+    { label: "Daily Volume", value: "₦5B+", icon: BarChart3 },
     { label: "Global Markets", value: "10K+", icon: Globe },
     { label: "Platform Uptime", value: "99.99%", icon: Zap },
   ];
@@ -189,7 +189,7 @@ const AboutPage = () => {
               <div className="relative bg-card rounded-2xl border border-border p-8 space-y-5">
                 {[
                   { icon: Target, text: "Institutional-grade execution speed" },
-                  { icon: Shield, text: "$100M+ insurance protection" },
+                  { icon: Shield, text: "₦100M+ insurance protection" },
                   { icon: Clock, text: "24/7 global market access" },
                   { icon: Zap, text: "Real-time streaming data" },
                   { icon: Globe, text: "Regulated in 15+ jurisdictions" },

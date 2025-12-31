@@ -11,10 +11,10 @@ const navLinks = [
   { href: "/about", label: "About" },
   { href: "/services", label: "Services" },
   { href: "/individuals", label: "Individuals" },
-  { href: "/businesses", label: "Businesses" },
-  { href: "/institutions", label: "Institutions" },
-  { href: "/company", label: "Company" },
-  { href: "/developers", label: "Developers" },
+  // { href: "/businesses", label: "Businesses" },
+  // { href: "/institutions", label: "Institutions" },
+  // { href: "/company", label: "Company" },
+  // { href: "/developers", label: "Developers" },
 ];
 
 export function Navbar() {
@@ -38,7 +38,7 @@ export function Navbar() {
                 "rounded-lg font-semibold transition-colors",
                 location.pathname === link.href
                   ? "text-primary"
-                  : "text-muted-foreground hover:text-primary",
+                  : "text-muted-foreground hover:text-primary"
               )}
             >
               {link.label}
@@ -47,10 +47,20 @@ export function Navbar() {
         </div>
 
         <div className="flex gap-3">
-          <Button variant="outline" size="lg">
-            Login
-          </Button>
-          <Button size="lg">Sign Up</Button>
+          <Link
+            to="/login"
+            className="text-xs text-muted-foreground hover:text-primary"
+          >
+            <Button variant="outline" size="lg">
+              Login
+            </Button>
+          </Link>
+          <Link
+            to="/signup"
+            className="text-xs text-muted-foreground hover:text-primary"
+          >
+            <Button size="lg">Sign Up</Button>
+          </Link>
         </div>
       </nav>
 
@@ -73,7 +83,7 @@ export function Navbar() {
             "absolute top-full left-0 right-0 mt-2 border border-border/50 rounded-2xl bg-white shadow-[0px_1px_2px_0px_#0A0D120D] transition-all duration-300 ease-in-out overflow-hidden",
             isMobileMenuOpen
               ? "opacity-100 max-h-[35rem] translate-y-0"
-              : "opacity-0 max-h-0 -translate-y-2 pointer-events-none",
+              : "opacity-0 max-h-0 -translate-y-2 pointer-events-none"
           )}
         >
           <div className="p-4 space-y-2">
@@ -86,7 +96,7 @@ export function Navbar() {
                   "block px-3 py-2 rounded-lg font-semibold transition-colors",
                   location.pathname === link.href
                     ? "text-primary bg-primary/10"
-                    : "text-muted-foreground hover:text-primary hover:bg-secondary",
+                    : "text-muted-foreground hover:text-primary hover:bg-secondary"
                 )}
               >
                 {link.label}

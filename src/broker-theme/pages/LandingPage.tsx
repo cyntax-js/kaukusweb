@@ -50,47 +50,47 @@ const serviceInfo = {
   },
 };
 
-// Simulated live ticker data
+// Simulated live ticker data with popular Nigerian stocks
 const generateTickerData = () => [
   {
-    symbol: "AAPL",
-    price: 189.45 + Math.random() * 2,
-    change: 1.24 + Math.random() * 0.5,
+    symbol: "BUAFOODS",
+    price: 450 + Math.random() * 20,
+    change: 1.5 + Math.random() * 1,
   },
   {
-    symbol: "GOOGL",
-    price: 141.32 + Math.random() * 2,
-    change: -0.87 + Math.random() * 0.3,
+    symbol: "DANGCEM",
+    price: 550 + Math.random() * 30,
+    change: -0.8 + Math.random() * 0.6,
   },
   {
-    symbol: "MSFT",
-    price: 378.91 + Math.random() * 3,
-    change: 2.15 + Math.random() * 0.4,
+    symbol: "AIRTELAFRI",
+    price: 2200 + Math.random() * 50,
+    change: 2.2 + Math.random() * 0.8,
   },
   {
-    symbol: "AMZN",
-    price: 178.25 + Math.random() * 2,
-    change: 0.95 + Math.random() * 0.3,
+    symbol: "MTNN",
+    price: 350 + Math.random() * 15,
+    change: 1.0 + Math.random() * 0.5,
   },
   {
-    symbol: "NVDA",
-    price: 495.22 + Math.random() * 5,
-    change: 3.45 + Math.random() * 0.5,
+    symbol: "GTCO",
+    price: 55 + Math.random() * 5,
+    change: 3.0 + Math.random() * 1,
   },
   {
-    symbol: "TSLA",
-    price: 248.5 + Math.random() * 3,
-    change: -1.32 + Math.random() * 0.4,
+    symbol: "ZENITHBANK",
+    price: 48 + Math.random() * 4,
+    change: -1.1 + Math.random() * 0.7,
   },
   {
-    symbol: "META",
-    price: 505.75 + Math.random() * 4,
-    change: 1.89 + Math.random() * 0.3,
+    symbol: "BUACEMENT",
+    price: 150 + Math.random() * 10,
+    change: 1.8 + Math.random() * 0.6,
   },
   {
-    symbol: "BRK.B",
-    price: 363.2 + Math.random() * 2,
-    change: 0.45 + Math.random() * 0.2,
+    symbol: "SEPLAT",
+    price: 3200 + Math.random() * 100,
+    change: 0.6 + Math.random() * 0.4,
   },
 ];
 
@@ -134,7 +134,7 @@ const LandingPage = () => {
                   {item.symbol}
                 </span>
                 <span className="text-muted-foreground">
-                  ${item.price.toFixed(2)}
+                  ₦{item.price.toFixed(2)}
                 </span>
                 <span
                   className={`flex items-center gap-0.5 ${
@@ -218,7 +218,7 @@ const LandingPage = () => {
               <div className="flex items-center gap-8 mt-10 pt-8 border-t border-border animate-fade-in stagger-4">
                 <div>
                   <div className="text-2xl font-bold text-foreground">
-                    $50B+
+                    ₦50T+
                   </div>
                   <div className="text-sm text-muted-foreground">
                     Trading Volume
@@ -251,15 +251,17 @@ const LandingPage = () => {
                       <LineChart className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <div className="font-semibold text-foreground">AAPL</div>
+                      <div className="font-semibold text-foreground">
+                        DANGCEM
+                      </div>
                       <div className="text-sm text-muted-foreground">
-                        Apple Inc.
+                        Dangote Cement Plc.
                       </div>
                     </div>
                   </div>
                   <div className="text-right">
                     <div className="text-xl font-bold text-foreground">
-                      $189.45
+                      ₦550.00
                     </div>
                     <div className="text-sm text-success flex items-center justify-end gap-1">
                       <ArrowUpRight className="h-3 w-3" />
@@ -314,7 +316,7 @@ const LandingPage = () => {
                     <div className="text-xs text-muted-foreground mb-2">
                       BIDS
                     </div>
-                    {[188.5, 188.45, 188.4].map((price, i) => (
+                    {[549, 548.5, 548].map((price, i) => (
                       <div key={i} className="flex justify-between text-xs">
                         <span className="text-success">{price.toFixed(2)}</span>
                         <span className="text-muted-foreground">
@@ -327,7 +329,7 @@ const LandingPage = () => {
                     <div className="text-xs text-muted-foreground mb-2">
                       ASKS
                     </div>
-                    {[189.5, 189.55, 189.6].map((price, i) => (
+                    {[551, 551.5, 552].map((price, i) => (
                       <div key={i} className="flex justify-between text-xs">
                         <span className="text-destructive">
                           {price.toFixed(2)}
@@ -369,7 +371,7 @@ const LandingPage = () => {
                   <div>
                     <div className="text-xs text-muted-foreground">Balance</div>
                     <div className="text-sm font-semibold text-foreground">
-                      $24,500
+                      ₦24,500,000
                     </div>
                   </div>
                 </div>
@@ -451,7 +453,7 @@ const LandingPage = () => {
                 icon: <Shield className="h-6 w-6" />,
                 title: "Bank-Grade Security",
                 desc: "Multi-layer protection with cold storage and insurance coverage",
-                metric: "$100M+",
+                metric: "₦100B+",
               },
               {
                 icon: <Globe className="h-6 w-6" />,

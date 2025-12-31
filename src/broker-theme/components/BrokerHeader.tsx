@@ -169,18 +169,6 @@ const BrokerHeader = ({ className, variant = "solid" }: BrokerHeaderProps) => {
             />
           </div>
 
-          {/* Deposit
-          <Button
-            size="sm"
-            variant="secondary"
-            className="h-9"
-            onClick={() =>
-              requireAuth(() => toast.success("Deposit flow coming soon"))
-            }
-          >
-            Deposit
-          </Button> */}
-
           {/* Assets */}
           <DropdownMenu open={assetsOpen} onOpenChange={setAssetsOpen}>
             <div
