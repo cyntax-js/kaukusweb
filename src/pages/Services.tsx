@@ -207,11 +207,17 @@ export default function Services() {
             alt="Avatar Group"
             className="h-10 mx-auto my-12 animate-fade-in"
           />
-          <div className="flex flex-wrap justify-center gap-3 animate-fade-in">
-            <Button variant="outline" className="px-5 py-4 h-fit">
+          <div className="flex-1 lg:flex-[0_0_auto] flex flex-col-reverse lg:flex-row flex-wrap justify-center gap-3 animate-fade-in">
+            <Button
+              variant="outline"
+              className="px-5 py-4 h-fit w-full md:w-auto"
+            >
               Apply as Dealer
             </Button>
-            <Button variant="default" className="px-5 py-4 h-fit">
+            <Button
+              variant="default"
+              className="px-5 py-4 h-fit w-full md:w-auto"
+            >
               Continue as Broker
             </Button>
           </div>
@@ -269,11 +275,17 @@ export default function Services() {
               on their business model, regulatory scope, and target market.
             </p>
           </div>
-          <div className="flex flex-wrap justify-center gap-3 animate-fade-in">
-            <Button variant="outline" className="px-5 py-4 h-fit">
+          <div className="flex-1 lg:flex-[0_0_auto] flex flex-col-reverse lg:flex-row flex-wrap justify-center gap-3">
+            <Button
+              variant="outline"
+              className="px-5 py-4 h-fit w-full md:w-auto"
+            >
               Apply as Dealer
             </Button>
-            <Button variant="default" className="px-5 py-4 h-fit">
+            <Button
+              variant="default"
+              className="px-5 py-4 h-fit w-full md:w-auto"
+            >
               Continue as Broker
             </Button>
           </div>
@@ -370,18 +382,24 @@ export default function Services() {
       </section>
 
       <section className="bg-white pt-36 px-4 py-24 lg:px-8">
-        <div className="flex flex-wrap gap-y-6 items-center justify-between mx-auto max-w-7xl">
+        <div className="flex flex-wrap gap-y-6 items-center justify-center lg:justify-between mx-auto max-w-7xl">
           <div className="text-secondary-blue">
             <h3 className="text-3xl font-bold my-3">Compliance & Governance</h3>
             <p className="max-w-xl opacity-60">
               Built with institutional requirements at its core
             </p>
           </div>
-          <div className="flex flex-wrap justify-center gap-3">
-            <Button variant="outline" className="px-5 py-4 h-fit">
+          <div className="flex-1 lg:flex-[0_0_auto] flex flex-wrap justify-center gap-3">
+            <Button
+              variant="outline"
+              className="px-5 py-4 h-fit w-full md:w-auto"
+            >
               Compliance Details
             </Button>
-            <Button variant="default" className="px-5 py-4 h-fit">
+            <Button
+              variant="default"
+              className="px-5 py-4 h-fit w-full md:w-auto"
+            >
               Terms & Privacy{" "}
             </Button>
           </div>
