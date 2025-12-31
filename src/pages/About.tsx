@@ -185,7 +185,7 @@ const complianceDetails = [
 
 export default function About() {
   return (
-    <div className="py-20">
+    <div className="pt-20">
       {/* Hero */}
       <section
         style={{ backgroundImage: `url('${HeroBg}')` }}
@@ -389,7 +389,7 @@ export default function About() {
       </section>
 
       {/* CTA */}
-      <section className="py-4 bg-white">
+      <section className="pt-4 pb-20 bg-white">
         <Card className="bg-[#1570EF] p-8 lg:p-16 text-white flex flex-wrap md:gap-9 md:flex-nowrap gap-y-6 justify-between max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold mb-4">
             Start with the Role that Fits Your Institution
