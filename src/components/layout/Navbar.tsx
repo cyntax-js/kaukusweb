@@ -4,11 +4,17 @@ import { cn } from "@/lib/utils";
 import { TrendingUp, Menu, X } from "lucide-react";
 import { useState } from "react";
 
+import Logo from "@/assets/logo.png";
+
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
-  { href: "/pricing", label: "Pricing" },
-  { href: "/legal", label: "Legal" },
+  { href: "/services", label: "Services" },
+  { href: "/individuals", label: "Individuals" },
+  { href: "/businesses", label: "Businesses" },
+  { href: "/institutions", label: "Institutions" },
+  { href: "/company", label: "Company" },
+  { href: "/developers", label: "Developers" },
 ];
 
 export function Navbar() {
@@ -16,92 +22,87 @@ export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-border/50">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center shadow-glow group-hover:shadow-glow-lg transition-shadow">
-              <TrendingUp className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <span className="text-xl font-bold tracking-tight">ContiSX</span>
-          </Link>
+    <>
+      {/* Desktop nav*/}
+      <nav className="hidden fixed top-6 left-0 right-0 z-50 xl:flex items-center justify-between border border-border/50 rounded-2xl max-w-7xl mx-auto px-4 py-3 glass shadow-[0px_1px_2px_0px_#0A0D120D]">
+        <Link to="/">
+          <img src={Logo} alt="" />
+        </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1">
+        <div className="py-2 flex gap-x-5">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              to={link.href}
+              className={cn(
+                "rounded-lg font-semibold transition-colors",
+                location.pathname === link.href
+                  ? "text-primary"
+                  : "text-muted-foreground hover:text-primary",
+              )}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+
+        <div className="flex gap-3">
+          <Button variant="outline" size="lg">
+            Login
+          </Button>
+          <Button size="lg">Sign Up</Button>
+        </div>
+      </nav>
+
+      {/* Mobile nav */}
+      <nav className="xl:hidden fixed top-6 left-4 right-4 z-50 flex items-center justify-between border border-border/50 rounded-2xl px-4 py-3 glass shadow-[0px_1px_2px_0px_#0A0D120D]">
+        <Link to="/">
+          <img src={Logo} alt="" />
+        </Link>
+
+        <div
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className=""
+        >
+          {isMobileMenuOpen ? <X size={30} /> : <Menu size={30} />}
+        </div>
+
+        {/* Mobile menu overlay */}
+        <div
+          className={cn(
+            "absolute top-full left-0 right-0 mt-2 border border-border/50 rounded-2xl bg-white shadow-[0px_1px_2px_0px_#0A0D120D] transition-all duration-300 ease-in-out overflow-hidden",
+            isMobileMenuOpen
+              ? "opacity-100 max-h-[35rem] translate-y-0"
+              : "opacity-0 max-h-0 -translate-y-2 pointer-events-none",
+          )}
+        >
+          <div className="p-4 space-y-2">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 to={link.href}
+                onClick={() => setIsMobileMenuOpen(false)}
                 className={cn(
-                  "px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                  "block px-3 py-2 rounded-lg font-semibold transition-colors",
                   location.pathname === link.href
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                    ? "text-primary bg-primary/10"
+                    : "text-muted-foreground hover:text-primary hover:bg-secondary",
                 )}
               >
                 {link.label}
               </Link>
             ))}
-          </div>
-
-          {/* Auth Buttons */}
-          <div className="hidden md:flex items-center gap-3">
-            <Button variant="ghost" asChild>
-              <Link to="/login">Login</Link>
-            </Button>
-            <Button
-              asChild
-              className="shadow-glow hover:shadow-glow-lg transition-shadow"
-            >
-              <Link to="/signup">Get Started</Link>
-            </Button>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? (
-              <X className="w-6 h-6" />
-            ) : (
-              <Menu className="w-6 h-6" />
-            )}
-          </button>
-        </div>
-
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-border/50 animate-fade-in">
-            <div className="flex flex-col gap-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={cn(
-                    "px-4 py-3 rounded-lg text-sm font-medium transition-colors",
-                    location.pathname === link.href
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                  )}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-border/50">
-                <Button variant="ghost" asChild className="justify-start">
-                  <Link to="/login">Login</Link>
-                </Button>
-                <Button asChild>
-                  <Link to="/signup">Get Started</Link>
-                </Button>
-              </div>
+            <div className="pt-4 space-y-2">
+              <Button variant="outline" size="sm" className="w-full">
+                Login
+              </Button>
+              <Button size="sm" className="w-full">
+                Sign Up
+              </Button>
             </div>
           </div>
-        )}
-      </div>
-    </nav>
+        </div>
+      </nav>
+    </>
   );
 }
