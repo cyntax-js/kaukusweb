@@ -8,9 +8,9 @@ import Logo from "@/assets/logo.png";
 
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
+  // { href: "/about", label: "About" },
   { href: "/services", label: "Services" },
-  { href: "/individuals", label: "Individuals" },
+  // { href: "/individuals", label: "Individuals" },
   // { href: "/businesses", label: "Businesses" },
   // { href: "/institutions", label: "Institutions" },
   // { href: "/company", label: "Company" },
@@ -25,8 +25,11 @@ export function Navbar() {
     <>
       {/* Desktop nav*/}
       <nav className="hidden fixed top-6 left-0 right-0 z-50 xl:flex items-center justify-between border border-border/50 rounded-2xl max-w-7xl mx-auto px-4 py-3 glass shadow-[0px_1px_2px_0px_#0A0D120D]">
-        <Link to="/">
-          <img src={Logo} alt="" />
+        <Link to="/" className="flex items-center gap-2 ">
+          <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
+            <TrendingUp className="w-5 h-5 text-primary-foreground" />
+          </div>
+          <span className="text-xl font-bold">ContiSX</span>
         </Link>
 
         <div className="py-2 flex gap-x-5">
