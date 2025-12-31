@@ -189,7 +189,7 @@ export default function Services() {
       {/* Hero */}
       <section
         style={{ backgroundImage: `url('${HeroBg}')` }}
-        className="container mx-auto lg:pt-44 px-4 mb-20"
+        className="container mx-auto lg:pt-[40px] px-4 mb-20"
       >
         <div className="max-w-2xl mx-auto text-center">
           <img src={BadgeGroup} alt="" className="mx-auto mb-4" />
@@ -208,18 +208,25 @@ export default function Services() {
             className="h-10 mx-auto my-12 animate-fade-in"
           />
           <div className="flex-1 lg:flex-[0_0_auto] flex flex-col-reverse lg:flex-row flex-wrap justify-center gap-3 animate-fade-in">
-            <Button
-              variant="outline"
-              className="px-5 py-4 h-fit w-full md:w-auto"
-            >
-              <Link to="/signup">Apply as Dealer </Link>
-            </Button>
-            <Button
-              variant="default"
-              className="px-5 py-4 h-fit w-full md:w-auto"
-            >
-              <Link to="/services">Continue as Broker</Link>
-            </Button>
+            <Link to="/signup">
+              {" "}
+              <Button
+                size="lg"
+                variant="outline"
+                className="bg-transparent w-full md:w-auto"
+              >
+                Apply as Dealer
+              </Button>
+            </Link>
+
+            <Link to="/services">
+              <Button
+                variant="default"
+                className="px-3 py-3 h-fit w-full md:w-auto"
+              >
+                Continue as Broker
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -276,18 +283,24 @@ export default function Services() {
             </p>
           </div>
           <div className="flex-1 lg:flex-[0_0_auto] flex flex-col-reverse lg:flex-row flex-wrap justify-center gap-3">
-            <Button
-              variant="outline"
-              className="px-5 py-4 h-fit w-full md:w-auto"
-            >
-              <Link to="/signup">Apply as Dealer </Link>
-            </Button>
-            <Button
-              variant="default"
-              className="px-5 py-4 h-fit w-full md:w-auto"
-            >
-              <Link to="/services">Continue as Broker</Link>
-            </Button>
+            <Link to="/signup">
+              {" "}
+              <Button
+                size="lg"
+                variant="outline"
+                className="bg-transparent w-full md:w-auto"
+              >
+                Apply as Dealer
+              </Button>
+            </Link>
+            <Link to="/services">
+              <Button
+                variant="default"
+                className="px-3 py-3 h-fit w-full md:w-auto"
+              >
+                Continue as Broker
+              </Button>
+            </Link>
           </div>
         </div>
 
@@ -425,16 +438,24 @@ export default function Services() {
             Start with the Role that Fits Your Institution
           </h2>
           <div className="flex flex-wrap md:flex-nowrap gap-3">
-            <Button size="lg" className="bg-white text-black w-full md:w-auto">
-              <Link to="#">Continue as Broker</Link>
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="bg-transparent w-full md:w-auto"
-            >
-              <Link to="/signup">Apply as Dealer </Link>
-            </Button>
+            <Link to="/services">
+              <Button
+                variant="default"
+                className="px-3 py-3 h-fit w-full md:w-auto"
+              >
+                Continue as Broker
+              </Button>
+            </Link>
+            <Link to="/signup">
+              {" "}
+              <Button
+                size="lg"
+                variant="outline"
+                className="bg-transparent w-full md:w-auto"
+              >
+                Apply as Dealer
+              </Button>
+            </Link>
           </div>
         </Card>
       </section>
