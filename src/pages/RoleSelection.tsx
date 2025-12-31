@@ -50,7 +50,8 @@ export default function RoleSelection() {
 
           <Card
             className="p-8 hover-lift cursor-pointer group"
-            onClick={() => handleSelectRole("dealer")}
+            onClick={() => alert("Dealer role coming soon!")}
+            // onClick={() => handleSelectRole("dealer")}
           >
             <div className="w-16 h-16 rounded-2xl bg-accent flex items-center justify-center mb-6">
               <Building2 className="w-8 h-8 text-accent-foreground" />
@@ -65,7 +66,7 @@ export default function RoleSelection() {
               <li>• Institutional-grade API</li>
               <li>• Risk management tools</li>
             </ul>
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="w-full" disabled>
               Select Dealer <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </Card>

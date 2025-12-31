@@ -592,7 +592,7 @@ export default function Landing() {
                   </h1>
                 </div>
               </div>
-              <div className="mt-5 h-[400px] pb-2 pr-2">
+              <div className="mt-5 h-[300px] pb-2 pr-2">
                 <MarketSummaryChart />
               </div>
               <p className="p-4 text-xs text-black/50 text-center">
@@ -658,7 +658,7 @@ export default function Landing() {
 
       {/* Features Section */}
       <section className="py-20 bg-[#fff] pt-0">
-        <div className="max-w-[1100px] mx-auto px-4">
+        <div className="max-w-[1000px] mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-5xl font-bold mb-4">
               What is ContiSX?
