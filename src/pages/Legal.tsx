@@ -120,47 +120,355 @@ export default function Legal() {
   return (
     <div className="py-20">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4 animate-fade-in">Legal</h1>
+        <div className="text-center max-w-3xl mx-auto mb-12">
+          <small className="font-semibold text-[#1570EF]">Privacy Policy</small>
+          <h1 className="text-4xl font-bold mb-4 animate-fade-in">
+            We care about your privacy
+          </h1>
           <p className="text-muted-foreground opacity-0 animate-fade-in stagger-1">
-            Important legal documents and policies
+            Your privacy is important to us at Kaukus. We respect your privacy
+            regarding any information we may collect from you across our
+            website.
           </p>
         </div>
 
         <div className="max-w-4xl mx-auto">
-          <Tabs defaultValue="terms" className="w-full">
-            <TabsList className="grid grid-cols-4 mb-8">
-              <TabsTrigger value="terms">Terms</TabsTrigger>
-              <TabsTrigger value="privacy">Privacy</TabsTrigger>
-              <TabsTrigger value="compliance">Compliance</TabsTrigger>
-              <TabsTrigger value="cookies">Cookies</TabsTrigger>
+          <Tabs defaultValue="terms" className="w-fit">
+            <TabsList className="grid grid-cols-2 max-w-lg mx-auto mb-8">
+              <TabsTrigger value="legal-version">Legal version</TabsTrigger>
+              <TabsTrigger value="simple-version">Simple version</TabsTrigger>
             </TabsList>
 
-            {Object.entries(legalDocs).map(([key, doc]) => (
-              <TabsContent key={key} value={key}>
-                <Card className="p-8">
-                  <div className="mb-6 pb-6 border-b border-border">
-                    <h2 className="text-2xl font-bold mb-2">{doc.title}</h2>
-                    <p className="text-sm text-muted-foreground">
-                      Last updated: {doc.lastUpdated}
-                    </p>
-                  </div>
+            <TabsContent
+              key="legal-version"
+              value="legal-version"
+              className="text-gray-600"
+            >
+              <p className="mb-10">
+                Mi tincidunt elit, id quisque ligula ac diam, amet. Vel etiam
+                suspendisse morbi eleifend faucibus eget vestibulum felis.
+                Dictum quis montes, sit sit. Tellus aliquam enim urna, etiam.
+                Mauris posuere vulputate arcu amet, vitae nisi, tellus
+                tincidunt. At feugiat sapien varius id.
+                <br />
+                <br />
+                Eget quis mi enim, leo lacinia pharetra, semper. Eget in
+                volutpat mollis at volutpat lectus velit, sed auctor. Porttitor
+                fames arcu quis fusce augue enim. Quis at habitant diam at.
+                Suscipit tristique risus, at donec. In turpis vel et quam
+                imperdiet. Ipsum molestie aliquet sodales id est ac volutpat.
+              </p>
 
-                  <div className="space-y-6">
-                    {doc.content.map((section, i) => (
-                      <div key={i}>
-                        <h3 className="text-lg font-semibold mb-2">
-                          {section.heading}
-                        </h3>
-                        <p className="text-muted-foreground leading-relaxed">
-                          {section.text}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </Card>
-              </TabsContent>
-            ))}
+              <div className="mb-10">
+                <h3 className="mb-5 font-semibold text-3xl text-black">
+                  What information do we collect?
+                </h3>
+
+                <p className="">
+                  Dolor enim eu tortor urna sed duis nulla. Aliquam vestibulum,
+                  nulla odio nisl vitae. In aliquet pellentesque aenean hac
+                  vestibulum turpis mi bibendum diam. Tempor integer aliquam in
+                  vitae malesuada fringilla.
+                  <br />
+                  <br />
+                  Elit nisi in eleifend sed nisi. Pulvinar at orci, proin
+                  imperdiet commodo consectetur convallis risus. Sed condimentum
+                  enim dignissim adipiscing faucibus consequat, urna. Viverra
+                  purus et erat auctor aliquam. Risus, volutpat vulputate
+                  posuere purus sit congue convallis aliquet. Arcu id augue ut
+                  feugiat donec porttitor neque. Mauris, neque ultricies eu
+                  vestibulum, bibendum quam lorem id. Dolor lacus, eget nunc
+                  lectus in tellus, pharetra, porttitor.
+                  <br />
+                  <br />
+                  Ipsum sit mattis nulla quam nulla. Gravida id gravida ac enim
+                  mauris id. Non pellentesque congue eget consectetur turpis.
+                  Sapien, dictum molestie sem tempor. Diam elit, orci, tincidunt
+                  aenean tempus. Quis velit eget ut tortor tellus. Sed vel,
+                  congue felis elit erat nam nibh orci.
+                </p>
+              </div>
+
+              <div className="mb-10">
+                <h3 className="mb-5 font-semibold text-3xl text-black">
+                  How do we use your information?
+                </h3>
+
+                <p className="">
+                  Dolor enim eu tortor urna sed duis nulla. Aliquam vestibulum,
+                  nulla odio nisl vitae. In aliquet pellentesque aenean hac
+                  vestibulum turpis mi bibendum diam. Tempor integer aliquam in
+                  vitae malesuada fringilla.
+                  <br />
+                  <br />
+                  Elit nisi in eleifend sed nisi. Pulvinar at orci, proin
+                  imperdiet commodo consectetur convallis risus. Sed condimentum
+                  enim dignissim adipiscing faucibus consequat, urna. Viverra
+                  purus et erat auctor aliquam. Risus, volutpat vulputate
+                  posuere purus sit congue convallis aliquet. Arcu id augue ut
+                  feugiat donec porttitor neque. Mauris, neque ultricies eu
+                  vestibulum, bibendum quam lorem id. Dolor lacus, eget nunc
+                  lectus in tellus, pharetra, porttitor.
+                  <br />
+                  <br />
+                  Ipsum sit mattis nulla quam nulla. Gravida id gravida ac enim
+                  mauris id. Non pellentesque congue eget consectetur turpis.
+                  Sapien, dictum molestie sem tempor. Diam elit, orci, tincidunt
+                  aenean tempus. Quis velit eget ut tortor tellus. Sed vel,
+                  congue felis elit erat nam nibh orci.
+                </p>
+              </div>
+
+              <div className="mb-10">
+                <h3 className="mb-4 font-semibold text-2xl text-black">
+                  Do we use cookies and other tracking technologies?
+                </h3>
+
+                <p className="">
+                  Pharetra morbi libero id aliquam elit massa integer tellus.
+                  Quis felis aliquam ullamcorper porttitor. Pulvinar ullamcorper
+                  sit dictumst ut eget a, elementum eu. Maecenas est morbi
+                  mattis id in ac pellentesque ac.
+                </p>
+              </div>
+
+              <div className="mb-8">
+                <h3 className="mb-4 font-semibold text-2xl text-black">
+                  How long do we keep your information?
+                </h3>
+
+                <p className="">
+                  Pharetra morbi libero id aliquam elit massa integer tellus.
+                  Quis felis aliquam ullamcorper porttitor. Pulvinar ullamcorper
+                  sit dictumst ut eget a, elementum eu. Maecenas est morbi
+                  mattis id in ac pellentesque ac.
+                </p>
+              </div>
+
+              <div className="mb-10">
+                <h3 className="mb-4 font-semibold text-2xl text-black">
+                  How do we keep your information safe?
+                </h3>
+
+                <p className="">
+                  Pharetra morbi libero id aliquam elit massa integer tellus.
+                  Quis felis aliquam ullamcorper porttitor. Pulvinar ullamcorper
+                  sit dictumst ut eget a, elementum eu. Maecenas est morbi
+                  mattis id in ac pellentesque ac.
+                </p>
+              </div>
+
+              <div className="mb-10">
+                <h3 className="mb-5 font-semibold text-3xl text-black">
+                  What are your privacy rights?
+                </h3>
+
+                <p className="">
+                  Pharetra morbi libero id aliquam elit massa integer tellus.
+                  Quis felis aliquam ullamcorper porttitor. Pulvinar ullamcorper
+                  sit dictumst ut eget a, elementum eu. Maecenas est morbi
+                  mattis id in ac pellentesque ac.
+                </p>
+              </div>
+
+              <div className="mb-10">
+                <h3 className="mb-4 font-semibold text-2xl text-black">
+                  How can you contact us about this policy?
+                </h3>
+
+                <p className="">
+                  Sagittis et eu at elementum, quis in. Proin praesent volutpat
+                  egestas sociis sit lorem nunc nunc sit. Eget diam curabitur mi
+                  ac. Auctor rutrum lacus malesuada massa ornare et. Vulputate
+                  consectetur ac ultrices at diam dui eget fringilla tincidunt.
+                  Arcu sit dignissim massa erat cursus vulputate gravida id. Sed
+                  quis auctor vulputate hac elementum gravida cursus
+                  dis.Sagittis et eu at elementum, quis in. Proin praesent
+                  volutpat egestas sociis sit lorem nunc nunc sit. Eget diam
+                  curabitur mi ac. Auctor rutrum lacus malesuada massa ornare
+                  et. Vulputate consectetur ac ultrices at diam dui eget
+                  fringilla tincidunt. Arcu sit dignissim massa erat cursus
+                  vulputate gravida id. Sed quis auctor vulputate hac elementum
+                  gravida cursus dis.
+                </p>
+                <br />
+                <ol className="list-decimal list-inside">
+                  <li>Lectus id duis vitae porttitor enim gravida morbi.</li>
+                  <li>
+                    Eu turpis posuere semper feugiat volutpat elit, ultrices
+                    suspendisse. Auctor vel in vitae placerat.
+                  </li>
+                  <li>
+                    Suspendisse maecenas ac donec scelerisque diam sed est duis
+                    purus.
+                  </li>
+                </ol>
+              </div>
+            </TabsContent>
+            <TabsContent
+              key="simple-version"
+              value="simple-version"
+              className="text-gray-600"
+            >
+              <p className="mb-10">
+                Mi tincidunt elit, id quisque ligula ac diam, amet. Vel etiam
+                suspendisse morbi eleifend faucibus eget vestibulum felis.
+                Dictum quis montes, sit sit. Tellus aliquam enim urna, etiam.
+                Mauris posuere vulputate arcu amet, vitae nisi, tellus
+                tincidunt. At feugiat sapien varius id. Eget quis mi enim, leo
+                lacinia pharetra, semper. Eget in volutpat mollis at volutpat
+                lectus velit, sed auctor. Porttitor fames arcu quis fusce augue
+                enim. Quis at habitant diam at. Suscipit tristique risus, at
+                donec. In turpis vel et quam imperdiet. Ipsum molestie aliquet
+                sodales id est ac volutpat.{" "}
+              </p>
+
+              <div className="mb-10">
+                <h3 className="mb-5 font-semibold text-3xl text-black">
+                  What information do we collect?
+                </h3>
+
+                <p className="">
+                  Dolor enim eu tortor urna sed duis nulla. Aliquam vestibulum,
+                  nulla odio nisl vitae. In aliquet pellentesque aenean hac
+                  vestibulum turpis mi bibendum diam. Tempor integer aliquam in
+                  vitae malesuada fringilla.
+                  <br />
+                  <br />
+                  Elit nisi in eleifend sed nisi. Pulvinar at orci, proin
+                  imperdiet commodo consectetur convallis risus. Sed condimentum
+                  enim dignissim adipiscing faucibus consequat, urna. Viverra
+                  purus et erat auctor aliquam. Risus, volutpat vulputate
+                  posuere purus sit congue convallis aliquet. Arcu id augue ut
+                  feugiat donec porttitor neque. Mauris, neque ultricies eu
+                  vestibulum, bibendum quam lorem id. Dolor lacus, eget nunc
+                  lectus in tellus, pharetra, porttitor.
+                  <br />
+                  <br />
+                  Ipsum sit mattis nulla quam nulla. Gravida id gravida ac enim
+                  mauris id. Non pellentesque congue eget consectetur turpis.
+                  Sapien, dictum molestie sem tempor. Diam elit, orci, tincidunt
+                  aenean tempus. Quis velit eget ut tortor tellus. Sed vel,
+                  congue felis elit erat nam nibh orci.
+                </p>
+              </div>
+
+              <div className="mb-10">
+                <h3 className="mb-5 font-semibold text-3xl text-black">
+                  How do we use your information?
+                </h3>
+
+                <p className="">
+                  Dolor enim eu tortor urna sed duis nulla. Aliquam vestibulum,
+                  nulla odio nisl vitae. In aliquet pellentesque aenean hac
+                  vestibulum turpis mi bibendum diam. Tempor integer aliquam in
+                  vitae malesuada fringilla.
+                  <br />
+                  <br />
+                  Elit nisi in eleifend sed nisi. Pulvinar at orci, proin
+                  imperdiet commodo consectetur convallis risus. Sed condimentum
+                  enim dignissim adipiscing faucibus consequat, urna. Viverra
+                  purus et erat auctor aliquam. Risus, volutpat vulputate
+                  posuere purus sit congue convallis aliquet. Arcu id augue ut
+                  feugiat donec porttitor neque. Mauris, neque ultricies eu
+                  vestibulum, bibendum quam lorem id. Dolor lacus, eget nunc
+                  lectus in tellus, pharetra, porttitor.
+                  <br />
+                  <br />
+                  Ipsum sit mattis nulla quam nulla. Gravida id gravida ac enim
+                  mauris id. Non pellentesque congue eget consectetur turpis.
+                  Sapien, dictum molestie sem tempor. Diam elit, orci, tincidunt
+                  aenean tempus. Quis velit eget ut tortor tellus. Sed vel,
+                  congue felis elit erat nam nibh orci.
+                </p>
+              </div>
+
+              <div className="mb-10">
+                <h3 className="mb-4 font-semibold text-2xl text-black">
+                  Do we use cookies and other tracking technologies?
+                </h3>
+
+                <p className="">
+                  Pharetra morbi libero id aliquam elit massa integer tellus.
+                  Quis felis aliquam ullamcorper porttitor. Pulvinar ullamcorper
+                  sit dictumst ut eget a, elementum eu. Maecenas est morbi
+                  mattis id in ac pellentesque ac.
+                </p>
+              </div>
+
+              <div className="mb-8">
+                <h3 className="mb-4 font-semibold text-2xl text-black">
+                  How long do we keep your information?
+                </h3>
+
+                <p className="">
+                  Pharetra morbi libero id aliquam elit massa integer tellus.
+                  Quis felis aliquam ullamcorper porttitor. Pulvinar ullamcorper
+                  sit dictumst ut eget a, elementum eu. Maecenas est morbi
+                  mattis id in ac pellentesque ac.
+                </p>
+              </div>
+
+              <div className="mb-10">
+                <h3 className="mb-4 font-semibold text-2xl text-black">
+                  How do we keep your information safe?
+                </h3>
+
+                <p className="">
+                  Pharetra morbi libero id aliquam elit massa integer tellus.
+                  Quis felis aliquam ullamcorper porttitor. Pulvinar ullamcorper
+                  sit dictumst ut eget a, elementum eu. Maecenas est morbi
+                  mattis id in ac pellentesque ac.
+                </p>
+              </div>
+
+              <div className="mb-10">
+                <h3 className="mb-5 font-semibold text-3xl text-black">
+                  What are your privacy rights?
+                </h3>
+
+                <p className="">
+                  Pharetra morbi libero id aliquam elit massa integer tellus.
+                  Quis felis aliquam ullamcorper porttitor. Pulvinar ullamcorper
+                  sit dictumst ut eget a, elementum eu. Maecenas est morbi
+                  mattis id in ac pellentesque ac.
+                </p>
+              </div>
+
+              <div className="mb-10">
+                <h3 className="mb-4 font-semibold text-2xl text-black">
+                  How can you contact us about this policy?
+                </h3>
+
+                <p className="">
+                  Sagittis et eu at elementum, quis in. Proin praesent volutpat
+                  egestas sociis sit lorem nunc nunc sit. Eget diam curabitur mi
+                  ac. Auctor rutrum lacus malesuada massa ornare et. Vulputate
+                  consectetur ac ultrices at diam dui eget fringilla tincidunt.
+                  Arcu sit dignissim massa erat cursus vulputate gravida id. Sed
+                  quis auctor vulputate hac elementum gravida cursus
+                  dis.Sagittis et eu at elementum, quis in. Proin praesent
+                  volutpat egestas sociis sit lorem nunc nunc sit. Eget diam
+                  curabitur mi ac. Auctor rutrum lacus malesuada massa ornare
+                  et. Vulputate consectetur ac ultrices at diam dui eget
+                  fringilla tincidunt. Arcu sit dignissim massa erat cursus
+                  vulputate gravida id. Sed quis auctor vulputate hac elementum
+                  gravida cursus dis.
+                </p>
+                <br />
+                <ol className="list-decimal list-inside">
+                  <li>Lectus id duis vitae porttitor enim gravida morbi.</li>
+                  <li>
+                    Eu turpis posuere semper feugiat volutpat elit, ultrices
+                    suspendisse. Auctor vel in vitae placerat.
+                  </li>
+                  <li>
+                    Suspendisse maecenas ac donec scelerisque diam sed est duis
+                    purus.
+                  </li>
+                </ol>
+              </div>
+            </TabsContent>
           </Tabs>
         </div>
       </div>
