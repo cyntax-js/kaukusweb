@@ -12,6 +12,7 @@ import { mockBrokerConfigs } from "@/broker-theme/mocks";
 // Platform Pages
 import Landing from "./pages/Landing";
 import Services from "./pages/Services";
+import About from "./pages/About";
 import Pricing from "./pages/Pricing";
 import Legal from "./pages/Legal";
 import Login from "./pages/Login";
@@ -75,6 +76,7 @@ const App = () => (
           {/* Public pages */}
           <Route element={<MainLayout />}>
             <Route path="/" element={<Landing />} />
+            <Route path="/about" element={<About />} />
             <Route path="/services" element={<Services />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/legal" element={<Legal />} />

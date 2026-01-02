@@ -437,16 +437,16 @@ export default function Services() {
           <h2 className="text-3xl font-bold mb-4">
             Start with the Role that Fits Your Institution
           </h2>
-          <div className="flex flex-wrap md:flex-nowrap gap-3">
-            <Link to="/services">
+          <div className="flex-1 lg:flex-[0_0_auto] flex flex-wrap justify-center gap-3">
+            <Link to="/services" className="block w-full md:w-auto">
               <Button
                 variant="default"
-                className="px-3 py-3 h-fit w-full md:w-auto"
+                className="px-3 py-3 h-fit w-full md:w-auto bg-white text-black"
               >
                 Continue as Broker
               </Button>
             </Link>
-            <Link to="/signup">
+            <Link to="/signup" className="block w-full md:w-auto">
               {" "}
               <Button
                 size="lg"
