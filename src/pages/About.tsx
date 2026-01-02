@@ -130,7 +130,7 @@ const About = () => {
   return (
     <div className="xl:pt-20">
       {/* Hero */}
-      <section className="container mx-auto lg:pt-[40px] px-4 mb-20">
+      <section className="container mx-auto pt-24 lg:pb-36 px-4 mb-20">
         <div className="max-w-2xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-6 animate-fade-in">
             Building the invisible backbone of markets
