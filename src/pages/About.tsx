@@ -199,7 +199,7 @@ const About = () => {
         </div>
       </section>
 
-      <section className="py-20 max-w-7xl mx-auto">
+      <section className="py-20 bg-[#FDFDFD]">
         <div className="mx-auto mb-20 px-4 text-black max-w-7xl">
           <small className="uppercase text-black/60">Stay Updated</small>
           <h3 className="text-3xl font-bold my-3">Our Solution</h3>
@@ -209,7 +209,7 @@ const About = () => {
           </p>
         </div>
 
-        <div className="px-4">
+        <div className="px-4 max-w-7xl mx-auto">
           {ourSolution.map((solution) => (
             <div
               className={`flex flex-wrap items-center justify-between ${solution.direction == "ltr" ? "flex-row" : "flex-row-reverse"}`}
