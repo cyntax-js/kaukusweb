@@ -1,82 +1,82 @@
 import { Link } from "react-router-dom";
-import { TrendingUp, Twitter, Linkedin, Github } from "lucide-react";
+import { Twitter, Instagram, Linkedin, Facebook } from "lucide-react";
+
+import XIcon from "@/assets/x-icon.png";
+import LinkedinIcon from "@/assets/linkedin-icon.png";
+import GithubIcon from "@/assets/github-icon.png";
+import FacebookIcon from "@/assets/facebook-icon.png";
+import Logo from "@/assets/logo-white.png";
+import ISO from "@/assets/iso.png";
+import AICPA from "@/assets/aicpa-soc.png";
 
 const footerLinks = {
-  Product: [
-    { href: "/pricing", label: "Pricing" },
-    { href: "#", label: "Features" },
-    { href: "#", label: "API Documentation" },
-    { href: "#", label: "Integrations" },
+  "Trading Tools": [
+    { href: "#", label: "Position Builder" },
+    { href: "#", label: "Kaucus Metrics" },
+    { href: "#", label: "Kaucus Tools" },
   ],
-  Company: [
-    { href: "/about", label: "About Us" },
+  "Dev Hub": [
+    { href: "#", label: "API Documentation" },
+    { href: "#", label: "Bug Bounty Program" },
+  ],
+  Learn: [
+    { href: "#", label: "Articles" },
+    { href: "#", label: "Options Course" },
+    { href: "#", label: "Industry News" },
+    { href: "#", label: "Market Research" },
+    { href: "#", label: "Exchange Updates" },
+  ],
+  About: [
+    { href: "#", label: "About Us" },
     { href: "#", label: "Careers" },
-    { href: "#", label: "Blog" },
-    { href: "#", label: "Press" },
+    { href: "#", label: "Partners" },
+    { href: "#", label: "Security" },
   ],
   Legal: [
-    { href: "/legal", label: "Terms of Service" },
-    { href: "/legal", label: "Privacy Policy" },
-    { href: "/legal", label: "Compliance" },
-    { href: "/legal", label: "Cookies" },
+    { href: "#", label: "Terms of Services" },
+    { href: "#", label: "Privacy Notice" },
+    { href: "#", label: "Risk Disclosure" },
+    { href: "#", label: "Affiliate Program" },
+    { href: "#", label: "Complaints Form" },
   ],
   Support: [
-    { href: "#", label: "Help Center" },
-    { href: "#", label: "Contact Us" },
-    { href: "#", label: "Status" },
-    { href: "#", label: "Security" },
+    { href: "#", label: "Support Center" },
+    { href: "#", label: "Telegram Suport 24/7" },
   ],
 };
 
+const socialLinks = [
+  { href: "#", icon: <img src={XIcon} alt="X" /> },
+  { href: "#", icon: <img src={LinkedinIcon} alt="Linkedin" /> },
+  { href: "#", icon: <img src={FacebookIcon} alt="Facebook" /> },
+  { href: "#", icon: <img src={GithubIcon} alt="Github" /> },
+];
+
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-card">
-      <div className="container mx-auto px-4 py-16">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
-          {/* Brand */}
-          <div className="col-span-2 md:col-span-1">
-            <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-primary-foreground" />
-              </div>
-              <span className="text-xl font-bold">ContiSX</span>
-            </Link>
-            <p className="text-sm text-muted-foreground mb-4">
-              The enterprise-grade stock liquidity provider powering the next
-              generation of brokers and dealers.
-            </p>
-            <div className="flex gap-3">
-              <a
-                href="#"
-                className="p-2 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
-              >
-                <Twitter className="w-4 h-4" />
-              </a>
-              <a
-                href="#"
-                className="p-2 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
-              >
-                <Linkedin className="w-4 h-4" />
-              </a>
-              <a
-                href="#"
-                className="p-2 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
-              >
-                <Github className="w-4 h-4" />
-              </a>
-            </div>
+    <footer className="bg-secondary-blue text-secondary-blue-foreground px-10">
+      <div className="flex justify-between flex-col lg:flex-row gap-y-12 max-w-[93rem] mx-auto pt-16 pb-12">
+        <div className="space-y-6 max-w-80">
+          <img src={Logo} alt="" className="" />
+          <p className="text-secondary-blue-foreground/60">
+            Design amazing digital experiences that create more happy in the
+            world.
+          </p>
+          <div className="flex gap-6">
+            <img src={ISO} alt="" className="" />
+            <img src={AICPA} alt="" className="" />
           </div>
-
-          {/* Links */}
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-x-4 lg:gap-x-8 gap-y-8">
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
-              <h4 className="font-semibold mb-4">{category}</h4>
-              <ul className="space-y-2">
-                {links.map((link) => (
-                  <li key={link.label}>
+              <h3 className="font-semibold text-sm mb-4">{category}</h3>
+              <ul className="space-y-3">
+                {links.map((link, index) => (
+                  <li key={index}>
                     <Link
                       to={link.href}
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      className="text-secondary-blue-foreground/60 hover:text-secondary-blue-foreground transition-colors font-bold text-nowrap"
                     >
                       {link.label}
                     </Link>
@@ -86,16 +86,18 @@ export function Footer() {
             </div>
           ))}
         </div>
+      </div>
 
-        <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} ContiSX. All rights reserved.
-          </p>
-          <div className="flex items-center gap-6">
-            <span className="text-xs text-muted-foreground">
-              Regulated by SEC, FCA, ASIC
-            </span>
-          </div>
+      <div className="flex flex-col-reverse lg:flex-row flex-wrap gap-y-6 justify-between max-w-7xl mx-auto py-12">
+        <p className="text-secondary-blue-foreground/60">
+          © 2025 Kaucus. All rights reserved.
+        </p>
+        <div className="flex gap-x-6">
+          {socialLinks.map((link, index) => (
+            <a key={index} href={link.href} className="">
+              {link.icon}
+            </a>
+          ))}
         </div>
       </div>
     </footer>
