@@ -9,7 +9,6 @@ import { Loader2 } from "lucide-react";
 export default function Signup() {
   const navigate = useNavigate();
   const { signup, isLoading } = useAuthStore();
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -18,8 +17,14 @@ export default function Signup() {
     e.preventDefault();
     setError("");
 
-    if (!email || !password || !name) {
+    if (!email || !password) {
       setError("Please fill in all fields");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address");
       return;
     }
 
@@ -28,16 +33,22 @@ export default function Signup() {
       return;
     }
 
+    if (!/[A-Z]/.test(password)) {
+      setError("Password must contain an uppercase letter");
+      return;
+    }
+
+    if (!/\d/.test(password)) {
+      setError("Password must contain numbers");
+      return;
+    }
+
     try {
-      await signup(email, password, name);
+      await signup(email, password);
       navigate("/role-selection");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      if (msg === "email.taken") {
-        setError("This email is already in use. Please try another.");
-      } else {
-        setError("Failed to create account. Please try again.");
-      }
+      setError(msg);
     }
   };
 
@@ -50,20 +61,10 @@ export default function Signup() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
-          <div className="text-red-600 text-sm bg-red-50 p-3 rounded-md border border-red-200">
+          <div className="text-red-600 text-sm bg-red-50 p-3 rounded-md border border-red-200 whitespace-pre-line">
             {error}
           </div>
         )}
-        <div className="space-y-2">
-          <Label htmlFor="name">Full Name</Label>
-          <Input
-            id="name"
-            placeholder="John Doe"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </div>
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <Input

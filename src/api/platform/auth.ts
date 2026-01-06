@@ -5,7 +5,7 @@
  */
 
 import { apiFetch } from "@/lib/utils";
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { getFriendlyErrorMessage } from "@/lib/utils";
 
 // ============================================================
 // TYPES
@@ -30,7 +30,6 @@ export interface LoginRequest {
 export interface SignupRequest {
   email: string;
   password: string;
-  name: string;
 }
 
 export interface AuthResponse {
@@ -82,8 +81,18 @@ export async function signup(request: SignupRequest): Promise<AuthResponse> {
 
   if (!response.ok) {
     const errorData = await response.json();
-    const errorMessage = errorData.errors?.[0] || "Signup failed";
-    throw new Error(errorMessage);
+
+    if (Array.isArray(errorData.errors) && errorData.errors.length > 0) {
+      const friendlyErrors = errorData.errors.map((code: string) =>
+        getFriendlyErrorMessage(code),
+      );
+
+      throw new Error(friendlyErrors.join("\n"));
+    }
+
+    throw new Error(
+      getFriendlyErrorMessage(errorData.message || "server.error"),
+    );
   }
 
   const data = await response.json();
@@ -92,7 +101,7 @@ export async function signup(request: SignupRequest): Promise<AuthResponse> {
     user: {
       id: data.uid,
       email: data.email,
-      name: data.username || request.name,
+      name: data.username,
       role: data.role,
       state: data.state,
       createdAt: data.created_at,

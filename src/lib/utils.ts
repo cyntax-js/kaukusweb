@@ -47,3 +47,24 @@ export const apiFetch = async (url: string, options: RequestInit = {}) => {
 
   return response;
 };
+
+const ERROR_MESSAGES: Record<string, string> = {
+  // email Errors
+  "email.taken": "This email address is already registered. Please log in.",
+  "email.invalid": "Please enter a valid email address.",
+
+  // password Errors
+  "password.requirements":
+    "Password must contain an uppercase letter and numbers.",
+};
+
+/**
+ * Converts a backend error code into a friendly message.
+ * Falls back to the raw code if no mapping is found.
+ */
+export const getFriendlyErrorMessage = (code: string): string => {
+  // Handle edge case where code might be undefined or not a string
+  if (!code || typeof code !== "string") return "An unexpected error occurred.";
+
+  return ERROR_MESSAGES[code] || code;
+};

@@ -32,7 +32,7 @@ interface AuthStore {
 
   // Actions
   login: (email: string, password: string) => Promise<boolean>;
-  signup: (email: string, password: string, name: string) => Promise<boolean>;
+  signup: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   setSelectedRole: (role: UserRole) => void;
   setUser: (user: User) => void;
@@ -88,14 +88,13 @@ export const useAuthStore = create<AuthStore>()(
       /**
        * Sign up a new user
        */
-      signup: async (email: string, password: string, name: string) => {
+      signup: async (email: string, password: string) => {
         set({ isLoading: true });
 
         try {
           const response = await platformApi.auth.signup({
             email,
             password,
-            name,
           });
 
           // save CSRF Token to Cookie
