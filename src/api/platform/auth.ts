@@ -115,8 +115,10 @@ export async function signup(request: SignupRequest): Promise<AuthResponse> {
  */
 export async function logout(): Promise<void> {
   try {
-    await apiFetch("/api/auth/logout", { method: "POST" });
+    await apiFetch(`/api/v2/auth/identity/sessions`, {
+      method: "DELETE",
+    });
   } catch (err) {
-    console.error("Logout API call failed", err);
+    console.warn("Server logout failed:", err);
   }
 }

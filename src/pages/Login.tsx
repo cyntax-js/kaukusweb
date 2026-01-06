@@ -25,7 +25,7 @@ export default function Login() {
     const success = await login(email, password);
 
     if (success) {
-      navigate("/role-selection");
+      navigate("/");
     } else {
       setError("Invalid email or password. Please try again.");
     }
@@ -39,6 +39,11 @@ export default function Login() {
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {error && (
+          <div className="text-red-600 text-sm bg-red-50 p-3 rounded-md border border-red-200">
+            {error}
+          </div>
+        )}
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <Input

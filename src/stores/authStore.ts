@@ -119,9 +119,9 @@ export const useAuthStore = create<AuthStore>()(
       /**
        * Log out the current user
        */
-      logout: () => {
+      logout: async () => {
         // Call API logout if exists
-        platformApi.auth.logout();
+        await platformApi.auth.logout();
 
         // Clear the Security Cookie (expire it)
         setCookie("XSRF-TOKEN", "", -1);
@@ -132,6 +132,8 @@ export const useAuthStore = create<AuthStore>()(
           isAuthenticated: false,
           selectedRole: null,
         });
+
+        window.location.href = "/login";
       },
 
       /**
