@@ -7,8 +7,8 @@
  * Uses Zustand persist middleware for session persistence.
  *
  * Usage:
- *   import { useAuthStore } from '@/stores/authStore';
- *   const { user, login, logout } = useAuthStore();
+ * import { useAuthStore } from '@/stores/authStore';
+ * const { user, login, logout } = useAuthStore();
  */
 
 import { create } from "zustand";
@@ -16,6 +16,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { platformApi, type User, type UserRole } from "@/api/platform";
 import { STORAGE_KEYS } from "@/lib/storage";
 import { indexedDBStateStorage } from "@/lib/indexedDBStorage";
+import { setCookie } from "@/lib/utils";
 
 // ============================================================
 // TYPES
@@ -26,7 +27,7 @@ interface AuthStore {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  selectedRole: UserRole;
+  selectedRole: UserRole | null; // Allow null for initial state
   _hasHydrated: boolean;
 
   // Actions
@@ -61,6 +62,15 @@ export const useAuthStore = create<AuthStore>()(
         try {
           const response = await platformApi.auth.login({ email, password });
 
+          // --------------------------------------------------------
+          // SECURITY INTEGRATION: Save CSRF Token to Cookie
+          // --------------------------------------------------------
+          // Check if the response contains the token and save it.
+          // This keeps the sensitive token out of IndexedDB.
+          if (response.csrf_token) {
+            setCookie("XSRF-TOKEN", response.csrf_token);
+          }
+
           set({
             user: response.user,
             isAuthenticated: true,
@@ -69,6 +79,7 @@ export const useAuthStore = create<AuthStore>()(
 
           return true;
         } catch (error) {
+          console.error("Login failed:", error);
           set({ isLoading: false });
           return false;
         }
@@ -87,6 +98,11 @@ export const useAuthStore = create<AuthStore>()(
             name,
           });
 
+          // save CSRF Token to Cookie
+          if (response.csrf_token) {
+            setCookie("XSRF-TOKEN", response.csrf_token);
+          }
+
           set({
             user: response.user,
             isAuthenticated: true,
@@ -95,8 +111,9 @@ export const useAuthStore = create<AuthStore>()(
 
           return true;
         } catch (error) {
+          console.error("Signup failed:", error);
           set({ isLoading: false });
-          return false;
+          throw error;
         }
       },
 
@@ -104,7 +121,13 @@ export const useAuthStore = create<AuthStore>()(
        * Log out the current user
        */
       logout: () => {
+        // Call API logout if exists
         platformApi.auth.logout();
+
+        // Clear the Security Cookie (expire it)
+        setCookie("XSRF-TOKEN", "", -1);
+
+        // Clear the Store State
         set({
           user: null,
           isAuthenticated: false,
@@ -142,6 +165,7 @@ export const useAuthStore = create<AuthStore>()(
     {
       name: STORAGE_KEYS.USER,
       storage: createJSONStorage(() => indexedDBStateStorage),
+      // only persist non-sensitive, UI-critical data
       partialize: (state) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,
@@ -150,6 +174,6 @@ export const useAuthStore = create<AuthStore>()(
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
       },
-    }
-  )
+    },
+  ),
 );

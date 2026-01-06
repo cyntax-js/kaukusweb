@@ -12,11 +12,33 @@ export default function Signup() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const success = await signup(email, password, name);
-    if (success) navigate("/role-selection");
+    setError("");
+
+    if (!email || !password || !name) {
+      setError("Please fill in all fields");
+      return;
+    }
+
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters");
+      return;
+    }
+
+    try {
+      await signup(email, password, name);
+      navigate("/role-selection");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      if (msg === "email.taken") {
+        setError("This email is already in use. Please try another.");
+      } else {
+        setError("Failed to create account. Please try again.");
+      }
+    }
   };
 
   return (
@@ -27,6 +49,11 @@ export default function Signup() {
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {error && (
+          <div className="text-red-600 text-sm bg-red-50 p-3 rounded-md border border-red-200">
+            {error}
+          </div>
+        )}
         <div className="space-y-2">
           <Label htmlFor="name">Full Name</Label>
           <Input

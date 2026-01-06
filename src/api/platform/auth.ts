@@ -2,31 +2,24 @@
  * ============================================================
  * PLATFORM AUTHENTICATION API
  * ============================================================
- *
- * Handles authentication for the ContiSX platform.
- * Used by: Login, Signup, and auth-protected pages.
- *
- * To integrate real API:
- *   1. Replace mock responses with fetch calls
- *   2. Handle tokens/sessions appropriately
- *   3. Add proper error handling
  */
 
-import { mockResponse, generateId, DELAYS } from "../client";
+import { apiFetch } from "@/lib/utils";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // ============================================================
 // TYPES
 // ============================================================
 
-export type UserRole = "broker" | "dealer" | null;
+export type UserRole = "member" | "broker" | "dealer" | null;
 
 export interface User {
   id: string;
   email: string;
-  name: string;
+  name: string | null;
   role: UserRole;
-  createdAt: Date;
-  isVerified: boolean;
+  state: string;
+  createdAt: string;
 }
 
 export interface LoginRequest {
@@ -42,7 +35,7 @@ export interface SignupRequest {
 
 export interface AuthResponse {
   user: User;
-  token: string;
+  csrf_token?: string;
 }
 
 // ============================================================
@@ -53,51 +46,68 @@ export interface AuthResponse {
  * Log in a user with email and password
  */
 export async function login(request: LoginRequest): Promise<AuthResponse> {
-  // TODO: Replace with real API call
-  // return fetch('/api/auth/login', { method: 'POST', body: JSON.stringify(request) });
+  const response = await apiFetch(`/api/v2/auth/identity/sessions`, {
+    method: "POST",
+    body: JSON.stringify(request),
+  });
 
-  const user: User = {
-    id: generateId("user"),
-    email: request.email,
-    name: request.email.split("@")[0],
-    role: null,
-    createdAt: new Date(),
-    isVerified: true,
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Login failed");
+  }
+
+  const data = await response.json();
+
+  return {
+    user: {
+      id: data.uid,
+      email: data.email,
+      name: data.username || data.name,
+      role: data.role,
+      state: data.state,
+      createdAt: data.created_at,
+    },
+    csrf_token: data.csrf_token,
   };
-
-  return mockResponse({ user, token: "mock_token_" + user.id }, DELAYS.LONG);
 }
 
 /**
  * Register a new user
  */
 export async function signup(request: SignupRequest): Promise<AuthResponse> {
-  // TODO: Replace with real API call
+  const response = await apiFetch(`/api/v2/auth/identity/users`, {
+    method: "POST",
+    body: JSON.stringify(request),
+  });
 
-  const user: User = {
-    id: generateId("user"),
-    email: request.email,
-    name: request.name,
-    role: null,
-    createdAt: new Date(),
-    isVerified: false,
+  if (!response.ok) {
+    const errorData = await response.json();
+    const errorMessage = errorData.errors?.[0] || "Signup failed";
+    throw new Error(errorMessage);
+  }
+
+  const data = await response.json();
+
+  return {
+    user: {
+      id: data.uid,
+      email: data.email,
+      name: data.username || request.name,
+      role: data.role,
+      state: data.state,
+      createdAt: data.created_at,
+    },
+    csrf_token: data.csrf_token,
   };
-
-  return mockResponse({ user, token: "mock_token_" + user.id }, DELAYS.LONG);
 }
 
 /**
  * Log out the current user
  */
 export async function logout(): Promise<void> {
-  // TODO: Replace with real API call
-  return mockResponse(undefined, DELAYS.SHORT);
-}
-
-/**
- * Get current user session
- */
-export async function getCurrentUser(): Promise<User | null> {
-  // TODO: Replace with real API call
-  return mockResponse(null, DELAYS.SHORT);
+  try {
+    await apiFetch("/api/auth/logout", { method: "POST" });
+  } catch (err) {
+    console.error("Logout API call failed", err);
+  }
 }

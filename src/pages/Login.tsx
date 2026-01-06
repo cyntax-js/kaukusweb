@@ -11,11 +11,24 @@ export default function Login() {
   const { login, isLoading } = useAuthStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+
+    if (!email || !password) {
+      setError("Please fill in all fields");
+      return;
+    }
+
     const success = await login(email, password);
-    if (success) navigate("/role-selection");
+
+    if (success) {
+      navigate("/role-selection");
+    } else {
+      setError("Invalid email or password. Please try again.");
+    }
   };
 
   return (

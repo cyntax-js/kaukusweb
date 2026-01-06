@@ -1,6 +1,14 @@
-import { useState, useEffect, useContext, createContext, useMemo, ReactNode, useCallback } from 'react';
+import {
+  useState,
+  useEffect,
+  useContext,
+  createContext,
+  useMemo,
+  ReactNode,
+  useCallback,
+} from "react";
+import { setCookie } from "@/lib/utils";
 
-// Types
 interface User {
   id: string;
   email: string;
@@ -31,25 +39,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const initAuth = async () => {
       try {
-        const token = localStorage.getItem('authToken');
+        const token = localStorage.getItem("authToken");
         if (!token) {
           setLoading(false);
           return;
         }
 
-        const response = await fetch('/api/auth/me', {
-            headers: { Authorization: `Bearer ${token}` }
+        const response = await fetch("/api/auth/me", {
+          headers: { Authorization: `Bearer ${token}` },
         });
 
         if (response.ok) {
           const userData = await response.json();
           if (isMounted) setUser(userData);
         } else {
-          localStorage.removeItem('authToken');
+          localStorage.removeItem("authToken");
         }
       } catch (error) {
-        console.error('Auth init failed', error);
-        localStorage.removeItem('authToken');
+        console.error("Auth init failed", error);
+        localStorage.removeItem("authToken");
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -57,75 +65,87 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     initAuth();
 
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
+        throw new Error(data.message || "Login failed");
       }
 
-      localStorage.setItem('authToken', data.token);
-      setUser(data.user);
+      if (data.csrf_token) {
+        setCookie("XSRF-TOKEN", data.csrf_token);
+      }
+
+      setUser(data);
     } catch (error) {
       throw new Error(getErrorMessage(error));
     }
   }, []);
 
-  const signup = useCallback(async (email: string, password: string, name: string) => {
-    try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, name })
-      });
+  const signup = useCallback(
+    async (email: string, password: string, name: string) => {
+      try {
+        const response = await fetch("/api/auth/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password, name }),
+        });
 
-      const data = await response.json();
+        const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.message || 'Signup failed');
+        if (!response.ok) {
+          throw new Error(data.message || "Signup failed");
+        }
+
+        if (data.csrf_token) {
+          setCookie("XSRF-TOKEN", data.csrf_token);
+        }
+
+        setUser(data);
+
+        /* checkin with Ifeanyi to verify if there'll be an otp page */
+      } catch (error) {
+        throw new Error(getErrorMessage(error));
       }
-
-      localStorage.setItem('authToken', data.token);
-      setUser(data.user);
-    } catch (error) {
-      throw new Error(getErrorMessage(error));
-    }
-  }, []);
+    },
+    [],
+  );
 
   const logout = useCallback(() => {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem("authToken");
     setUser(null);
   }, []);
 
-  const value = useMemo(() => ({
-    user,
-    loading,
-    login,
-    logout,
-    signup
-  }), [user, loading, login, logout, signup]);
-
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({
+      user,
+      loading,
+      login,
+      logout,
+      signup,
+    }),
+    [user, loading, login, logout, signup],
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

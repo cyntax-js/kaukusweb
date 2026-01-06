@@ -18,6 +18,7 @@ const getDB = (): Promise<IDBDatabase> => {
     return Promise.resolve(dbInstance);
   }
 
+  // prevent multiple open requests happening at once
   if (dbPromise) {
     return dbPromise;
   }
@@ -30,16 +31,37 @@ const getDB = (): Promise<IDBDatabase> => {
       reject(request.error);
     };
 
-    request.onsuccess = () => {
-      dbInstance = request.result;
-      resolve(dbInstance);
-    };
-
     request.onupgradeneeded = (event) => {
       const db = (event.target as IDBOpenDBRequest).result;
       if (!db.objectStoreNames.contains(STORE_NAME)) {
         db.createObjectStore(STORE_NAME);
       }
+    };
+
+    request.onsuccess = () => {
+      dbInstance = request.result;
+      dbPromise = null; // clear promise so next call uses dbInstance
+
+      /*
+        ----------------------------------------------------
+        Handle unexpected closures
+        ----------------------------------------------------
+      */
+      dbInstance.onversionchange = () => {
+        /*
+          another tab has requested a version upgrade.
+          we must close this connection to allow it.
+        */
+        dbInstance?.close();
+        dbInstance = null;
+      };
+
+      dbInstance.onclose = () => {
+        // connection closed unexpectedly (eg user cleared data)
+        dbInstance = null;
+      };
+
+      resolve(dbInstance);
     };
   });
 
@@ -52,64 +74,39 @@ const getDB = (): Promise<IDBDatabase> => {
  */
 export const indexedDBStateStorage: StateStorage = {
   getItem: async (name: string): Promise<string | null> => {
-    try {
-      const db = await getDB();
-      return new Promise((resolve, reject) => {
-        const transaction = db.transaction(STORE_NAME, "readonly");
-        const store = transaction.objectStore(STORE_NAME);
-        const request = store.get(name);
+    // if IDB fails, we want Zustand to know so it defaults to initial state.
+    const db = await getDB();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(STORE_NAME, "readonly");
+      const store = transaction.objectStore(STORE_NAME);
+      const request = store.get(name);
 
-        request.onerror = () => reject(request.error);
-        request.onsuccess = () => {
-          resolve(request.result ?? null);
-        };
-      });
-    } catch (error) {
-      console.warn(
-        "IndexedDB getItem failed, falling back to localStorage:",
-        error
-      );
-      return localStorage.getItem(name);
-    }
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve(request.result ?? null);
+    });
   },
 
   setItem: async (name: string, value: string): Promise<void> => {
-    try {
-      const db = await getDB();
-      return new Promise((resolve, reject) => {
-        const transaction = db.transaction(STORE_NAME, "readwrite");
-        const store = transaction.objectStore(STORE_NAME);
-        const request = store.put(value, name);
+    const db = await getDB();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(STORE_NAME, "readwrite");
+      const store = transaction.objectStore(STORE_NAME);
+      const request = store.put(value, name);
 
-        request.onerror = () => reject(request.error);
-        request.onsuccess = () => resolve();
-      });
-    } catch (error) {
-      console.warn(
-        "IndexedDB setItem failed, falling back to localStorage:",
-        error
-      );
-      localStorage.setItem(name, value);
-    }
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve();
+    });
   },
 
   removeItem: async (name: string): Promise<void> => {
-    try {
-      const db = await getDB();
-      return new Promise((resolve, reject) => {
-        const transaction = db.transaction(STORE_NAME, "readwrite");
-        const store = transaction.objectStore(STORE_NAME);
-        const request = store.delete(name);
+    const db = await getDB();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(STORE_NAME, "readwrite");
+      const store = transaction.objectStore(STORE_NAME);
+      const request = store.delete(name);
 
-        request.onerror = () => reject(request.error);
-        request.onsuccess = () => resolve();
-      });
-    } catch (error) {
-      console.warn(
-        "IndexedDB removeItem failed, falling back to localStorage:",
-        error
-      );
-      localStorage.removeItem(name);
-    }
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve();
+    });
   },
 };
