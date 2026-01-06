@@ -21,11 +21,15 @@ const navLinks = [
 export function Navbar() {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { isAuthenticated, logout } = useAuthStore();
+  const { isAuthenticated, logout, _hasHydrated } = useAuthStore();
 
   const handleLogout = () => {
     logout();
   };
+
+  if (!_hasHydrated) {
+    return null;
+  }
 
   return (
     <>
