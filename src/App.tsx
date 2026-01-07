@@ -18,6 +18,7 @@ import Pricing from "./pages/Pricing";
 import Legal from "./pages/Legal";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import OTP from "./pages/OTP";
 import RoleSelection from "./pages/RoleSelection";
 import NotFound from "./pages/NotFound";
 
@@ -91,6 +92,7 @@ const App = () => (
             </Route>
           </Route>
           <Route element={<ProtectedRoute />}>
+            <Route path="/otp" element={<OTP />} />
             {/* Role selection */}
             <Route path="/role-selection" element={<RoleSelection />} />
 
