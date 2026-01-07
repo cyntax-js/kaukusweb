@@ -89,10 +89,10 @@ const App = () => (
             <Route element={<AuthLayout />}>
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+              <Route path="/verify-email" element={<OTP />} />
             </Route>
           </Route>
           <Route element={<ProtectedRoute />}>
-            <Route path="/otp" element={<OTP />} />
             {/* Role selection */}
             <Route path="/role-selection" element={<RoleSelection />} />
 
