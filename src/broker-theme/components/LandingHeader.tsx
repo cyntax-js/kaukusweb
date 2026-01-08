@@ -8,6 +8,7 @@ import { useTheme } from '@/broker-theme/config';
 import BrokerLogo from './BrokerLogo';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import BrokerLanguageSwitcher from './BrokerLanguageSwitcher';
 
 interface LandingHeaderProps {
   className?: string;
@@ -50,6 +51,7 @@ const LandingHeader = ({ className }: LandingHeaderProps) => {
         </div>
 
         <div className="flex items-center gap-3">
+          <BrokerLanguageSwitcher />
           <Link to={`${routePrefix}/login`}>
             <Button variant="ghost" size="sm">
               Login

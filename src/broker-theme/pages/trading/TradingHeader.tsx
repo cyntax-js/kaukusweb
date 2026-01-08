@@ -1,6 +1,7 @@
 import { Search, ChevronDown, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import BrokerLanguageSwitcher from "@/broker-theme/components/BrokerLanguageSwitcher";
 
 const TradingHeader = () => {
   const navigate = useNavigate();
@@ -52,6 +53,8 @@ const TradingHeader = () => {
             className="bg-[hsl(var(--trading-panel))] text-sm text-[hsl(var(--trading-text-primary))] pl-10 pr-4 py-2 rounded border border-[hsl(var(--trading-border))] w-48 focus:outline-none focus:border-[hsl(var(--trading-text-secondary))]"
           />
         </div>
+
+        <BrokerLanguageSwitcher />
 
         <Button
           variant="ghost"
