@@ -20,6 +20,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { ChevronDown, Search, User, Wallet, LogOut } from "lucide-react";
 import { toast } from "sonner";
+import BrokerLanguageSwitcher from "./BrokerLanguageSwitcher";
 
 interface AppHeaderProps {
   className?: string;
@@ -197,6 +198,9 @@ const AppHeader = ({ className }: AppHeaderProps) => {
               className="h-9 w-56 rounded-md border border-border bg-muted/40 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
+
+          {/* Language Switcher */}
+          <BrokerLanguageSwitcher />
 
           {/* Deposit */}
 

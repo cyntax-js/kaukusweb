@@ -1,9 +1,10 @@
 /**
  * PRIVATE MARKET DETAIL - Polkastarter-inspired light minimalist design
- * Clean, modern UI with subtle shadows and elegant typography
+ * Clean, modern UI with volume chart and detailed market information
  */
 
 import React, { useEffect, useMemo, useState } from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import {
   Clock,
   Users,
@@ -14,12 +15,23 @@ import {
   Twitter,
   Linkedin,
   ChevronRight,
-  Wallet,
   Shield,
   TrendingUp,
   Calendar,
   Building2,
   BadgeCheck,
+  Percent,
+  BarChart3,
+  PieChart,
+  ArrowUpRight,
+  Download,
+  Bell,
+  Share2,
+  Info,
+  Target,
+  Award,
+  Briefcase,
+  DollarSign,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -34,18 +46,27 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 /* -------------------------
     Mock market data & types
     ------------------------- */
 
-type VestingSlice = {
-  name: string;
-  percent: number;
-  unlockAtOffsetSec: number;
-};
+interface VolumePoint {
+  date: string;
+  volume: number;
+  price: number;
+}
 
 type SecurityStatus = "ongoing" | "upcoming" | "completed";
 
@@ -54,7 +75,7 @@ interface Security {
   name: string;
   symbol: string;
   description: string;
-  logoUrl?: string;
+  fullDescription: string;
   logoColor: string;
   type: "private_equity" | "bond" | "commercial_paper" | "treasury_bills";
   company: string;
@@ -68,36 +89,193 @@ interface Security {
   priceNgn: number;
   startAt: number;
   endAt: number;
-  vesting: VestingSlice[];
-  whitelistOnly: boolean;
+  yield: number;
+  tenor: string;
+  minInvestment: number;
+  rating: string;
+  sector: string;
+  couponFrequency?: string;
+  maturityDate?: string;
+  issueDate?: string;
+  useOfProceeds?: string[];
+  keyHighlights?: string[];
+  risks?: string[];
+  documents?: { name: string; url: string }[];
+  volumeHistory: VolumePoint[];
 }
 
-const MOCK_SECURITY: Security = {
-  id: "1",
-  name: "Dangote Cement Bond",
-  symbol: "DANGCEMBD",
-  description:
-    "Corporate bond for cement production expansion in Nigeria. This bond offers fixed returns with quarterly coupon payments backed by Africa's largest cement producer.",
-  logoColor: "bg-emerald-500",
+const mockSecuritiesData: Record<string, Security> = {
+  "dangote-bond-2025": {
+    id: "dangote-bond-2025",
+    name: "Dangote Cement Bond Series 5",
+    symbol: "DANGCEMBD-S5",
+    description: "7-Year Senior Unsecured Bond for cement production expansion across West Africa.",
+    fullDescription: `Dangote Cement Plc, Africa's largest cement producer with operations in 10 African countries, is issuing its Series 5 Corporate Bond to fund strategic expansion initiatives. The proceeds will be used to expand production capacity at the Obajana plant in Kogi State and establish new grinding terminals in Ghana and Cameroon.
+
+The company has a strong track record of debt servicing with no defaults in its 15+ year history of capital market activities. With a current production capacity of 51.6 million tonnes per annum (Mta), this expansion will add an additional 8Mta by 2027.
+
+This bond is ideal for institutional investors seeking stable, inflation-beating returns backed by real assets and a blue-chip Nigerian corporate.`,
+    logoColor: "bg-emerald-500",
+    type: "bond",
+    company: "Dangote Cement Plc",
+    underwriter: "Stanbic IBTC Capital",
+    status: "ongoing",
+    raised: 420_000_000_000,
+    total: 600_000_000_000,
+    participants: 5200,
+    timeInfo: "3d 12h left",
+    unitSymbol: "BONDS",
+    priceNgn: 1000,
+    startAt: Date.now() - 1000 * 60 * 60 * 24 * 4,
+    endAt: Date.now() + 1000 * 60 * 60 * 72,
+    yield: 15.5,
+    tenor: "7 Years",
+    minInvestment: 5_000_000,
+    rating: "AA+ (Agusto & Co.)",
+    sector: "Industrial / Building Materials",
+    couponFrequency: "Quarterly",
+    maturityDate: "January 2032",
+    issueDate: "January 2025",
+    useOfProceeds: [
+      "Obajana Plant Expansion - ₦350B",
+      "New Grinding Terminal (Ghana) - ₦120B",
+      "Working Capital - ₦80B",
+      "Debt Refinancing - ₦50B",
+    ],
+    keyHighlights: [
+      "Africa's largest cement producer with 51.6Mta capacity",
+      "Listed on Nigerian Exchange (NGX) with ₦4.2T market cap",
+      "15+ years of capital market activity with zero defaults",
+      "Quarterly coupon payments with principal at maturity",
+      "First charge on Obajana plant assets as security",
+    ],
+    risks: [
+      "Commodity price fluctuations affecting input costs",
+      "Currency devaluation impact on dollar-denominated costs",
+      "Regulatory changes in target expansion markets",
+      "Construction and project execution risks",
+    ],
+    documents: [
+      { name: "Prospectus", url: "#" },
+      { name: "Financial Statements 2024", url: "#" },
+      { name: "Credit Rating Report", url: "#" },
+      { name: "Trust Deed", url: "#" },
+    ],
+    volumeHistory: generateVolumeData(30, 420_000_000_000, 1000),
+  },
+  "mtn-pe-round-f": {
+    id: "mtn-pe-round-f",
+    name: "MTN Nigeria PE Round F",
+    symbol: "MTN-PE-F",
+    description: "Growth equity round for 5G network infrastructure deployment.",
+    fullDescription: `MTN Nigeria Communications Plc, a subsidiary of MTN Group and Nigeria's largest telecommunications company with over 76 million subscribers, is raising growth capital through this Private Equity Round F to accelerate its 5G network rollout and expand data center infrastructure.
+
+The funds will be used to deploy 5G coverage across Lagos, Abuja, Port Harcourt, and Kano by 2026, establish two Tier-4 data centers, and acquire additional spectrum licenses from the Nigerian Communications Commission (NCC).
+
+This investment offers exposure to Nigeria's rapidly growing digital economy, with mobile data traffic expected to grow 8x by 2030.`,
+    logoColor: "bg-amber-500",
+    type: "private_equity",
+    company: "MTN Nigeria Communications Plc",
+    underwriter: "FBNQuest Merchant Bank",
+    status: "upcoming",
+    raised: 0,
+    total: 1_200_000_000_000,
+    participants: 0,
+    timeInfo: "Starts in 9d",
+    unitSymbol: "UNITS",
+    priceNgn: 50000,
+    startAt: Date.now() + 1000 * 60 * 60 * 24 * 9,
+    endAt: Date.now() + 1000 * 60 * 60 * 24 * 39,
+    yield: 28,
+    tenor: "5 Years",
+    minInvestment: 50_000_000,
+    rating: "A (GCR Ratings)",
+    sector: "Telecommunications",
+    useOfProceeds: [
+      "5G Network Deployment - ₦600B",
+      "Data Center Infrastructure - ₦300B",
+      "Spectrum Acquisition - ₦200B",
+      "Technology Upgrades - ₦100B",
+    ],
+    keyHighlights: [
+      "Nigeria's largest telco with 76M+ subscribers",
+      "Market leader with 38% revenue market share",
+      "Strong cash flow generation (₦1.8T revenue in 2024)",
+      "Strategic partnership with MTN Group (83% ownership)",
+    ],
+    risks: [
+      "Regulatory environment and policy changes",
+      "Competition from new market entrants",
+      "Technology obsolescence risks",
+      "Foreign exchange volatility",
+    ],
+    documents: [
+      { name: "Investment Memorandum", url: "#" },
+      { name: "Financial Projections", url: "#" },
+      { name: "Due Diligence Report", url: "#" },
+    ],
+    volumeHistory: generateVolumeData(30, 0, 50000),
+  },
+};
+
+// Generate mock volume data
+function generateVolumeData(days: number, currentRaised: number, basePrice: number): VolumePoint[] {
+  const data: VolumePoint[] = [];
+  const startDate = new Date();
+  startDate.setDate(startDate.getDate() - days);
+  
+  let cumulativeVolume = 0;
+  const dailyTarget = currentRaised / days;
+  
+  for (let i = 0; i < days; i++) {
+    const date = new Date(startDate);
+    date.setDate(date.getDate() + i);
+    
+    // Simulate realistic volume patterns
+    const dayVariation = 0.5 + Math.random();
+    const weekendFactor = (date.getDay() === 0 || date.getDay() === 6) ? 0.3 : 1;
+    const volume = dailyTarget * dayVariation * weekendFactor;
+    cumulativeVolume += volume;
+    
+    // Price fluctuation
+    const priceVariation = 1 + (Math.random() - 0.5) * 0.02;
+    
+    data.push({
+      date: date.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+      volume: Math.round(volume),
+      price: Math.round(basePrice * priceVariation),
+    });
+  }
+  
+  return data;
+}
+
+// Default market for unknown IDs
+const defaultMarket: Security = {
+  id: "default",
+  name: "Nigerian Investment Opportunity",
+  symbol: "NGN-INV",
+  description: "Premium investment opportunity in the Nigerian market.",
+  fullDescription: "This is a premium investment opportunity offering competitive returns.",
+  logoColor: "bg-gray-500",
   type: "bond",
-  company: "Dangote Cement Plc",
-  underwriter: "Stanbic IBTC",
+  company: "Nigerian Enterprise",
+  underwriter: "Capital Markets Ltd",
   status: "ongoing",
-  raised: 150000000000,
-  total: 200000000000,
-  participants: 2500,
-  timeInfo: "Ends in 2d 15h",
-  unitSymbol: "BONDS",
+  raised: 100_000_000_000,
+  total: 200_000_000_000,
+  participants: 1000,
+  timeInfo: "5d left",
+  unitSymbol: "UNITS",
   priceNgn: 1000,
   startAt: Date.now() - 1000 * 60 * 60 * 24,
-  endAt: Date.now() + 1000 * 60 * 60 * 48,
-  whitelistOnly: true,
-  vesting: [
-    { name: "Quarter 1 Coupon", percent: 25, unlockAtOffsetSec: 7776000 },
-    { name: "Quarter 2 Coupon", percent: 25, unlockAtOffsetSec: 15552000 },
-    { name: "Quarter 3 Coupon", percent: 25, unlockAtOffsetSec: 23328000 },
-    { name: "Maturity", percent: 25, unlockAtOffsetSec: 31104000 },
-  ],
+  endAt: Date.now() + 1000 * 60 * 60 * 120,
+  yield: 14,
+  tenor: "5 Years",
+  minInvestment: 1_000_000,
+  rating: "A",
+  sector: "Financial Services",
+  volumeHistory: generateVolumeData(30, 100_000_000_000, 1000),
 };
 
 /* -------------------------
@@ -105,10 +283,10 @@ const MOCK_SECURITY: Security = {
     ------------------------- */
 
 const formatNgn = (v: number) =>
-  v >= 1000000000
-    ? `₦${(v / 1000000000).toFixed(1)}B`
-    : v >= 1000000
-    ? `₦${(v / 1000000).toFixed(1)}M`
+  v >= 1_000_000_000
+    ? `₦${(v / 1_000_000_000).toFixed(1)}B`
+    : v >= 1_000_000
+    ? `₦${(v / 1_000_000).toFixed(1)}M`
     : `₦${v.toLocaleString()}`;
 
 const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
@@ -118,23 +296,27 @@ const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
     ------------------------- */
 
 export default function PrivateMarketDetail(): JSX.Element {
-  const [walletAddress, setWalletAddress] = useState<string | null>(null);
-  const [walletBalanceNgn, setWalletBalanceNgn] = useState<number>(10000000000);
-  const [market] = useState<Security>(() => ({ ...MOCK_SECURITY }));
-  const [totalRaisedNgn, setTotalRaisedNgn] = useState<number>(market.raised);
-  const [isWhitelisted, setIsWhitelisted] = useState<boolean>(false);
+  const { marketId } = useParams<{ marketId: string }>();
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  const routePrefix = location.pathname.includes("/preview/app")
+    ? "/preview/app"
+    : "/app";
+
   const [purchaseModalOpen, setPurchaseModalOpen] = useState<boolean>(false);
-  const [purchaseAmountNgn, setPurchaseAmountNgn] = useState<number>(1000000);
-  const [purchasedNgn, setPurchasedNgn] = useState<number>(() =>
-    Number(localStorage.getItem("pm_purchasedNgn") || "0")
-  );
-  const [claimedNgn, setClaimedNgn] = useState<number>(() =>
-    Number(localStorage.getItem("pm_claimedNgn") || "0")
-  );
-  const [txLogs, setTxLogs] = useState<string[]>(() => {
-    const saved = localStorage.getItem("pm_txLogs");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [purchaseAmountNgn, setPurchaseAmountNgn] = useState<number>(5_000_000);
+  const [isSubscribing, setIsSubscribing] = useState(false);
+
+  // Get market data or use default
+  const market = useMemo(() => {
+    if (marketId && mockSecuritiesData[marketId]) {
+      return mockSecuritiesData[marketId];
+    }
+    return defaultMarket;
+  }, [marketId]);
+
+  const [totalRaisedNgn, setTotalRaisedNgn] = useState<number>(market.raised);
 
   const [nowMs, setNowMs] = useState<number>(Date.now());
   useEffect(() => {
@@ -146,118 +328,22 @@ export default function PrivateMarketDetail(): JSX.Element {
   const saleEnded = nowMs >= market.endAt;
   const raisedFraction = clamp(totalRaisedNgn / market.total, 0, 1);
   const remainingCapNgn = Math.max(0, market.total - totalRaisedNgn);
-  const userPurchasedUnits = purchasedNgn / market.priceNgn;
-  const userClaimedUnits = claimedNgn / market.priceNgn;
 
-  const vestingState = useMemo(() => {
-    if (!saleEnded) return { unlockedPercent: 0, slicesUnlocked: 0 };
-    const secondsSinceEnd = Math.max(0, Math.floor((nowMs - market.endAt) / 1000));
-    let unlocked = 0;
-    let unlockedSlices = 0;
-    for (const s of market.vesting) {
-      if (secondsSinceEnd >= s.unlockAtOffsetSec) {
-        unlocked += s.percent;
-        unlockedSlices++;
-      }
-    }
-    return { unlockedPercent: clamp(unlocked, 0, 100), slicesUnlocked: unlockedSlices };
-  }, [nowMs, market, saleEnded]);
-
-  useEffect(() => {
-    localStorage.setItem("pm_purchasedNgn", String(purchasedNgn));
-    localStorage.setItem("pm_claimedNgn", String(claimedNgn));
-    localStorage.setItem("pm_txLogs", JSON.stringify(txLogs.slice(-200)));
-  }, [purchasedNgn, claimedNgn, txLogs]);
-
-  function connectMockWallet() {
-    const addr = `0xMOCK${Math.random().toString(36).slice(2, 9).toUpperCase()}`;
-    setWalletAddress(addr);
-    setWalletBalanceNgn(10000000000);
-    setTxLogs((l) => [`Connected wallet ${addr}`, ...l]);
-    if (addr.endsWith("A") || addr.endsWith("B")) {
-      setIsWhitelisted(true);
-      setTxLogs((l) => [`Wallet auto-whitelisted`, ...l]);
-    }
-  }
-
-  function disconnect() {
-    setTxLogs((l) => [`Disconnected wallet`, ...l]);
-    setWalletAddress(null);
-    setIsWhitelisted(false);
-  }
-
-  function requestWhitelist() {
-    setTxLogs((l) => [`Requested whitelist...`, ...l]);
+  const handleSubscribe = () => {
+    setIsSubscribing(true);
     setTimeout(() => {
-      setIsWhitelisted(true);
-      setTxLogs((l) => [`Whitelist approved (mock)`, ...l]);
-    }, 1200);
-  }
-
-  function openPurchase(amountNgn?: number) {
-    setPurchaseAmountNgn(amountNgn ?? 1000000);
-    setPurchaseModalOpen(true);
-  }
-
-  function confirmPurchase() {
-    if (!walletAddress) {
-      setTxLogs((l) => [`Subscription failed: wallet not connected`, ...l]);
-      return;
-    }
-    if (market.whitelistOnly && !isWhitelisted) {
-      setTxLogs((l) => [`Subscription failed: not whitelisted`, ...l]);
-      return;
-    }
-    if (!saleOpen) {
-      setTxLogs((l) => [`Subscription failed: issuance not open`, ...l]);
-      return;
-    }
-    const amount = clamp(purchaseAmountNgn, 100000, walletBalanceNgn);
-    const spend = Math.min(amount, remainingCapNgn);
-    if (spend <= 0) {
-      setTxLogs((l) => [`Subscription failed: no remaining cap`, ...l]);
-      return;
-    }
-    setTxLogs((l) => [`Initiating subscription ₦${spend.toLocaleString()}...`, ...l]);
-    setPurchaseModalOpen(false);
-    setTimeout(() => {
-      setWalletBalanceNgn((b) => b - spend);
-      setPurchasedNgn((p) => p + spend);
-      setTotalRaisedNgn((s) => s + spend);
-      setTxLogs((l) => [
-        `Subscription confirmed: spent ₦${spend.toLocaleString()} => ${(spend / market.priceNgn).toLocaleString()} ${market.unitSymbol}`,
-        ...l,
-      ]);
+      const amount = clamp(purchaseAmountNgn, market.minInvestment, remainingCapNgn);
+      setTotalRaisedNgn((s) => s + amount);
+      setIsSubscribing(false);
+      setPurchaseModalOpen(false);
     }, 1500);
-  }
+  };
 
-  function claimAvailable() {
-    if (!walletAddress) {
-      setTxLogs((l) => [`Claim failed: wallet not connected`, ...l]);
-      return;
-    }
-    if (!saleEnded) {
-      setTxLogs((l) => [`Claim failed: issuance not ended`, ...l]);
-      return;
-    }
-    const unlockedPercent = vestingState.unlockedPercent;
-    const totalUnits = purchasedNgn / market.priceNgn;
-    const unlockedUnits = (totalUnits * unlockedPercent) / 100;
-    const claimableUnits = Math.max(0, unlockedUnits - userClaimedUnits);
-    if (claimableUnits <= 0) {
-      setTxLogs((l) => [`No payouts available to claim yet`, ...l]);
-      return;
-    }
-    const claimNgn = claimableUnits * market.priceNgn;
-    setTxLogs((l) => [`Claiming ${claimableUnits.toLocaleString()} ${market.unitSymbol}...`, ...l]);
-    setTimeout(() => {
-      setClaimedNgn((c) => c + claimNgn);
-      setTxLogs((l) => [
-        `Claim successful: received ${claimableUnits.toLocaleString()} ${market.unitSymbol}`,
-        ...l,
-      ]);
-    }, 1200);
-  }
+  const formatVolume = (value: number) => {
+    if (value >= 1_000_000_000) return `₦${(value / 1_000_000_000).toFixed(0)}B`;
+    if (value >= 1_000_000) return `₦${(value / 1_000_000).toFixed(0)}M`;
+    return `₦${value.toLocaleString()}`;
+  };
 
   /* -------------------------
       Render UI
@@ -268,13 +354,17 @@ export default function PrivateMarketDetail(): JSX.Element {
       <main className="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         {/* Back Navigation */}
         <div className="mb-6">
-          <Button variant="ghost" className="text-gray-600 hover:text-gray-900 -ml-2 gap-1">
+          <Button 
+            variant="ghost" 
+            className="text-gray-600 hover:text-gray-900 -ml-2 gap-1"
+            onClick={() => navigate(`${routePrefix}/markets/private`)}
+          >
             <ChevronRight className="h-4 w-4 rotate-180" />
             Back to Projects
           </Button>
         </div>
 
-        {/* Header Section - Polkastarter Style */}
+        {/* Header Section */}
         <div className="grid lg:grid-cols-3 gap-8 mb-10">
           {/* Left: Project Info */}
           <div className="lg:col-span-2">
@@ -286,15 +376,15 @@ export default function PrivateMarketDetail(): JSX.Element {
                 {market.name.slice(0, 2).toUpperCase()}
               </div>
               <div className="flex-1">
-                <div className="flex items-center gap-3 mb-1">
+                <div className="flex items-center gap-3 mb-1 flex-wrap">
                   <h1 className="text-2xl font-bold text-gray-900">{market.name}</h1>
                   <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 border-0">
                     <BadgeCheck className="h-3 w-3 mr-1" />
-                    Verified
+                    SEC Registered
                   </Badge>
                 </div>
                 <p className="text-gray-500 text-sm mb-3">{market.symbol} · {market.type.replace("_", " ").toUpperCase()}</p>
-                <div className="flex items-center gap-4 text-sm text-gray-600">
+                <div className="flex items-center gap-4 text-sm text-gray-600 flex-wrap">
                   <span className="flex items-center gap-1.5">
                     <Building2 className="h-4 w-4" />
                     {market.company}
@@ -305,17 +395,57 @@ export default function PrivateMarketDetail(): JSX.Element {
                       {market.underwriter}
                     </span>
                   )}
+                  <span className="flex items-center gap-1.5">
+                    <Briefcase className="h-4 w-4" />
+                    {market.sector}
+                  </span>
                 </div>
               </div>
             </div>
 
-            {/* Social Links */}
+            {/* Quick Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div className="bg-white rounded-xl p-4 border border-gray-100">
+                <p className="text-xs text-gray-400 mb-1 flex items-center gap-1">
+                  <Percent className="h-3 w-3" /> Expected Yield
+                </p>
+                <p className="text-xl font-bold text-emerald-600">{market.yield}%</p>
+              </div>
+              <div className="bg-white rounded-xl p-4 border border-gray-100">
+                <p className="text-xs text-gray-400 mb-1 flex items-center gap-1">
+                  <Calendar className="h-3 w-3" /> Tenor
+                </p>
+                <p className="text-xl font-bold text-gray-900">{market.tenor}</p>
+              </div>
+              <div className="bg-white rounded-xl p-4 border border-gray-100">
+                <p className="text-xs text-gray-400 mb-1 flex items-center gap-1">
+                  <Award className="h-3 w-3" /> Rating
+                </p>
+                <p className="text-xl font-bold text-gray-900">{market.rating.split(" ")[0]}</p>
+              </div>
+              <div className="bg-white rounded-xl p-4 border border-gray-100">
+                <p className="text-xs text-gray-400 mb-1 flex items-center gap-1">
+                  <DollarSign className="h-3 w-3" /> Min. Investment
+                </p>
+                <p className="text-xl font-bold text-gray-900">{formatNgn(market.minInvestment)}</p>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
             <div className="flex gap-2 mb-6">
               {[Globe, Twitter, Linkedin, FileText].map((Icon, i) => (
                 <Button key={i} variant="outline" size="icon" className="h-9 w-9 rounded-full border-gray-200 hover:bg-gray-100">
                   <Icon className="h-4 w-4 text-gray-500" />
                 </Button>
               ))}
+              <Button variant="outline" size="sm" className="ml-auto rounded-full border-gray-200">
+                <Bell className="h-4 w-4 mr-2" />
+                Set Alert
+              </Button>
+              <Button variant="outline" size="sm" className="rounded-full border-gray-200">
+                <Share2 className="h-4 w-4 mr-2" />
+                Share
+              </Button>
             </div>
           </div>
 
@@ -335,20 +465,30 @@ export default function PrivateMarketDetail(): JSX.Element {
                 <Progress value={raisedFraction * 100} className="h-2 bg-gray-100" />
                 <div className="flex justify-between text-xs text-gray-400">
                   <span>{(raisedFraction * 100).toFixed(1)}%</span>
-                  <span>{market.participants?.toLocaleString()} subscribers</span>
+                  <span>{market.participants?.toLocaleString()} investors</span>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <div className="bg-gray-50 rounded-xl p-3 text-center">
-                  <p className="text-xs text-gray-500 mb-1">Price</p>
+                  <p className="text-xs text-gray-500 mb-1">Unit Price</p>
                   <p className="font-semibold text-gray-900">{formatNgn(market.priceNgn)}</p>
                 </div>
                 <div className="bg-gray-50 rounded-xl p-3 text-center">
                   <p className="text-xs text-gray-500 mb-1">Status</p>
                   <div className="flex items-center justify-center gap-1">
-                    <span className="h-2 w-2 bg-emerald-500 rounded-full animate-pulse" />
-                    <p className="font-semibold text-emerald-600">Live</p>
+                    {market.status === "ongoing" && (
+                      <>
+                        <span className="h-2 w-2 bg-emerald-500 rounded-full animate-pulse" />
+                        <p className="font-semibold text-emerald-600">Live</p>
+                      </>
+                    )}
+                    {market.status === "upcoming" && (
+                      <p className="font-semibold text-blue-600">Upcoming</p>
+                    )}
+                    {market.status === "completed" && (
+                      <p className="font-semibold text-gray-600">Closed</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -358,37 +498,82 @@ export default function PrivateMarketDetail(): JSX.Element {
                 <span>{market.timeInfo}</span>
               </div>
 
-              {!walletAddress ? (
-                <Button onClick={connectMockWallet} className="w-full h-12 rounded-xl bg-gray-900 hover:bg-gray-800 text-white font-medium">
-                  <Wallet className="h-4 w-4 mr-2" />
-                  Connect Wallet
-                </Button>
-              ) : !isWhitelisted && market.whitelistOnly ? (
-                <Button onClick={requestWhitelist} className="w-full h-12 rounded-xl bg-gray-900 hover:bg-gray-800 text-white font-medium">
-                  Request Whitelist
-                </Button>
-              ) : (
-                <Button onClick={() => openPurchase()} disabled={!saleOpen} className="w-full h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-medium">
-                  Subscribe Now
-                </Button>
-              )}
-
-              {walletAddress && (
-                <p className="text-xs text-center text-gray-400 mt-3">
-                  Connected: {walletAddress.slice(0, 8)}...{walletAddress.slice(-4)}
-                </p>
-              )}
+              <Button 
+                onClick={() => setPurchaseModalOpen(true)} 
+                disabled={!saleOpen}
+                className="w-full h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-medium"
+              >
+                Subscribe Now
+                <ArrowUpRight className="h-4 w-4 ml-2" />
+              </Button>
+              
+              <p className="text-xs text-center text-gray-400 mt-3">
+                Regulated by Securities and Exchange Commission Nigeria
+              </p>
             </CardContent>
           </Card>
         </div>
 
+        {/* Volume Chart */}
+        <Card className="mb-8 border-0 shadow-sm rounded-2xl">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base font-semibold text-gray-900 flex items-center gap-2">
+              <BarChart3 className="h-5 w-5 text-emerald-600" />
+              Subscription Volume (Last 30 Days)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={market.volumeHistory}>
+                  <defs>
+                    <linearGradient id="volumeGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis 
+                    dataKey="date" 
+                    tick={{ fill: "#9ca3af", fontSize: 11 }}
+                    tickLine={false}
+                    axisLine={{ stroke: "#e5e7eb" }}
+                  />
+                  <YAxis 
+                    tick={{ fill: "#9ca3af", fontSize: 11 }}
+                    tickLine={false}
+                    axisLine={{ stroke: "#e5e7eb" }}
+                    tickFormatter={formatVolume}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "#fff",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "12px",
+                      boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)",
+                    }}
+                    formatter={(value: number) => [formatVolume(value), "Volume"]}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="volume"
+                    stroke="#10b981"
+                    strokeWidth={2}
+                    fill="url(#volumeGradient)"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Navigation Tabs */}
         <Tabs defaultValue="about" className="space-y-8">
-          <TabsList className="bg-transparent border-b border-gray-200 rounded-none p-0 h-auto gap-8">
-            {["About", "Token Details", "Vesting", "Your Position"].map((tab) => (
+          <TabsList className="bg-transparent border-b border-gray-200 rounded-none p-0 h-auto gap-8 flex-wrap">
+            {["About", "Details", "Use of Proceeds", "Documents", "Risks"].map((tab) => (
               <TabsTrigger
                 key={tab}
-                value={tab.toLowerCase().replace(" ", "-")}
+                value={tab.toLowerCase().replace(/ /g, "-")}
                 className="bg-transparent border-b-2 border-transparent data-[state=active]:border-gray-900 data-[state=active]:bg-transparent rounded-none px-0 pb-3 text-gray-500 data-[state=active]:text-gray-900 font-medium"
               >
                 {tab}
@@ -396,120 +581,110 @@ export default function PrivateMarketDetail(): JSX.Element {
             ))}
           </TabsList>
 
-          <TabsContent value="about" className="space-y-12 mt-8">
+          <TabsContent value="about" className="space-y-8 mt-8">
             {/* About Section */}
             <section>
               <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                What is <span className="text-emerald-600">{market.name}?</span>
+                About <span className="text-emerald-600">{market.name}</span>
               </h2>
-              <p className="text-gray-600 leading-relaxed mb-6">
-                {market.description}
-              </p>
-              <p className="text-gray-600 leading-relaxed">
-                The Dangote Cement Bond is a corporate debt instrument issued by Dangote Cement Plc, 
-                Africa's largest cement producer. This bond offering provides investors with an opportunity 
-                to participate in the company's expansion plans while receiving fixed quarterly coupon payments 
-                and principal repayment at maturity.
-              </p>
-            </section>
-
-            <Separator className="bg-gray-100" />
-
-            {/* Why Invest Section */}
-            <section>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Why Investors Want {market.symbol}?</h2>
-              <div className="grid md:grid-cols-3 gap-6">
-                {[
-                  { icon: TrendingUp, title: "Strong Returns", desc: "Competitive fixed yields in growing African economy" },
-                  { icon: Shield, title: "AA+ Credit Rating", desc: "Backed by Africa's leading cement producer" },
-                  { icon: Building2, title: "Market Leader", desc: "48.6Mta capacity across 10 African countries" },
-                ].map((item, i) => (
-                  <div key={i} className="bg-white rounded-2xl p-6 border border-gray-100">
-                    <div className="h-10 w-10 rounded-xl bg-emerald-50 flex items-center justify-center mb-4">
-                      <item.icon className="h-5 w-5 text-emerald-600" />
-                    </div>
-                    <h3 className="font-semibold text-gray-900 mb-2">{item.title}</h3>
-                    <p className="text-sm text-gray-500">{item.desc}</p>
-                  </div>
+              <div className="prose prose-gray max-w-none">
+                {market.fullDescription.split("\n\n").map((paragraph, i) => (
+                  <p key={i} className="text-gray-600 leading-relaxed mb-4">
+                    {paragraph}
+                  </p>
                 ))}
               </div>
             </section>
 
             <Separator className="bg-gray-100" />
 
-            {/* Team Section */}
+            {/* Key Highlights */}
+            {market.keyHighlights && (
+              <section>
+                <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <Target className="h-5 w-5 text-emerald-600" />
+                  Key Highlights
+                </h2>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {market.keyHighlights.map((highlight, i) => (
+                    <div key={i} className="flex items-start gap-3 bg-white rounded-xl p-4 border border-gray-100">
+                      <CheckCircle className="h-5 w-5 text-emerald-600 mt-0.5 shrink-0" />
+                      <p className="text-sm text-gray-600">{highlight}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            <Separator className="bg-gray-100" />
+
+            {/* Leadership Team */}
             <section>
-              <h2 className="text-xl font-bold text-gray-900 mb-6">Meet the Board</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-6">Leadership Team</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {[
                   { name: "Aliko Dangote", role: "Chairman", initials: "AD" },
-                  { name: "Arvind Pathak", role: "CEO", initials: "AP" },
+                  { name: "Arvind Pathak", role: "Group CEO", initials: "AP" },
                   { name: "Olakunle Alake", role: "Group MD", initials: "OA" },
-                  { name: "Cherie Blair", role: "Director", initials: "CB" },
-                ].map((member, i) => (
-                  <div key={i} className="text-center">
-                    <Avatar className="h-20 w-20 mx-auto mb-3 border-2 border-gray-100">
-                      <AvatarFallback className="bg-gray-100 text-gray-600 text-lg font-medium">
-                        {member.initials}
+                  { name: "Brian Egan", role: "CFO", initials: "BE" },
+                ].map((person) => (
+                  <div key={person.name} className="text-center group">
+                    <Avatar className="h-16 w-16 mx-auto mb-3 ring-2 ring-gray-100 group-hover:ring-emerald-200 transition-all">
+                      <AvatarFallback className="bg-gray-100 text-gray-600 text-sm font-medium">
+                        {person.initials}
                       </AvatarFallback>
                     </Avatar>
-                    <h3 className="font-semibold text-gray-900 text-sm">{member.name}</h3>
-                    <p className="text-xs text-gray-500">{member.role}</p>
+                    <h4 className="font-medium text-gray-900 text-sm">{person.name}</h4>
+                    <p className="text-xs text-gray-500">{person.role}</p>
                   </div>
                 ))}
               </div>
             </section>
-
-            <Separator className="bg-gray-100" />
-
-            {/* About Company */}
-            <section>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">About {market.company}</h2>
-              <p className="text-gray-600 leading-relaxed">
-                Dangote Cement Plc is Sub-Saharan Africa's largest cement producer with an installed 
-                capacity of 48.6Mta across 10 African countries. Founded in 1981 and headquartered in 
-                Lagos, Nigeria, the company is a subsidiary of Dangote Industries Limited and is listed 
-                on the Nigerian Stock Exchange.
-              </p>
-            </section>
           </TabsContent>
 
-          <TabsContent value="token-details" className="mt-8">
+          <TabsContent value="details" className="mt-8">
             <div className="grid md:grid-cols-2 gap-6">
-              <Card className="border-0 shadow-sm rounded-2xl">
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-lg">Bond Metrics</CardTitle>
+              <Card className="border-gray-100 rounded-xl">
+                <CardHeader>
+                  <CardTitle className="text-base">Instrument Details</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {[
-                    { label: "Unit Symbol", value: market.unitSymbol },
-                    { label: "Price per Unit", value: formatNgn(market.priceNgn) },
-                    { label: "Total Issuance", value: formatNgn(market.total) },
-                    { label: "Minimum Investment", value: "₦100,000" },
-                    { label: "Maturity", value: "12 months" },
-                  ].map((item, i) => (
-                    <div key={i} className="flex justify-between py-2 border-b border-gray-50 last:border-0">
-                      <span className="text-gray-500">{item.label}</span>
-                      <span className="font-medium text-gray-900">{item.value}</span>
+                    { label: "Instrument Type", value: market.type.replace("_", " ").toUpperCase() },
+                    { label: "Issue Size", value: formatNgn(market.total) },
+                    { label: "Unit Price", value: formatNgn(market.priceNgn) },
+                    { label: "Coupon Rate", value: `${market.yield}% p.a.` },
+                    { label: "Tenor", value: market.tenor },
+                    { label: "Coupon Frequency", value: market.couponFrequency || "N/A" },
+                    { label: "Maturity Date", value: market.maturityDate || "N/A" },
+                    { label: "Issue Date", value: market.issueDate || "N/A" },
+                  ].map((item) => (
+                    <div key={item.label} className="flex justify-between">
+                      <span className="text-sm text-gray-500">{item.label}</span>
+                      <span className="text-sm font-medium text-gray-900">{item.value}</span>
                     </div>
                   ))}
                 </CardContent>
               </Card>
 
-              <Card className="border-0 shadow-sm rounded-2xl">
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-lg">Important Dates</CardTitle>
+              <Card className="border-gray-100 rounded-xl">
+                <CardHeader>
+                  <CardTitle className="text-base">Issuer Information</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {[
-                    { label: "Sale Start", value: new Date(market.startAt).toLocaleDateString() },
-                    { label: "Sale End", value: new Date(market.endAt).toLocaleDateString() },
-                    { label: "First Coupon", value: "Q2 2026" },
-                    { label: "Maturity Date", value: "Q1 2027" },
-                  ].map((item, i) => (
-                    <div key={i} className="flex justify-between py-2 border-b border-gray-50 last:border-0">
-                      <span className="text-gray-500">{item.label}</span>
-                      <span className="font-medium text-gray-900">{item.value}</span>
+                    { label: "Issuer", value: market.company },
+                    { label: "Underwriter", value: market.underwriter || "N/A" },
+                    { label: "Credit Rating", value: market.rating },
+                    { label: "Sector", value: market.sector },
+                    { label: "Min. Investment", value: formatNgn(market.minInvestment) },
+                    { label: "Investors", value: market.participants?.toLocaleString() || "0" },
+                    { label: "Regulation", value: "SEC Nigeria" },
+                    { label: "Listing", value: "FMDQ / NGX" },
+                  ].map((item) => (
+                    <div key={item.label} className="flex justify-between">
+                      <span className="text-sm text-gray-500">{item.label}</span>
+                      <span className="text-sm font-medium text-gray-900">{item.value}</span>
                     </div>
                   ))}
                 </CardContent>
@@ -517,144 +692,146 @@ export default function PrivateMarketDetail(): JSX.Element {
             </div>
           </TabsContent>
 
-          <TabsContent value="vesting" className="mt-8">
-            <Card className="border-0 shadow-sm rounded-2xl">
-              <CardHeader>
-                <CardTitle className="text-lg">Vesting Schedule</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {market.vesting.map((slice, i) => (
-                    <div key={i} className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
-                      <div className="h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center">
-                        <Calendar className="h-5 w-5 text-emerald-600" />
+          <TabsContent value="use-of-proceeds" className="mt-8">
+            {market.useOfProceeds && (
+              <div className="space-y-4">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">Allocation of Proceeds</h2>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {market.useOfProceeds.map((item, i) => {
+                    const [purpose, amount] = item.split(" - ");
+                    return (
+                      <div key={i} className="bg-white rounded-xl p-5 border border-gray-100">
+                        <div className="flex items-start gap-3">
+                          <div className="h-10 w-10 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
+                            <PieChart className="h-5 w-5 text-emerald-600" />
+                          </div>
+                          <div>
+                            <p className="font-medium text-gray-900">{purpose}</p>
+                            {amount && <p className="text-sm text-emerald-600 font-semibold">{amount}</p>}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="documents" className="mt-8">
+            <div className="grid md:grid-cols-2 gap-4">
+              {market.documents?.map((doc, i) => (
+                <Card key={i} className="border-gray-100 rounded-xl hover:border-emerald-200 transition-colors cursor-pointer group">
+                  <CardContent className="p-5">
+                    <div className="flex items-center gap-4">
+                      <div className="h-12 w-12 rounded-xl bg-gray-100 flex items-center justify-center group-hover:bg-emerald-50 transition-colors">
+                        <FileText className="h-6 w-6 text-gray-500 group-hover:text-emerald-600" />
                       </div>
                       <div className="flex-1">
-                        <p className="font-medium text-gray-900">{slice.name}</p>
-                        <p className="text-sm text-gray-500">{Math.round(slice.unlockAtOffsetSec / 86400 / 30)} months after sale ends</p>
+                        <h4 className="font-medium text-gray-900">{doc.name}</h4>
+                        <p className="text-xs text-gray-400">PDF Document</p>
                       </div>
-                      <div className="text-right">
-                        <p className="font-bold text-gray-900">{slice.percent}%</p>
-                        <p className="text-xs text-gray-400">of allocation</p>
+                      <Download className="h-5 w-5 text-gray-400 group-hover:text-emerald-600" />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="risks" className="mt-8">
+            {market.risks && (
+              <div className="space-y-4">
+                <div className="flex items-start gap-3 mb-6 p-4 bg-amber-50 rounded-xl">
+                  <Info className="h-5 w-5 text-amber-600 mt-0.5" />
+                  <p className="text-sm text-amber-800">
+                    Investing in private market securities involves risks. Please carefully review the risk factors below before making an investment decision.
+                  </p>
+                </div>
+                <div className="space-y-3">
+                  {market.risks.map((risk, i) => (
+                    <div key={i} className="flex items-start gap-3 bg-white rounded-xl p-4 border border-gray-100">
+                      <div className="h-6 w-6 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                        <span className="text-xs font-semibold text-red-600">{i + 1}</span>
                       </div>
+                      <p className="text-sm text-gray-600">{risk}</p>
                     </div>
                   ))}
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="your-position" className="mt-8">
-            {purchasedNgn > 0 ? (
-              <div className="grid md:grid-cols-2 gap-6">
-                <Card className="border-0 shadow-sm rounded-2xl">
-                  <CardHeader>
-                    <CardTitle className="text-lg">Your Holdings</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex justify-between py-2">
-                      <span className="text-gray-500">Invested Amount</span>
-                      <span className="font-bold text-gray-900">{formatNgn(purchasedNgn)}</span>
-                    </div>
-                    <div className="flex justify-between py-2">
-                      <span className="text-gray-500">Units Purchased</span>
-                      <span className="font-medium">{userPurchasedUnits.toLocaleString()} {market.unitSymbol}</span>
-                    </div>
-                    <div className="flex justify-between py-2">
-                      <span className="text-gray-500">Units Claimed</span>
-                      <span className="font-medium">{userClaimedUnits.toLocaleString()} {market.unitSymbol}</span>
-                    </div>
-                    <div className="flex justify-between py-2">
-                      <span className="text-gray-500">Unlocked</span>
-                      <span className="font-medium text-emerald-600">{vestingState.unlockedPercent}%</span>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-0 shadow-sm rounded-2xl">
-                  <CardHeader>
-                    <CardTitle className="text-lg">Claim Rewards</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-500 text-sm mb-4">
-                      Claim your vested tokens as they become available according to the vesting schedule.
-                    </p>
-                    <Button onClick={claimAvailable} className="w-full rounded-xl" disabled={!saleEnded || vestingState.unlockedPercent === 0}>
-                      <CheckCircle className="h-4 w-4 mr-2" />
-                      Claim Available
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
-            ) : (
-              <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
-                <div className="h-16 w-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
-                  <Wallet className="h-8 w-8 text-gray-400" />
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">No Position Yet</h3>
-                <p className="text-gray-500 text-sm mb-6">Subscribe to this offering to start building your position.</p>
-                <Button onClick={() => openPurchase()} disabled={!saleOpen} className="rounded-xl">
-                  Subscribe Now
-                </Button>
               </div>
             )}
           </TabsContent>
         </Tabs>
 
-        {/* Footer Links */}
-        <footer className="mt-16 pt-8 border-t border-gray-100">
-          <div className="flex flex-wrap gap-6 justify-center">
-            {["Website", "Whitepaper", "Documentation", "Terms"].map((link) => (
-              <a key={link} href="#" className="text-sm text-gray-500 hover:text-gray-900 flex items-center gap-1 transition-colors">
-                {link}
-                <ExternalLink className="h-3 w-3" />
-              </a>
-            ))}
-          </div>
-        </footer>
+        {/* Purchase Modal */}
+        <Dialog open={purchaseModalOpen} onOpenChange={setPurchaseModalOpen}>
+          <DialogContent className="max-w-md rounded-2xl">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold">Subscribe to {market.symbol}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6 py-4">
+              <div className="bg-gray-50 rounded-xl p-4">
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="text-gray-500">Unit Price</span>
+                  <span className="font-medium">{formatNgn(market.priceNgn)}</span>
+                </div>
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="text-gray-500">Min. Investment</span>
+                  <span className="font-medium">{formatNgn(market.minInvestment)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Expected Yield</span>
+                  <span className="font-medium text-emerald-600">{market.yield}% p.a.</span>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Investment Amount (₦)
+                </label>
+                <Input
+                  type="number"
+                  value={purchaseAmountNgn}
+                  onChange={(e) => setPurchaseAmountNgn(Number(e.target.value))}
+                  min={market.minInvestment}
+                  step={100000}
+                  className="h-12 text-lg rounded-xl"
+                />
+                <div className="flex gap-2 mt-2">
+                  {[5_000_000, 10_000_000, 25_000_000, 50_000_000].map((amount) => (
+                    <Button
+                      key={amount}
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 rounded-lg text-xs"
+                      onClick={() => setPurchaseAmountNgn(amount)}
+                    >
+                      {formatNgn(amount)}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-emerald-50 rounded-xl p-4">
+                <div className="flex justify-between text-sm">
+                  <span className="text-emerald-700">Units to receive</span>
+                  <span className="font-bold text-emerald-700">
+                    {(purchaseAmountNgn / market.priceNgn).toLocaleString()} {market.unitSymbol}
+                  </span>
+                </div>
+              </div>
+
+              <Button
+                onClick={handleSubscribe}
+                disabled={purchaseAmountNgn < market.minInvestment || isSubscribing}
+                className="w-full h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700"
+              >
+                {isSubscribing ? "Processing..." : "Confirm Subscription"}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </main>
-
-      {/* Purchase Dialog */}
-      <Dialog open={purchaseModalOpen} onOpenChange={setPurchaseModalOpen}>
-        <DialogContent className="sm:max-w-md rounded-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-xl">Subscribe to {market.name}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-6 pt-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-gray-50 rounded-xl p-3">
-                <p className="text-xs text-gray-500 mb-1">Price per Unit</p>
-                <p className="font-semibold">{formatNgn(market.priceNgn)}</p>
-              </div>
-              <div className="bg-gray-50 rounded-xl p-3">
-                <p className="text-xs text-gray-500 mb-1">Remaining</p>
-                <p className="font-semibold">{formatNgn(remainingCapNgn)}</p>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Amount to Subscribe (NGN)
-              </label>
-              <Input
-                type="number"
-                value={purchaseAmountNgn}
-                min={100000}
-                max={walletBalanceNgn}
-                onChange={(e) => setPurchaseAmountNgn(Number(e.target.value))}
-                className="h-12 rounded-xl"
-              />
-              <p className="mt-2 text-sm text-gray-500">
-                You will receive: <span className="font-medium text-gray-900">{(purchaseAmountNgn / market.priceNgn).toLocaleString()} {market.unitSymbol}</span>
-              </p>
-            </div>
-
-            <Button onClick={confirmPurchase} className="w-full h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700">
-              Confirm Subscription
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
