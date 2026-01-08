@@ -76,7 +76,7 @@ export const THEME_PRESETS: ThemePreset[] = [
         foreground: '222 47% 11%',   // Dark text
       },
       typography: {
-        fontFamily: 'Inter',
+        fontFamily: 'DM Sans',
         scale: 'md',
       },
       layout: {
@@ -146,7 +146,7 @@ export const THEME_PRESETS: ThemePreset[] = [
         foreground: '222 47% 11%',   // Dark text
       },
       typography: {
-        fontFamily: 'Inter',
+        fontFamily: 'DM Sans',
         scale: 'lg',
       },
       layout: {
@@ -181,7 +181,7 @@ export const THEME_PRESETS: ThemePreset[] = [
         foreground: '0 0% 9%',       // Black text
       },
       typography: {
-        fontFamily: 'Inter',
+        fontFamily: 'DM Sans',
         scale: 'sm',
       },
       layout: {

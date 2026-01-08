@@ -163,7 +163,7 @@ export const defaultTheme: BrokerTheme = {
     foreground: '222 47% 11%',
   },
   typography: {
-    fontFamily: 'Inter',
+    fontFamily: 'DM Sans',
     scale: 'md',
   },
   layout: {
