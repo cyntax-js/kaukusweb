@@ -265,29 +265,29 @@ const MarketsPage = () => {
       ) : activeMarketType === "secondary" ? (
         <SecondaryMarket />
       ) : (
-        <main className="flex-1">
-          <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-6">
+        <main className="flex-1 px-4 md:px-6 py-6">
+          <div className="mx-auto max-w-screen-2xl space-y-6">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Markets</h1>
-                <p className="text-gray-500 text-sm">
+                <h1 className="text-2xl font-bold text-foreground">Markets</h1>
+                <p className="text-muted-foreground text-sm">
                   Trade stocks, futures, and derivatives
                 </p>
               </div>
             </div>
 
             {/* Market Type Tabs */}
-            <section className="flex items-center gap-2 border-b border-gray-200 pb-4 overflow-x-auto">
+            <section className="flex items-center gap-2 border-b border-border pb-4 overflow-x-auto">
               {availableTypes.map((type) => (
                 <button
                   key={type}
                   onClick={() => handleTypeChange(type)}
                   className={cn(
-                    "flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap",
+                    "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap",
                     activeMarketType === type
-                      ? "bg-gray-900 text-white shadow-sm"
-                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-100",
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50",
                   )}
                 >
                   {marketTypeLabels[type].icon}
