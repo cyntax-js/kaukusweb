@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Twitter, Instagram, Linkedin, Facebook } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import XIcon from "@/assets/x-icon.png";
 import LinkedinIcon from "@/assets/linkedin-icon.png";
@@ -9,42 +9,6 @@ import Logo from "@/assets/logo-white.png";
 import ISO from "@/assets/iso.png";
 import AICPA from "@/assets/aicpa-soc.png";
 
-const footerLinks = {
-  "Trading Tools": [
-    { href: "#", label: "Position Builder" },
-    { href: "#", label: "Kaucus Metrics" },
-    { href: "#", label: "Kaucus Tools" },
-  ],
-  "Dev Hub": [
-    { href: "#", label: "API Documentation" },
-    { href: "#", label: "Bug Bounty Program" },
-  ],
-  Learn: [
-    { href: "#", label: "Articles" },
-    { href: "#", label: "Options Course" },
-    { href: "#", label: "Industry News" },
-    { href: "#", label: "Market Research" },
-    { href: "#", label: "Exchange Updates" },
-  ],
-  About: [
-    { href: "#", label: "About Us" },
-    { href: "#", label: "Careers" },
-    { href: "#", label: "Partners" },
-    { href: "#", label: "Security" },
-  ],
-  Legal: [
-    { href: "#", label: "Terms of Services" },
-    { href: "#", label: "Privacy Notice" },
-    { href: "#", label: "Risk Disclosure" },
-    { href: "#", label: "Affiliate Program" },
-    { href: "#", label: "Complaints Form" },
-  ],
-  Support: [
-    { href: "#", label: "Support Center" },
-    { href: "#", label: "Telegram Suport 24/7" },
-  ],
-};
-
 const socialLinks = [
   { href: "#", icon: <img src={XIcon} alt="X" /> },
   { href: "#", icon: <img src={LinkedinIcon} alt="Linkedin" /> },
@@ -53,14 +17,51 @@ const socialLinks = [
 ];
 
 export function Footer() {
+  const { t } = useTranslation();
+
+  const footerLinks = {
+    [t("footer.tradingTools")]: [
+      { href: "#", label: t("footer.positionBuilder") },
+      { href: "#", label: t("footer.kaucusMetrics") },
+      { href: "#", label: t("footer.kaucusTools") },
+    ],
+    [t("footer.devHub")]: [
+      { href: "#", label: t("footer.apiDocumentation") },
+      { href: "#", label: t("footer.bugBountyProgram") },
+    ],
+    [t("footer.learn")]: [
+      { href: "#", label: t("footer.articles") },
+      { href: "#", label: t("footer.optionsCourse") },
+      { href: "#", label: t("footer.industryNews") },
+      { href: "#", label: t("footer.marketResearch") },
+      { href: "#", label: t("footer.exchangeUpdates") },
+    ],
+    [t("common.about")]: [
+      { href: "#", label: t("footer.aboutUs") },
+      { href: "#", label: t("footer.careers") },
+      { href: "#", label: t("footer.partners") },
+      { href: "#", label: t("footer.security") },
+    ],
+    [t("common.legal")]: [
+      { href: "#", label: t("footer.termsOfServices") },
+      { href: "#", label: t("footer.privacyNotice") },
+      { href: "#", label: t("footer.riskDisclosure") },
+      { href: "#", label: t("footer.affiliateProgram") },
+      { href: "#", label: t("footer.complaintsForm") },
+    ],
+    [t("footer.support")]: [
+      { href: "#", label: t("footer.supportCenter") },
+      { href: "#", label: t("footer.telegramSupport") },
+    ],
+  };
+
   return (
     <footer className="bg-secondary-blue text-secondary-blue-foreground px-10">
       <div className="flex justify-between flex-col lg:flex-row gap-y-12 max-w-[93rem] mx-auto pt-16 pb-12">
         <div className="space-y-6 max-w-80">
           <img src={Logo} alt="" className="" />
           <p className="text-secondary-blue-foreground/60">
-            Design amazing digital experiences that create more happy in the
-            world.
+            {t("footer.tagline")}
           </p>
           <div className="flex gap-6">
             <img src={ISO} alt="" className="" />
@@ -90,7 +91,7 @@ export function Footer() {
 
       <div className="flex flex-col-reverse lg:flex-row flex-wrap gap-y-6 justify-between max-w-7xl mx-auto py-12">
         <p className="text-secondary-blue-foreground/60">
-          © 2025 Kaucus. All rights reserved.
+          {t("footer.copyright")}
         </p>
         <div className="flex gap-x-6">
           {socialLinks.map((link, index) => (

@@ -3,27 +3,23 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { TrendingUp, Menu, X } from "lucide-react";
 import { useState } from "react";
-import { useAuthStore, UserRole } from "@/stores/authStore";
+import { useAuthStore } from "@/stores/authStore";
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 import Logo from "@/assets/logo.png";
-
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/services", label: "Services" },
-  // { href: "/individuals", label: "Individuals" },
-  // { href: "/businesses", label: "Businesses" },
-  // { href: "/institutions", label: "Institutions" },
-  // { href: "/company", label: "Company" },
-  // { href: "/developers", label: "Developers" },
-];
 
 export function Navbar() {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { isAuthenticated, getSelectedRole, _hasHydrated } = useAuthStore();
+  const { isAuthenticated, logout, _hasHydrated } = useAuthStore();
+  const { t } = useTranslation();
 
-  const selectedRole: UserRole = getSelectedRole();
+  const navLinks = [
+    { href: "/", label: t("nav.home") },
+    { href: "/about", label: t("nav.about") },
+    { href: "/services", label: t("nav.services") },
+  ];
 
   if (!_hasHydrated) {
     return null;
@@ -57,43 +53,40 @@ export function Navbar() {
           ))}
         </div>
 
-        {isAuthenticated ? (
-          <div className="flex gap-3">
-            {selectedRole === "broker" && (
+        <div className="flex items-center gap-3">
+          <LanguageSwitcher />
+          {isAuthenticated ? (
+            <>
               <Link
-                to="/broker/dashboard"
+                to="/dashboard"
                 className="text-xs text-muted-foreground hover:text-primary"
               >
-                <Button size="lg">Broker Dashboard</Button>
+                <Button size="lg">{t("common.dashboard")}</Button>
               </Link>
-            )}
-            {selectedRole === "dealer" && (
-              <Link
-                to="/dealer/dashboard"
-                className="text-xs text-muted-foreground hover:text-primary"
-              >
-                <Button size="lg">Dealer Dashboard</Button>
-              </Link>
-            )}
-          </div>
-        ) : (
-          <div className="flex gap-3">
-            <Link
-              to="/login"
-              className="text-xs text-muted-foreground hover:text-primary"
-            >
-              <Button variant="outline" size="lg">
-                Login
+
+              <Button variant="outline" size="lg" onClick={handleLogout}>
+                {t("common.logout")}
               </Button>
-            </Link>
-            <Link
-              to="/signup"
-              className="text-xs text-muted-foreground hover:text-primary"
-            >
-              <Button size="lg">Sign Up</Button>
-            </Link>
-          </div>
-        )}
+            </>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="text-xs text-muted-foreground hover:text-primary"
+              >
+                <Button variant="outline" size="lg">
+                  {t("common.login")}
+                </Button>
+              </Link>
+              <Link
+                to="/signup"
+                className="text-xs text-muted-foreground hover:text-primary"
+              >
+                <Button size="lg">{t("common.signup")}</Button>
+              </Link>
+            </>
+          )}
+        </div>
       </nav>
 
       {/* Mobile nav */}
@@ -102,11 +95,14 @@ export function Navbar() {
           <img src={Logo} alt="" />
         </Link>
 
-        <div
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className=""
-        >
-          {isMobileMenuOpen ? <X size={30} /> : <Menu size={30} />}
+        <div className="flex items-center gap-2">
+          <LanguageSwitcher />
+          <div
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className=""
+          >
+            {isMobileMenuOpen ? <X size={30} /> : <Menu size={30} />}
+          </div>
         </div>
 
         {/* Mobile menu overlay */}
@@ -136,29 +132,32 @@ export function Navbar() {
             ))}
             {isAuthenticated ? (
               <div className="pt-4 space-y-2">
-                {selectedRole === "broker" && (
-                  <Link to="/broker/dashboard">
-                    <Button size="sm" className="w-full">
-                      Dashboard
-                    </Button>
-                  </Link>
-                )}
-                {selectedRole === "dealer" && (
-                  <Link to="/dealer/dashboard">
-                    <Button size="sm" className="w-full">
-                      Dashboard
-                    </Button>
-                  </Link>
-                )}
+                <Link to="/dashboard">
+                  <Button size="sm" className="w-full">
+                    {t("common.dashboard")}
+                  </Button>
+                </Link>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                  onClick={handleLogout}
+                >
+                  {t("common.logout")}
+                </Button>
               </div>
             ) : (
               <div className="pt-4 space-y-2">
-                <Button variant="outline" size="sm" className="w-full">
-                  Login
-                </Button>
-                <Button size="sm" className="w-full">
-                  Sign Up
-                </Button>
+                <Link to="/login">
+                  <Button variant="outline" size="sm" className="w-full">
+                    {t("common.login")}
+                  </Button>
+                </Link>
+                <Link to="/signup">
+                  <Button size="sm" className="w-full">
+                    {t("common.signup")}
+                  </Button>
+                </Link>
               </div>
             )}
           </div>

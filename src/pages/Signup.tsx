@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuthStore } from "@/stores/authStore";
 import { Loader2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -12,37 +13,35 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const { t } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     if (!email || !password) {
-      setError("Please fill in all fields");
+      setError(t("auth.pleaseAllFields"));
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setError("Please enter a valid email address");
+      setError(t("auth.invalidEmail"));
       return;
     }
 
     if (password.length < 8) {
-      setError("Password must be at least 8 characters");
+      setError(t("auth.passwordMinLength"));
       return;
     }
 
     if (!/[A-Z]/.test(password)) {
-      setError("Password must contain an uppercase letter");
+      setError(t("auth.passwordUppercase"));
       return;
     }
 
-    // Testing1234!
-    // securePassword1234!
-
     if (!/\d/.test(password)) {
-      setError("Password must contain numbers");
+      setError(t("auth.passwordNumbers"));
       return;
     }
 
@@ -57,9 +56,9 @@ export default function Signup() {
 
   return (
     <div className="animate-fade-in">
-      <h1 className="text-2xl font-bold mb-2">Create your account</h1>
+      <h1 className="text-2xl font-bold mb-2">{t("auth.createAccount")}</h1>
       <p className="text-muted-foreground mb-8">
-        Start your journey with ContiSX
+        {t("auth.startJourney")}
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -69,22 +68,22 @@ export default function Signup() {
           </div>
         )}
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">{t("auth.email")}</Label>
           <Input
             id="email"
             type="email"
-            placeholder="name@company.com"
+            placeholder={t("auth.emailPlaceholder")}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="password">{t("auth.password")}</Label>
           <Input
             id="password"
             type="password"
-            placeholder="••••••••"
+            placeholder={t("auth.passwordPlaceholder")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -93,19 +92,18 @@ export default function Signup() {
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? (
             <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Creating
-              account...
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t("auth.creatingAccount")}
             </>
           ) : (
-            "Create Account"
+            t("auth.createAccount")
           )}
         </Button>
       </form>
 
       <p className="text-center text-sm text-muted-foreground mt-6">
-        Already have an account?{" "}
+        {t("auth.alreadyHaveAccount")}{" "}
         <Link to="/login" className="text-primary hover:underline">
-          Sign in
+          {t("common.signIn")}
         </Link>
       </p>
     </div>
