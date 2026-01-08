@@ -37,6 +37,15 @@ export interface AuthResponse {
   csrf_token?: string;
 }
 
+export interface ResendEmailVerificationRequest {
+  email: string;
+}
+
+export interface VerifyOtpRequest {
+  email: string;
+  otp: string;
+}
+
 // ============================================================
 // API FUNCTIONS
 // ============================================================
@@ -104,6 +113,76 @@ export async function signup(request: SignupRequest): Promise<AuthResponse> {
       name: data.username,
       role: data.role,
       state: data.state,
+      createdAt: data.created_at,
+    },
+    csrf_token: data.csrf_token,
+  };
+}
+
+export async function resendEmailVerification(
+  request: ResendEmailVerificationRequest,
+): Promise<void> {
+  const response = await apiFetch(
+    "/api/v2/auth/identity/users/email/generate_code",
+    {
+      method: "POST",
+      body: JSON.stringify(request),
+    },
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json();
+
+    if (Array.isArray(errorData.errors) && errorData.errors.length > 0) {
+      const friendlyErrors = errorData.errors.map((code: string) =>
+        getFriendlyErrorMessage(code),
+      );
+      throw new Error(friendlyErrors.join("\n"));
+    }
+
+    throw new Error(
+      getFriendlyErrorMessage(errorData.message || "email.resend_failed"),
+    );
+  } else {
+    console.log(response);
+  }
+}
+
+export async function verifyOtp(
+  request: VerifyOtpRequest,
+): Promise<AuthResponse> {
+  const response = await apiFetch(
+    "/api/v2/auth/identity/users/email/confirm_code",
+    {
+      method: "POST",
+      body: JSON.stringify(request),
+    },
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json();
+
+    if (Array.isArray(errorData.errors) && errorData.errors.length > 0) {
+      const friendlyErrors = errorData.errors.map((code: string) =>
+        getFriendlyErrorMessage(code),
+      );
+      throw new Error(friendlyErrors.join("\n"));
+    }
+
+    throw new Error(
+      getFriendlyErrorMessage(errorData.message || "otp.invalid"),
+    );
+  }
+
+  const data = await response.json();
+
+  return {
+    user: {
+      id: data.uid,
+      email: data.email,
+      name: data.username || data.name,
+      role: data.role,
+      state: data.state, // active or verified
       createdAt: data.created_at,
     },
     csrf_token: data.csrf_token,

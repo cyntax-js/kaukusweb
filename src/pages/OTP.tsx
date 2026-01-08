@@ -1,9 +1,24 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/stores/authStore";
+import { platformApi } from "@/api";
+import { toast } from "sonner";
 
 const OTPPage: React.FC = () => {
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [isLoading, setIsLoading] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [timer, setTimer] = useState(0);
+  const navigate = useNavigate();
+
+  const { verifyOtp, pendingEmail } = useAuthStore();
+
+  useEffect(() => {
+    if (timer > 0) {
+      const interval = setInterval(() => setTimer((t) => t - 1), 1000);
+      return () => clearInterval(interval);
+    }
+  }, [timer]);
 
   useEffect(() => {
     // Focus on first input when component mounts
@@ -52,10 +67,9 @@ const OTPPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await verifyOtp(otpCode);
       console.log("OTP submitted:", otpCode);
-      // Handle successful verification
+      navigate("/");
     } catch (error) {
       console.error("OTP verification failed:", error);
     } finally {
@@ -63,11 +77,20 @@ const OTPPage: React.FC = () => {
     }
   };
 
-  const handleResendOTP = () => {
-    console.log("Resending OTP...");
+  const handleResendOTP = async () => {
+    if (timer > 0) return; // prevent clicks
     setOtp(["", "", "", "", "", ""]);
     if (inputRefs.current[0]) {
       inputRefs.current[0].focus();
+    }
+    try {
+      // Call the API
+      await platformApi.auth.resendEmailVerification({ email: pendingEmail! });
+      setTimer(60);
+      toast("Verification code sent");
+    } catch (err) {
+      console.log("Error sending OTP:", err);
+      toast.error("Failed to send verification code");
     }
   };
 
@@ -104,7 +127,7 @@ const OTPPage: React.FC = () => {
           <div>
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={timer > 0 || isLoading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? "Verifying..." : "Verify OTP"}

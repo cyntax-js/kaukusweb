@@ -38,6 +38,9 @@ export default function Signup() {
       return;
     }
 
+    // Testing1234!
+    // securePassword1234!
+
     if (!/\d/.test(password)) {
       setError("Password must contain numbers");
       return;
@@ -45,7 +48,7 @@ export default function Signup() {
 
     try {
       await signup(email, password);
-      navigate("/role-selection");
+      navigate("/verify-email");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
       setError(msg);

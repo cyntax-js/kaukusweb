@@ -28,11 +28,13 @@ interface AuthStore {
   isAuthenticated: boolean;
   isLoading: boolean;
   selectedRole: UserRole | null; // Allow null for initial state
+  pendingEmail: string | null;
   _hasHydrated: boolean;
 
   // Actions
   login: (email: string, password: string) => Promise<boolean>;
   signup: (email: string, password: string) => Promise<boolean>;
+  verifyOtp: (code: string) => Promise<boolean>;
   logout: () => void;
   setSelectedRole: (role: UserRole) => void;
   setUser: (user: User) => void;
@@ -51,6 +53,7 @@ export const useAuthStore = create<AuthStore>()(
       isAuthenticated: false,
       isLoading: false,
       selectedRole: null,
+      pendingEmail: null,
       _hasHydrated: false,
 
       /**
@@ -102,15 +105,54 @@ export const useAuthStore = create<AuthStore>()(
             setCookie("XSRF-TOKEN", response.csrf_token);
           }
 
+          if (response.user.state === "pending") {
+            set({
+              isLoading: false,
+              pendingEmail: email,
+              isAuthenticated: false,
+            });
+            return true;
+          }
+
           set({
             user: response.user,
             isAuthenticated: true,
             isLoading: false,
+            pendingEmail: null,
           });
 
           return true;
         } catch (error) {
           console.error("Signup failed:", error);
+          set({ isLoading: false });
+          throw error;
+        }
+      },
+
+      verifyOtp: async (code: string) => {
+        const email = get().pendingEmail;
+        if (!email) return false;
+
+        set({ isLoading: true });
+        try {
+          const response = await platformApi.auth.verifyOtp({
+            email,
+            otp: code,
+          });
+
+          if (response.csrf_token) {
+            setCookie("XSRF-TOKEN", response.csrf_token);
+          }
+
+          set({
+            user: response.user,
+            isAuthenticated: true,
+            pendingEmail: null,
+            isLoading: false,
+          });
+
+          return true;
+        } catch (error) {
           set({ isLoading: false });
           throw error;
         }
@@ -171,6 +213,7 @@ export const useAuthStore = create<AuthStore>()(
         user: state.user,
         isAuthenticated: state.isAuthenticated,
         selectedRole: state.selectedRole,
+        pendingEmail: state.pendingEmail,
       }),
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
