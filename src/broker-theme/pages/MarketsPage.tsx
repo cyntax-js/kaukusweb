@@ -9,6 +9,7 @@ import { AppHeader } from "@/broker-theme/components";
 import { mockMarkets, type Market } from "@/data/mockTradingData";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import {
   Search,
@@ -18,6 +19,8 @@ import {
   BarChart3,
   Layers,
   Lock,
+  Sparkles,
+  Activity,
 } from "lucide-react";
 import PrivateMarket from "./PrivateMarket/PrivateMarket";
 import PrivateMarketTrade from "./PrivateMarket/PrivateMarketTrade";
@@ -67,18 +70,17 @@ const marketTypeLabels: Record<
 
 const MarketsPage = () => {
   const { config } = useTheme();
-  const { marketType: marketTypeParam } = useParams<{ marketType?: string }>();
+  const { marketType: marketTypeParam, marketId } = useParams<{ marketType?: string; marketId?: string }>();
   const location = useLocation();
   const navigate = useNavigate();
 
-  console.log("mockMarkets", mockMarkets);
-  console.log("====================================");
-  console.log(config, "config");
-  console.log("====================================");
   // Trading/Markets pages use /preview/app or /app prefix
   const routePrefix = location.pathname.includes("/preview/app")
     ? "/preview/app"
     : "/app";
+
+  // Check if we're viewing a specific private market
+  const isPrivateMarketDetail = location.pathname.includes("/markets/private/") && marketId;
 
   // Determine active market type from URL param
   const [activeMarketType, setActiveMarketType] = useState<MarketType>(() => {
@@ -88,9 +90,6 @@ const MarketsPage = () => {
     return "stock";
   });
 
-  console.log("====================================");
-  console.log(marketTypeParam, "marketTypeParam");
-  console.log("====================================");
   // Sync with URL changes
   useEffect(() => {
     if (marketTypeParam === "futures") setActiveMarketType("futures");
@@ -201,18 +200,6 @@ const MarketsPage = () => {
         : market.type === "stock"
         ? "stock"
         : market.type;
-
-    console.log("====================================");
-    console.log(market, "marketurl");
-    console.log("====================================");
-
-    console.log("====================================");
-    console.log(
-      `${routePrefix}/trade/${serviceType}/${market.symbol}`,
-      "marketurl"
-    );
-    console.log("====================================");
-    // return;
     navigate(`${routePrefix}/trade/${serviceType}/${market.symbol}`);
   };
 
@@ -239,15 +226,24 @@ const MarketsPage = () => {
     );
   }
 
+  // Show private market detail page
+  if (isPrivateMarketDetail) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <AppHeader />
+        <PrivateMarketTrade />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <AppHeader />
 
-      {activeMarketType == "private" &&
+      {activeMarketType === "private" &&
       config.services.includes("private_markets") ? (
         <PrivateMarket />
       ) : (
-        // <PrivateMarketTrade />
         <main className="flex-1 px-6 py-6">
           <div className="mx-auto max-w-screen-2xl space-y-6">
             {/* Market Type Tabs */}
