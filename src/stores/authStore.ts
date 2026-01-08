@@ -221,3 +221,5 @@ export const useAuthStore = create<AuthStore>()(
     }
   )
 );
+
+("DM Sans");
