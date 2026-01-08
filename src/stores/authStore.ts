@@ -7,8 +7,8 @@
  * Uses Zustand persist middleware for session persistence.
  *
  * Usage:
- *   import { useAuthStore } from '@/stores/authStore';
- *   const { user, login, logout } = useAuthStore();
+ * import { useAuthStore } from '@/stores/authStore';
+ * const { user, login, logout } = useAuthStore();
  */
 
 import { create } from "zustand";
@@ -16,6 +16,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { platformApi, type User, type UserRole } from "@/api/platform";
 import { STORAGE_KEYS } from "@/lib/storage";
 import { indexedDBStateStorage } from "@/lib/indexedDBStorage";
+import { setCookie } from "@/lib/utils";
 
 // ============================================================
 // TYPES
@@ -26,12 +27,14 @@ interface AuthStore {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  selectedRole: UserRole;
+  selectedRole: UserRole | null; // Allow null for initial state
+  pendingEmail: string | null;
   _hasHydrated: boolean;
 
   // Actions
   login: (email: string, password: string) => Promise<boolean>;
-  signup: (email: string, password: string, name: string) => Promise<boolean>;
+  signup: (email: string, password: string) => Promise<boolean>;
+  verifyOtp: (code: string) => Promise<boolean>;
   logout: () => void;
   setSelectedRole: (role: UserRole) => void;
   setUser: (user: User) => void;
@@ -50,6 +53,7 @@ export const useAuthStore = create<AuthStore>()(
       isAuthenticated: false,
       isLoading: false,
       selectedRole: null,
+      pendingEmail: null,
       _hasHydrated: false,
 
       /**
@@ -61,6 +65,15 @@ export const useAuthStore = create<AuthStore>()(
         try {
           const response = await platformApi.auth.login({ email, password });
 
+          // --------------------------------------------------------
+          // SECURITY INTEGRATION: Save CSRF Token to Cookie
+          // --------------------------------------------------------
+          // Check if the response contains the token and save it.
+          // This keeps the sensitive token out of IndexedDB.
+          if (response.csrf_token) {
+            setCookie("XSRF-TOKEN", response.csrf_token);
+          }
+
           set({
             user: response.user,
             isAuthenticated: true,
@@ -69,6 +82,7 @@ export const useAuthStore = create<AuthStore>()(
 
           return true;
         } catch (error) {
+          console.error("Login failed:", error);
           set({ isLoading: false });
           return false;
         }
@@ -77,39 +91,91 @@ export const useAuthStore = create<AuthStore>()(
       /**
        * Sign up a new user
        */
-      signup: async (email: string, password: string, name: string) => {
+      signup: async (email: string, password: string) => {
         set({ isLoading: true });
 
         try {
           const response = await platformApi.auth.signup({
             email,
             password,
-            name,
           });
+
+          // save CSRF Token to Cookie
+          if (response.csrf_token) {
+            setCookie("XSRF-TOKEN", response.csrf_token);
+          }
+
+          if (response.user.state === "pending") {
+            set({
+              isLoading: false,
+              pendingEmail: email,
+              isAuthenticated: false,
+            });
+            return true;
+          }
 
           set({
             user: response.user,
             isAuthenticated: true,
+            isLoading: false,
+            pendingEmail: null,
+          });
+
+          return true;
+        } catch (error) {
+          console.error("Signup failed:", error);
+          set({ isLoading: false });
+          throw error;
+        }
+      },
+
+      verifyOtp: async (code: string) => {
+        const email = get().pendingEmail;
+        if (!email) return false;
+
+        set({ isLoading: true });
+        try {
+          const response = await platformApi.auth.verifyOtp({
+            email,
+            code: code,
+          });
+
+          if (response.csrf_token) {
+            setCookie("XSRF-TOKEN", response.csrf_token);
+          }
+
+          set({
+            user: response.user,
+            isAuthenticated: true,
+            pendingEmail: null,
             isLoading: false,
           });
 
           return true;
         } catch (error) {
           set({ isLoading: false });
-          return false;
+          throw error;
         }
       },
 
       /**
        * Log out the current user
        */
-      logout: () => {
-        platformApi.auth.logout();
+      logout: async () => {
+        // Call API logout if exists
+        await platformApi.auth.logout();
+
+        // Clear the Security Cookie (expire it)
+        setCookie("XSRF-TOKEN", "", -1);
+
+        // Clear the Store State
         set({
           user: null,
           isAuthenticated: false,
           selectedRole: null,
         });
+
+        window.location.href = "/login";
       },
 
       /**
@@ -142,10 +208,12 @@ export const useAuthStore = create<AuthStore>()(
     {
       name: STORAGE_KEYS.USER,
       storage: createJSONStorage(() => indexedDBStateStorage),
+      // only persist non-sensitive, UI-critical data
       partialize: (state) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,
         selectedRole: state.selectedRole,
+        pendingEmail: state.pendingEmail,
       }),
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);

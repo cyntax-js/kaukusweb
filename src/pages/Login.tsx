@@ -11,11 +11,24 @@ export default function Login() {
   const { login, isLoading } = useAuthStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+
+    if (!email || !password) {
+      setError("Please fill in all fields");
+      return;
+    }
+
     const success = await login(email, password);
-    if (success) navigate("/role-selection");
+
+    if (success) {
+      navigate("/");
+    } else {
+      setError("Invalid email or password. Please try again.");
+    }
   };
 
   return (
@@ -26,6 +39,11 @@ export default function Login() {
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {error && (
+          <div className="text-red-600 text-sm bg-red-50 p-3 rounded-md border border-red-200">
+            {error}
+          </div>
+        )}
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <Input

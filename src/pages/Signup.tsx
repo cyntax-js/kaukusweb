@@ -9,14 +9,50 @@ import { Loader2 } from "lucide-react";
 export default function Signup() {
   const navigate = useNavigate();
   const { signup, isLoading } = useAuthStore();
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const success = await signup(email, password, name);
-    if (success) navigate("/role-selection");
+    setError("");
+
+    if (!email || !password) {
+      setError("Please fill in all fields");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters");
+      return;
+    }
+
+    if (!/[A-Z]/.test(password)) {
+      setError("Password must contain an uppercase letter");
+      return;
+    }
+
+    // Testing1234!
+    // securePassword1234!
+
+    if (!/\d/.test(password)) {
+      setError("Password must contain numbers");
+      return;
+    }
+
+    try {
+      await signup(email, password);
+      navigate("/verify-email");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      setError(msg);
+    }
   };
 
   return (
@@ -27,16 +63,11 @@ export default function Signup() {
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="name">Full Name</Label>
-          <Input
-            id="name"
-            placeholder="John Doe"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </div>
+        {error && (
+          <div className="text-red-600 text-sm bg-red-50 p-3 rounded-md border border-red-200 whitespace-pre-line">
+            {error}
+          </div>
+        )}
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <Input
