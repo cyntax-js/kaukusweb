@@ -168,6 +168,17 @@ export default function BrokerApplication() {
                   />
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="companyId">Company ID *</Label>
+                  <Input
+                    id="companyId"
+                    placeholder="46e171d1-62b8-485d-98f6-bc529a963bff"
+                    value={application?.companyId || ""}
+                    onChange={(e) =>
+                      setApplicationField("companyId", e.target.value)
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="country">Country of Incorporation *</Label>
                   <Select
                     value={application?.country || ""}
@@ -186,6 +197,17 @@ export default function BrokerApplication() {
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="address">Address</Label>
+                  <Input
+                    id="address"
+                    placeholder="123 Main St"
+                    value={application?.address || ""}
+                    onChange={(e) =>
+                      setApplicationField("address", e.target.value)
+                    }
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="website">Website (Optional)</Label>
