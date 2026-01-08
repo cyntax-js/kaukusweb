@@ -1,12 +1,23 @@
 import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { generateSP500TradeData } from "@/lib/generateTradeData";
-import { TooltipProps } from "recharts";
+
+interface TooltipPayload {
+  value: number;
+  name: string;
+  dataKey: string;
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: TooltipPayload[];
+  label?: string;
+}
 
 function TradingViewTooltip({
   active,
   payload,
   label,
-}: TooltipProps<number, string>) {
+}: CustomTooltipProps) {
   if (!active || !payload?.length) return null;
 
   const price = payload[0].value as number;
@@ -41,7 +52,7 @@ export default function MarketSummaryChart() {
           axisLine={false}
           tickLine={false}
           tick={{ fill: "#6b7280", fontSize: 11 }}
-          interval={24} // reduces clutter like TradingView
+          interval={24}
         />
 
         {/* Tooltip */}
