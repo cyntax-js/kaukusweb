@@ -4,24 +4,22 @@ import { cn } from "@/lib/utils";
 import { TrendingUp, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { useAuthStore } from "@/stores/authStore";
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 import Logo from "@/assets/logo.png";
-
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/services", label: "Services" },
-  // { href: "/individuals", label: "Individuals" },
-  // { href: "/businesses", label: "Businesses" },
-  // { href: "/institutions", label: "Institutions" },
-  // { href: "/company", label: "Company" },
-  // { href: "/developers", label: "Developers" },
-];
 
 export function Navbar() {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { isAuthenticated, logout, _hasHydrated } = useAuthStore();
+  const { t } = useTranslation();
+
+  const navLinks = [
+    { href: "/", label: t("nav.home") },
+    { href: "/about", label: t("nav.about") },
+    { href: "/services", label: t("nav.services") },
+  ];
 
   const handleLogout = () => {
     logout();
@@ -59,37 +57,40 @@ export function Navbar() {
           ))}
         </div>
 
-        {isAuthenticated ? (
-          <div className="flex gap-3">
-            <Link
-              to="/dashboard"
-              className="text-xs text-muted-foreground hover:text-primary"
-            >
-              <Button size="lg">Dashboard</Button>
-            </Link>
+        <div className="flex items-center gap-3">
+          <LanguageSwitcher />
+          {isAuthenticated ? (
+            <>
+              <Link
+                to="/dashboard"
+                className="text-xs text-muted-foreground hover:text-primary"
+              >
+                <Button size="lg">{t("common.dashboard")}</Button>
+              </Link>
 
-            <Button variant="outline" size="lg" onClick={handleLogout}>
-              Logout
-            </Button>
-          </div>
-        ) : (
-          <div className="flex gap-3">
-            <Link
-              to="/login"
-              className="text-xs text-muted-foreground hover:text-primary"
-            >
-              <Button variant="outline" size="lg">
-                Login
+              <Button variant="outline" size="lg" onClick={handleLogout}>
+                {t("common.logout")}
               </Button>
-            </Link>
-            <Link
-              to="/signup"
-              className="text-xs text-muted-foreground hover:text-primary"
-            >
-              <Button size="lg">Sign Up</Button>
-            </Link>
-          </div>
-        )}
+            </>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="text-xs text-muted-foreground hover:text-primary"
+              >
+                <Button variant="outline" size="lg">
+                  {t("common.login")}
+                </Button>
+              </Link>
+              <Link
+                to="/signup"
+                className="text-xs text-muted-foreground hover:text-primary"
+              >
+                <Button size="lg">{t("common.signup")}</Button>
+              </Link>
+            </>
+          )}
+        </div>
       </nav>
 
       {/* Mobile nav */}
@@ -98,11 +99,14 @@ export function Navbar() {
           <img src={Logo} alt="" />
         </Link>
 
-        <div
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className=""
-        >
-          {isMobileMenuOpen ? <X size={30} /> : <Menu size={30} />}
+        <div className="flex items-center gap-2">
+          <LanguageSwitcher />
+          <div
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className=""
+          >
+            {isMobileMenuOpen ? <X size={30} /> : <Menu size={30} />}
+          </div>
         </div>
 
         {/* Mobile menu overlay */}
@@ -134,7 +138,7 @@ export function Navbar() {
               <div className="pt-4 space-y-2">
                 <Link to="/dashboard">
                   <Button size="sm" className="w-full">
-                    Dashboard
+                    {t("common.dashboard")}
                   </Button>
                 </Link>
                 <Button
@@ -143,17 +147,21 @@ export function Navbar() {
                   className="w-full"
                   onClick={handleLogout}
                 >
-                  Logout
+                  {t("common.logout")}
                 </Button>
               </div>
             ) : (
               <div className="pt-4 space-y-2">
-                <Button variant="outline" size="sm" className="w-full">
-                  Login
-                </Button>
-                <Button size="sm" className="w-full">
-                  Sign Up
-                </Button>
+                <Link to="/login">
+                  <Button variant="outline" size="sm" className="w-full">
+                    {t("common.login")}
+                  </Button>
+                </Link>
+                <Link to="/signup">
+                  <Button size="sm" className="w-full">
+                    {t("common.signup")}
+                  </Button>
+                </Link>
               </div>
             )}
           </div>

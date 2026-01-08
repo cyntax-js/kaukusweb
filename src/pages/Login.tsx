@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuthStore } from "@/stores/authStore";
 import { Loader2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -12,13 +13,14 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const { t } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     if (!email || !password) {
-      setError("Please fill in all fields");
+      setError(t("auth.pleaseAllFields"));
       return;
     }
 
@@ -27,15 +29,15 @@ export default function Login() {
     if (success) {
       navigate("/");
     } else {
-      setError("Invalid email or password. Please try again.");
+      setError(t("auth.invalidCredentials"));
     }
   };
 
   return (
     <div className="animate-fade-in">
-      <h1 className="text-2xl font-bold mb-2">Welcome back</h1>
+      <h1 className="text-2xl font-bold mb-2">{t("auth.welcomeBack")}</h1>
       <p className="text-muted-foreground mb-8">
-        Sign in to your ContiSX account
+        {t("auth.signInToAccount")}
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -45,22 +47,22 @@ export default function Login() {
           </div>
         )}
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">{t("auth.email")}</Label>
           <Input
             id="email"
             type="email"
-            placeholder="name@company.com"
+            placeholder={t("auth.emailPlaceholder")}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="password">{t("auth.password")}</Label>
           <Input
             id="password"
             type="password"
-            placeholder="••••••••"
+            placeholder={t("auth.passwordPlaceholder")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -69,18 +71,18 @@ export default function Login() {
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? (
             <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Signing in...
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t("auth.signingIn")}
             </>
           ) : (
-            "Sign In"
+            t("common.signIn")
           )}
         </Button>
       </form>
 
       <p className="text-center text-sm text-muted-foreground mt-6">
-        Don't have an account?{" "}
+        {t("auth.dontHaveAccount")}{" "}
         <Link to="/signup" className="text-primary hover:underline">
-          Sign up
+          {t("common.signup")}
         </Link>
       </p>
     </div>

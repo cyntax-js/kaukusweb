@@ -3,10 +3,12 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/stores/authStore";
 import { TrendingUp, Building2, ArrowRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function RoleSelection() {
   const navigate = useNavigate();
   const { setSelectedRole } = useAuthStore();
+  const { t } = useTranslation();
 
   const handleSelectRole = (role: "broker" | "dealer") => {
     setSelectedRole(role);
@@ -19,9 +21,9 @@ export default function RoleSelection() {
     <div className="min-h-screen flex items-center justify-center p-8 bg-background">
       <div className="w-full max-w-3xl animate-fade-in">
         <div className="text-center mb-12">
-          <h1 className="text-3xl font-bold mb-4">Choose Your Path</h1>
+          <h1 className="text-3xl font-bold mb-4">{t("roleSelection.chooseYourPath")}</h1>
           <p className="text-muted-foreground">
-            Select how you want to participate in the ContiSX ecosystem
+            {t("roleSelection.selectParticipation")}
           </p>
         </div>
 
@@ -33,41 +35,38 @@ export default function RoleSelection() {
             <div className="w-16 h-16 rounded-2xl gradient-primary flex items-center justify-center mb-6 group-hover:shadow-glow transition-shadow">
               <TrendingUp className="w-8 h-8 text-primary-foreground" />
             </div>
-            <h2 className="text-2xl font-bold mb-3">Become a Broker</h2>
+            <h2 className="text-2xl font-bold mb-3">{t("roleSelection.becomeBroker")}</h2>
             <p className="text-muted-foreground mb-6">
-              Launch your own trading platform with our Broker-as-a-Service
-              solution. Serve retail and institutional clients.
+              {t("roleSelection.brokerDescription")}
             </p>
             <ul className="text-sm text-muted-foreground space-y-2 mb-6">
-              <li>• White-label trading platforms</li>
-              <li>• Customizable templates</li>
-              <li>• User & fee management</li>
+              <li>• {t("roleSelection.whiteLabelPlatforms")}</li>
+              <li>• {t("roleSelection.customizableTemplates")}</li>
+              <li>• {t("roleSelection.userFeeManagement")}</li>
             </ul>
             <Button className="w-full group-hover:shadow-glow">
-              Select Broker <ArrowRight className="w-4 h-4 ml-2" />
+              {t("common.selectBroker")} <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </Card>
 
           <Card
             className="p-8 hover-lift cursor-pointer group"
             onClick={() => alert("Dealer role coming soon!")}
-            // onClick={() => handleSelectRole("dealer")}
           >
             <div className="w-16 h-16 rounded-2xl bg-accent flex items-center justify-center mb-6">
               <Building2 className="w-8 h-8 text-accent-foreground" />
             </div>
-            <h2 className="text-2xl font-bold mb-3">Become a Dealer</h2>
+            <h2 className="text-2xl font-bold mb-3">{t("roleSelection.becomeDealer")}</h2>
             <p className="text-muted-foreground mb-6">
-              Provide liquidity to the marketplace. Connect your institution and
-              participate in market making.
+              {t("roleSelection.dealerDescription")}
             </p>
             <ul className="text-sm text-muted-foreground space-y-2 mb-6">
-              <li>• Direct market access</li>
-              <li>• Institutional-grade API</li>
-              <li>• Risk management tools</li>
+              <li>• {t("roleSelection.directMarketAccess")}</li>
+              <li>• {t("roleSelection.institutionalApi")}</li>
+              <li>• {t("roleSelection.riskManagementTools")}</li>
             </ul>
             <Button variant="outline" className="w-full" disabled>
-              Select Dealer <ArrowRight className="w-4 h-4 ml-2" />
+              {t("common.selectDealer")} <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </Card>
         </div>
