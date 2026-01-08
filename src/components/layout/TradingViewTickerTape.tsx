@@ -1,5 +1,18 @@
 import { useEffect, useRef } from "react";
 
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'tv-ticker-tape': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement> & {
+        symbols?: string;
+        'item-size'?: string;
+        'show-hover'?: string;
+        theme?: string;
+      }, HTMLElement>;
+    }
+  }
+}
+
 export default function TradingViewTickerTape() {
   const containerRef = useRef<HTMLDivElement>(null);
 
