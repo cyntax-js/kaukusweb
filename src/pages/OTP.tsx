@@ -72,6 +72,7 @@ const OTPPage: React.FC = () => {
       navigate("/");
     } catch (error) {
       console.error("OTP verification failed:", error);
+      toast.error("Invalid OTP");
     } finally {
       setIsLoading(false);
     }
