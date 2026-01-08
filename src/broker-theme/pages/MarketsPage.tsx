@@ -24,8 +24,10 @@ import {
 } from "lucide-react";
 import PrivateMarket from "./PrivateMarket/PrivateMarket";
 import PrivateMarketTrade from "./PrivateMarket/PrivateMarketTrade";
+import SecondaryMarket from "./SecondaryMarket/SecondaryMarket";
+import SecondaryMarketDetail from "./SecondaryMarket/SecondaryMarketDetail";
 
-type MarketType = "stock" | "futures" | "options" | "private";
+type MarketType = "stock" | "futures" | "options" | "private" | "secondary";
 
 type FilterKey =
   | "all"
@@ -66,6 +68,10 @@ const marketTypeLabels: Record<
   },
   options: { label: "Options", icon: <Layers className="h-4 w-4" /> },
   private: { label: "Private Markets", icon: <Lock className="h-4 w-4" /> },
+  secondary: {
+    label: "Secondary Markets",
+    icon: <Sparkles className="h-4 w-4" />,
+  },
 };
 
 const MarketsPage = () => {
@@ -76,7 +82,9 @@ const MarketsPage = () => {
   }>();
   const location = useLocation();
   const navigate = useNavigate();
-
+  console.log("====================================");
+  console.log(marketTypeParam, "marketTypeParam");
+  console.log("====================================");
   // Trading/Markets pages use /preview/app or /app prefix
   const routePrefix = location.pathname.includes("/preview/app")
     ? "/preview/app"
@@ -85,12 +93,18 @@ const MarketsPage = () => {
   // Check if we're viewing a specific private market
   const isPrivateMarketDetail =
     location.pathname.includes("/markets/private/") && marketId;
+  // Check if we're viewing a specific secondaryMarket
+  const isSecondaryMarket = location.pathname.includes("/markets/secondary");
+  // Check if we're viewing a specific secondary market
+  const isSecondaryMarketDetail =
+    location.pathname.includes("/markets/secondary/") && marketId;
 
   // Determine active market type from URL param
   const [activeMarketType, setActiveMarketType] = useState<MarketType>(() => {
     if (marketTypeParam === "futures") return "futures";
     if (marketTypeParam === "options") return "options";
     if (marketTypeParam === "private") return "private";
+    if (marketTypeParam === "secondary") return "secondary";
     return "stock";
   });
 
@@ -99,6 +113,7 @@ const MarketsPage = () => {
     if (marketTypeParam === "futures") setActiveMarketType("futures");
     else if (marketTypeParam === "options") setActiveMarketType("options");
     else if (marketTypeParam === "private") setActiveMarketType("private");
+    else if (marketTypeParam === "secondary") setActiveMarketType("secondary");
     else setActiveMarketType("stock");
   }, [marketTypeParam]);
 
@@ -239,6 +254,28 @@ const MarketsPage = () => {
       </div>
     );
   }
+  // Show private market detail page
+  // if (isSecondaryMarket) {
+  //   return (
+  //     <div className="min-h-screen flex flex-col bg-background">
+  //       <AppHeader />
+  //       <SecondaryMarket />
+  //     </div>
+  //   );
+  // }
+
+  if (isSecondaryMarketDetail) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <AppHeader />
+        <SecondaryMarketDetail />
+      </div>
+    );
+  }
+
+  console.log("====================================");
+  console.log(activeMarketType, "activeMarketType");
+  console.log("====================================");
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -248,8 +285,9 @@ const MarketsPage = () => {
       config.services.includes("private_markets") ? (
         <>
           <PrivateMarket />
-          {/* <PrivateMarketTrade /> */}
         </>
+      ) : activeMarketType === "secondary" ? (
+        <SecondaryMarket />
       ) : (
         <main className="flex-1 px-6 py-6">
           <div className="mx-auto max-w-screen-2xl space-y-6">
