@@ -131,13 +131,17 @@ export const useAuthStore = create<AuthStore>()(
 
       verifyOtp: async (code: string) => {
         const email = get().pendingEmail;
+        console.log({
+          Email: email,
+          Code: code,
+        });
         if (!email) return false;
 
         set({ isLoading: true });
         try {
           const response = await platformApi.auth.verifyOtp({
             email,
-            otp: code,
+            code: code,
           });
 
           if (response.csrf_token) {
