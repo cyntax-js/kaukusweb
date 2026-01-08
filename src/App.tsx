@@ -145,7 +145,11 @@ const App = () => (
                   element={<BrokerMarketsPage />}
                 />
                 <Route
-                  path=":serviceType/trade/:marketType/:pair"
+                  path="markets/private/:marketId"
+                  element={<BrokerMarketsPage />}
+                />
+                <Route
+                  path="trade/:serviceType/:pair"
                   element={<BrokerTradingPage />}
                 />
                 <Route path="portfolio" element={<BrokerPortfolioPage />} />
@@ -172,7 +176,11 @@ const App = () => (
                   element={<BrokerMarketsPage />}
                 />
                 <Route
-                  path=":serviceType/trade/:marketType/:pair"
+                  path="markets/private/:marketId"
+                  element={<BrokerMarketsPage />}
+                />
+                <Route
+                  path="trade/:serviceType/:pair"
                   element={<BrokerTradingPage />}
                 />
                 <Route path="portfolio" element={<BrokerPortfolioPage />} />
