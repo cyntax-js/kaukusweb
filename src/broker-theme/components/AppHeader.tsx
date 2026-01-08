@@ -73,6 +73,12 @@ const AppHeader = ({ className }: AppHeaderProps) => {
           href: `${routePrefix}/markets/private`,
           enabled: config.services.includes("private_markets"),
         },
+        {
+          id: "secondary",
+          label: "Secondary Market",
+          href: `${routePrefix}/markets/secondary`,
+          enabled: null,
+        },
       ].filter((o) => o.enabled),
     [config.services, routePrefix]
   );
@@ -170,6 +176,19 @@ const AppHeader = ({ className }: AppHeaderProps) => {
                 )}
               >
                 Private Market
+              </Link>
+            )}
+            {hasPrivateMarkets && (
+              <Link
+                to={`${routePrefix}/markets/secondary`}
+                className={cn(
+                  "inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                  location.pathname.includes("/markets/secondary")
+                    ? "text-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                Secondary Market
               </Link>
             )}
 
