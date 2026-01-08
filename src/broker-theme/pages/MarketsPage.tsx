@@ -9,6 +9,7 @@ import { AppHeader } from "@/broker-theme/components";
 import { mockMarkets, type Market } from "@/data/mockTradingData";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import {
   Search,
@@ -18,6 +19,8 @@ import {
   BarChart3,
   Layers,
   Lock,
+  Sparkles,
+  Activity,
 } from "lucide-react";
 import PrivateMarket from "./PrivateMarket/PrivateMarket";
 import PrivateMarketTrade from "./PrivateMarket/PrivateMarketTrade";
@@ -67,18 +70,17 @@ const marketTypeLabels: Record<
 
 const MarketsPage = () => {
   const { config } = useTheme();
-  const { marketType: marketTypeParam } = useParams<{ marketType?: string }>();
+  const { marketType: marketTypeParam, marketId } = useParams<{ marketType?: string; marketId?: string }>();
   const location = useLocation();
   const navigate = useNavigate();
 
-  console.log("mockMarkets", mockMarkets);
-  console.log("====================================");
-  console.log(config, "config");
-  console.log("====================================");
   // Trading/Markets pages use /preview/app or /app prefix
   const routePrefix = location.pathname.includes("/preview/app")
     ? "/preview/app"
     : "/app";
+
+  // Check if we're viewing a specific private market
+  const isPrivateMarketDetail = location.pathname.includes("/markets/private/") && marketId;
 
   // Determine active market type from URL param
   const [activeMarketType, setActiveMarketType] = useState<MarketType>(() => {
@@ -88,9 +90,6 @@ const MarketsPage = () => {
     return "stock";
   });
 
-  console.log("====================================");
-  console.log(marketTypeParam, "marketTypeParam");
-  console.log("====================================");
   // Sync with URL changes
   useEffect(() => {
     if (marketTypeParam === "futures") setActiveMarketType("futures");
@@ -201,18 +200,6 @@ const MarketsPage = () => {
         : market.type === "stock"
         ? "stock"
         : market.type;
-
-    console.log("====================================");
-    console.log(market, "marketurl");
-    console.log("====================================");
-
-    console.log("====================================");
-    console.log(
-      `${routePrefix}/trade/${serviceType}/${market.symbol}`,
-      "marketurl"
-    );
-    console.log("====================================");
-    // return;
     navigate(`${routePrefix}/trade/${serviceType}/${market.symbol}`);
   };
 
@@ -239,17 +226,28 @@ const MarketsPage = () => {
     );
   }
 
+  // Show private market detail page
+  if (isPrivateMarketDetail) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <AppHeader />
+        <PrivateMarketTrade />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <AppHeader />
 
-      {activeMarketType == "private" &&
+      {activeMarketType === "private" &&
       config.services.includes("private_markets") ? (
         <>
           <PrivateMarket />
           {/* <PrivateMarketTrade /> */}
         </>
       ) : (
+<<<<<<< HEAD
         <>
           <main className="flex-1 px-6 py-6">
             <div className="mx-auto max-w-screen-2xl space-y-6">
@@ -264,6 +262,72 @@ const MarketsPage = () => {
                       activeMarketType === type
                         ? "bg-primary text-primary-foreground"
                         : "text-muted-foreground hover:text-foreground hover:bg-muted"
+=======
+        <main className="flex-1 px-6 py-6">
+          <div className="mx-auto max-w-screen-2xl space-y-6">
+            {/* Market Type Tabs */}
+            <section className="flex items-center gap-2 border-b border-border pb-4">
+              {availableTypes.map((type) => (
+                <button
+                  key={type}
+                  onClick={() => handleTypeChange(type)}
+                  className={cn(
+                    "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                    activeMarketType === type
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  )}
+                >
+                  {marketTypeLabels[type].icon}
+                  {marketTypeLabels[type].label}
+                </button>
+              ))}
+            </section>
+
+            {/* Top overview cards */}
+            <section className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <Card className="bg-card border-border">
+                <CardContent className="p-4">
+                  <div className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+                    <TrendingUp className="h-4 w-4 text-primary" /> Hot{" "}
+                    {marketTypeLabels[activeMarketType].label}
+                  </div>
+                  <div className="space-y-3">
+                    {hotAssets.length > 0 ? (
+                      hotAssets.map((m) => (
+                        <div
+                          key={m.symbol}
+                          className="flex items-center justify-between gap-3 cursor-pointer hover:bg-muted/50 rounded p-1 -m-1"
+                          onClick={() => handleMarketClick(m)}
+                        >
+                          <div className="min-w-0">
+                            <div className="text-sm text-foreground truncate">
+                              {m.name}
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-sm text-foreground">
+                              {m.price.toFixed(2)}
+                            </div>
+                            <div
+                              className={cn(
+                                "text-xs",
+                                m.change24h >= 0
+                                  ? "text-green-500"
+                                  : "text-red-500"
+                              )}
+                            >
+                              {m.change24h >= 0 ? "+" : ""}
+                              {m.change24h.toFixed(2)}%
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-sm text-muted-foreground">
+                        No assets available
+                      </div>
+>>>>>>> 69a078f (Changes)
                     )}
                   >
                     {marketTypeLabels[type].icon}
