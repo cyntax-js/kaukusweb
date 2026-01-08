@@ -1,21 +1,16 @@
 /**
- * ============================================================
- * BROKER PORTFOLIO PAGE
- * ============================================================
- *
- * Shows user portfolio holdings, P&L tracking, and activity.
- * Uses mock data - replace with broker API calls.
- *
- * Route: /preview/portfolio
+ * PORTFOLIO PAGE - Clean, minimalist design with Smart Account switch
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useTheme } from "@/broker-theme/config";
 import { DashboardLayout } from "@/broker-theme/layouts";
 import { DepositWithdrawModal } from "@/broker-theme/components";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
 import {
   TrendingUp,
   TrendingDown,
@@ -23,125 +18,74 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   PieChart,
-  BarChart3,
   Clock,
   DollarSign,
   Percent,
   Activity,
+  Briefcase,
+  Lock,
+  Sparkles,
 } from "lucide-react";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+  Tooltip,
+  PieChart as RechartsPieChart,
+  Pie,
+  Cell,
+} from "recharts";
 import {
   getSummary,
   type PortfolioSummary,
   type Holding,
 } from "@/broker-theme/api/portfolio";
+import { cn } from "@/lib/utils";
 
-// ============================================================
-// MOCK DATA - Replace with API calls
-// ============================================================
-
+// Mock transactions
 const mockTransactions = [
-  {
-    id: "t1",
-    type: "buy",
-    symbol: "BTC",
-    name: "Bitcoin",
-    amount: 0.25,
-    price: 42583.2,
-    total: 10645.8,
-    date: "2024-01-15",
-    time: "14:32",
-  },
-  {
-    id: "t2",
-    type: "sell",
-    symbol: "ETH",
-    name: "Ethereum",
-    amount: 2.0,
-    price: 2284.5,
-    total: 4569.0,
-    date: "2024-01-14",
-    time: "09:15",
-  },
-  {
-    id: "t3",
-    type: "buy",
-    symbol: "SOL",
-    name: "Solana",
-    amount: 50,
-    price: 98.42,
-    total: 4921.0,
-    date: "2024-01-13",
-    time: "16:45",
-  },
-  {
-    id: "t4",
-    type: "deposit",
-    symbol: "USD",
-    name: "US Dollar",
-    amount: 5000,
-    price: 1,
-    total: 5000.0,
-    date: "2024-01-12",
-    time: "11:20",
-  },
-  {
-    id: "t5",
-    type: "buy",
-    symbol: "AAPL",
-    name: "Apple Inc.",
-    amount: 25,
-    price: 182.63,
-    total: 4565.75,
-    date: "2024-01-11",
-    time: "10:05",
-  },
-  {
-    id: "t6",
-    type: "withdraw",
-    symbol: "USD",
-    name: "US Dollar",
-    amount: 2000,
-    price: 1,
-    total: 2000.0,
-    date: "2024-01-10",
-    time: "15:30",
-  },
-  {
-    id: "t7",
-    type: "sell",
-    symbol: "NVDA",
-    name: "NVIDIA",
-    amount: 10,
-    price: 485.2,
-    total: 4852.0,
-    date: "2024-01-09",
-    time: "13:22",
-  },
+  { id: "t1", type: "buy", symbol: "DANGOTE", name: "Dangote Cement", amount: 500, price: 285.50, total: 142750, date: "2024-01-15", time: "14:32" },
+  { id: "t2", type: "sell", symbol: "MTNN", name: "MTN Nigeria", amount: 1000, price: 195.20, total: 195200, date: "2024-01-14", time: "09:15" },
+  { id: "t3", type: "buy", symbol: "ZENITH", name: "Zenith Bank", amount: 5000, price: 35.80, total: 179000, date: "2024-01-13", time: "16:45" },
+  { id: "t4", type: "deposit", symbol: "NGN", name: "Nigerian Naira", amount: 500000, price: 1, total: 500000, date: "2024-01-12", time: "11:20" },
+  { id: "t5", type: "buy", symbol: "GTCO", name: "GTBank Holdco", amount: 3000, price: 42.30, total: 126900, date: "2024-01-11", time: "10:05" },
 ];
 
-const mockPerformanceData = [
-  { date: "Jan 1", value: 100000 },
-  { date: "Jan 5", value: 102500 },
-  { date: "Jan 10", value: 98700 },
-  { date: "Jan 15", value: 105200 },
-  { date: "Jan 20", value: 112000 },
-  { date: "Jan 25", value: 118500 },
-  { date: "Jan 30", value: 125430 },
+// Mock private market holdings
+const mockPrivateMarketHoldings = [
+  { id: "pm1", asset: "DANGCEM-P", name: "Dangote Cement Pre-IPO", units: 2000, investedValue: 520000, currentValue: 571000, yield: 9.8, maturity: "Mar 2025", type: "Pre-IPO" },
+  { id: "pm2", asset: "FGN-BOND-2028", name: "FGN Bond 2028", units: 100, investedValue: 1000000, currentValue: 1085000, yield: 14.2, maturity: "Dec 2028", type: "Bond" },
+  { id: "pm3", asset: "ACCESS-R", name: "Access Holdings Rights", units: 10000, investedValue: 175000, currentValue: 185000, yield: 5.7, maturity: "Jan 2025", type: "Rights" },
+  { id: "pm4", asset: "LAFARGE-CP", name: "Lafarge Africa Commercial Paper", units: 50, investedValue: 500000, currentValue: 535000, yield: 18.5, maturity: "Jun 2025", type: "Commercial Paper" },
+  { id: "pm5", asset: "NTB-91D", name: "Nigerian Treasury Bill 91-Day", units: 200, investedValue: 196000, currentValue: 200000, yield: 8.2, maturity: "Apr 2025", type: "T-Bill" },
 ];
 
-// ============================================================
-// COMPONENT
-// ============================================================
+// Performance chart data
+const generatePerformanceData = () => {
+  const data = [];
+  let value = 1000000;
+  for (let i = 0; i < 30; i++) {
+    value += (Math.random() - 0.4) * 50000;
+    data.push({
+      date: `Day ${i + 1}`,
+      value: Math.max(800000, value),
+    });
+  }
+  return data;
+};
+
+const COLORS = ["hsl(var(--primary))", "hsl(var(--accent))", "#f59e0b", "#ef4444", "#8b5cf6"];
 
 const PortfolioPage = () => {
   const { config } = useTheme();
   const [portfolio, setPortfolio] = useState<PortfolioSummary | null>(null);
   const [loading, setLoading] = useState(true);
-  const [timeRange, setTimeRange] = useState<
-    "1D" | "1W" | "1M" | "3M" | "1Y" | "ALL"
-  >("1M");
+  const [timeRange, setTimeRange] = useState<"1D" | "1W" | "1M" | "3M" | "1Y">("1M");
   const [depositModalOpen, setDepositModalOpen] = useState(false);
   const [withdrawModalOpen, setWithdrawModalOpen] = useState(false);
+  const [smartAccountEnabled, setSmartAccountEnabled] = useState(false);
 
   useEffect(() => {
     const loadPortfolio = async () => {
@@ -157,64 +101,92 @@ const PortfolioPage = () => {
     loadPortfolio();
   }, []);
 
-  const portfolioValue = portfolio?.totalValue ?? 125430.5;
-  const portfolioChange = portfolio?.totalPnl ?? 8520.3;
-  const portfolioChangePercent = portfolio?.totalPnlPercent ?? 7.29;
+  const performanceData = useMemo(() => generatePerformanceData(), [timeRange]);
+
+  const portfolioValue = portfolio?.totalValue ?? 2850000;
+  const portfolioChange = portfolio?.totalPnl ?? 185000;
+  const portfolioChangePercent = portfolio?.totalPnlPercent ?? 6.94;
   const holdings = portfolio?.holdings ?? [];
 
   // Calculate stats
-  const cashHolding = holdings.find(
-    (h) => h.asset === "USDT" || h.asset === "USD"
-  );
-  const availableCash = cashHolding?.valueUsd ?? 15010.9;
+  const cashHolding = holdings.find((h) => h.asset === "USDT" || h.asset === "USD" || h.asset === "NGN");
+  const availableCash = cashHolding?.valueUsd ?? 450000;
   const invested = portfolioValue - availableCash;
-  const openPositions = holdings.filter(
-    (h) => h.asset !== "USDT" && h.asset !== "USD"
-  ).length;
+  const openPositions = holdings.filter((h) => h.asset !== "USDT" && h.asset !== "USD" && h.asset !== "NGN").length;
+
+  // Private market stats
+  const privateMarketValue = mockPrivateMarketHoldings.reduce((sum, h) => sum + h.currentValue, 0);
+  const privateMarketInvested = mockPrivateMarketHoldings.reduce((sum, h) => sum + h.investedValue, 0);
+  const privateMarketPnl = privateMarketValue - privateMarketInvested;
+  const avgYield = mockPrivateMarketHoldings.reduce((sum, h) => sum + h.yield, 0) / mockPrivateMarketHoldings.length;
+
+  // Pie chart data
+  const pieData = smartAccountEnabled
+    ? mockPrivateMarketHoldings.map((h) => ({ name: h.asset, value: h.currentValue }))
+    : holdings.map((h) => ({ name: h.asset, value: h.valueUsd }));
 
   return (
     <DashboardLayout>
       <div className="space-y-6 p-6">
-        {/* Deposit/Withdraw Modals */}
-        <DepositWithdrawModal
-          open={depositModalOpen}
-          onOpenChange={setDepositModalOpen}
-          mode="deposit"
-        />
-        <DepositWithdrawModal
-          open={withdrawModalOpen}
-          onOpenChange={setWithdrawModalOpen}
-          mode="withdraw"
-          availableBalance={availableCash}
-        />
+        {/* Modals */}
+        <DepositWithdrawModal open={depositModalOpen} onOpenChange={setDepositModalOpen} mode="deposit" />
+        <DepositWithdrawModal open={withdrawModalOpen} onOpenChange={setWithdrawModalOpen} mode="withdraw" availableBalance={availableCash} />
 
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-foreground">Portfolio</h1>
-            <p className="text-muted-foreground">
-              Track your investments and performance
-            </p>
+            <p className="text-muted-foreground">Track your investments and performance</p>
           </div>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setDepositModalOpen(true)}
-            >
-              <ArrowDownRight className="h-4 w-4 mr-1" />
-              Deposit
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setWithdrawModalOpen(true)}
-            >
-              <ArrowUpRight className="h-4 w-4 mr-1" />
-              Withdraw
-            </Button>
+          <div className="flex items-center gap-4">
+            {/* Smart Account Switch */}
+            <div className="flex items-center gap-3 px-4 py-2 bg-card border border-border rounded-lg">
+              <div className="flex items-center gap-2">
+                <Lock className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">Smart Account</span>
+              </div>
+              <Switch
+                checked={smartAccountEnabled}
+                onCheckedChange={setSmartAccountEnabled}
+              />
+              {smartAccountEnabled && (
+                <Sparkles className="h-4 w-4 text-primary animate-pulse" />
+              )}
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={() => setDepositModalOpen(true)}>
+                <ArrowDownRight className="h-4 w-4 mr-1" />
+                Deposit
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => setWithdrawModalOpen(true)}>
+                <ArrowUpRight className="h-4 w-4 mr-1" />
+                Withdraw
+              </Button>
+            </div>
           </div>
         </div>
+
+        {/* Smart Account Banner */}
+        {smartAccountEnabled && (
+          <Card className="bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 border-primary/20">
+            <CardContent className="py-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/20 rounded-lg">
+                    <Briefcase className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-foreground">Smart Account Active</p>
+                    <p className="text-sm text-muted-foreground">Viewing private market yields, bonds, and alternative investments</p>
+                  </div>
+                </div>
+                <Badge variant="outline" className="border-primary text-primary">
+                  {avgYield.toFixed(1)}% Avg Yield
+                </Badge>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Portfolio Overview Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -223,30 +195,27 @@ const PortfolioPage = () => {
               <div className="flex items-center gap-2 mb-2">
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">
-                  Portfolio Value
+                  {smartAccountEnabled ? "Private Market Value" : "Portfolio Value"}
                 </span>
               </div>
               <p className="text-2xl font-bold text-foreground">
-                ₦
-                {portfolioValue.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                })}
+                ₦{(smartAccountEnabled ? privateMarketValue : portfolioValue).toLocaleString()}
               </p>
-              <div
-                className={`flex items-center gap-1 mt-1 ${
-                  portfolioChangePercent >= 0
-                    ? "text-green-500"
-                    : "text-red-500"
-                }`}
-              >
-                {portfolioChangePercent >= 0 ? (
+              <div className={cn(
+                "flex items-center gap-1 mt-1",
+                (smartAccountEnabled ? privateMarketPnl : portfolioChange) >= 0 ? "text-green-500" : "text-red-500"
+              )}>
+                {(smartAccountEnabled ? privateMarketPnl : portfolioChange) >= 0 ? (
                   <TrendingUp className="h-3 w-3" />
                 ) : (
                   <TrendingDown className="h-3 w-3" />
                 )}
                 <span className="text-sm">
-                  {portfolioChangePercent >= 0 ? "+" : ""}
-                  {portfolioChangePercent}%
+                  {(smartAccountEnabled ? privateMarketPnl : portfolioChange) >= 0 ? "+" : ""}
+                  {smartAccountEnabled 
+                    ? ((privateMarketPnl / privateMarketInvested) * 100).toFixed(2)
+                    : portfolioChangePercent
+                  }%
                 </span>
               </div>
             </CardContent>
@@ -256,19 +225,20 @@ const PortfolioPage = () => {
             <CardContent className="p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Percent className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">Total P&L</span>
+                <span className="text-sm text-muted-foreground">
+                  {smartAccountEnabled ? "Total Yield" : "Total P&L"}
+                </span>
               </div>
-              <p
-                className={`text-2xl font-bold ${
-                  portfolioChange >= 0 ? "text-green-500" : "text-red-500"
-                }`}
-              >
-                {portfolioChange >= 0 ? "+" : ""}₦
-                {Math.abs(portfolioChange).toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                })}
+              <p className={cn(
+                "text-2xl font-bold",
+                (smartAccountEnabled ? privateMarketPnl : portfolioChange) >= 0 ? "text-green-500" : "text-red-500"
+              )}>
+                {(smartAccountEnabled ? privateMarketPnl : portfolioChange) >= 0 ? "+" : ""}
+                ₦{Math.abs(smartAccountEnabled ? privateMarketPnl : portfolioChange).toLocaleString()}
               </p>
-              <span className="text-sm text-muted-foreground">All time</span>
+              <span className="text-sm text-muted-foreground">
+                {smartAccountEnabled ? "Accrued interest" : "All time"}
+              </span>
             </CardContent>
           </Card>
 
@@ -277,17 +247,14 @@ const PortfolioPage = () => {
               <div className="flex items-center gap-2 mb-2">
                 <Wallet className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">
-                  Available Cash
+                  {smartAccountEnabled ? "Invested Capital" : "Available Cash"}
                 </span>
               </div>
               <p className="text-2xl font-bold text-foreground">
-                ₦
-                {availableCash.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                })}
+                ₦{(smartAccountEnabled ? privateMarketInvested : availableCash).toLocaleString()}
               </p>
               <span className="text-sm text-muted-foreground">
-                Ready to invest
+                {smartAccountEnabled ? "Across instruments" : "Ready to invest"}
               </span>
             </CardContent>
           </Card>
@@ -297,33 +264,29 @@ const PortfolioPage = () => {
               <div className="flex items-center gap-2 mb-2">
                 <Activity className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">
-                  Open Positions
+                  {smartAccountEnabled ? "Active Positions" : "Open Positions"}
                 </span>
               </div>
               <p className="text-2xl font-bold text-foreground">
-                {openPositions}
+                {smartAccountEnabled ? mockPrivateMarketHoldings.length : openPositions}
               </p>
               <span className="text-sm text-muted-foreground">
-                ₦
-                {invested.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                })}{" "}
-                invested
+                ₦{(smartAccountEnabled ? privateMarketInvested : invested).toLocaleString()} invested
               </span>
             </CardContent>
           </Card>
         </div>
 
         {/* Performance Chart */}
-        {/* <Card className="bg-card border-border">
+        <Card className="bg-card border-border">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg font-semibold text-foreground">Performance</CardTitle>
               <div className="flex gap-1">
-                {(['1D', '1W', '1M', '3M', '1Y', 'ALL'] as const).map(range => (
+                {(["1D", "1W", "1M", "3M", "1Y"] as const).map((range) => (
                   <Button
                     key={range}
-                    variant={timeRange === range ? 'default' : 'ghost'}
+                    variant={timeRange === range ? "default" : "ghost"}
                     size="sm"
                     className="h-7 px-2 text-xs"
                     onClick={() => setTimeRange(range)}
@@ -335,45 +298,56 @@ const PortfolioPage = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="h-48 flex items-end gap-1">
-              {mockPerformanceData.map((d, i) => {
-                const maxVal = Math.max(...mockPerformanceData.map(p => p.value));
-                const minVal = Math.min(...mockPerformanceData.map(p => p.value));
-                const range = maxVal - minVal || 1;
-                const height = ((d.value - minVal) / range) * 100;
-                const isPositive = i === 0 || d.value >= mockPerformanceData[i - 1].value;
-                
-                return (
-                  <div key={d.date} className="flex-1 flex flex-col items-center gap-1">
-                    <div 
-                      className={`w-full rounded-t transition-all ${isPositive ? 'bg-green-500/80' : 'bg-red-500/80'}`}
-                      style={{ height: `${Math.max(height, 10)}%` }}
-                    />
-                    <span className="text-[10px] text-muted-foreground">{d.date.split(' ')[1]}</span>
-                  </div>
-                );
-              })}
+            <div className="h-48">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={performanceData}>
+                  <defs>
+                    <linearGradient id="performanceGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                      <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="date" hide />
+                  <YAxis hide domain={["dataMin - 50000", "dataMax + 50000"]} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "hsl(var(--card))",
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: "8px",
+                    }}
+                    formatter={(value: number) => [`₦${value.toLocaleString()}`, "Value"]}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="value"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth={2}
+                    fill="url(#performanceGradient)"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
             </div>
           </CardContent>
-        </Card> */}
+        </Card>
 
         {/* Holdings & Activity Tabs */}
         <Tabs defaultValue="holdings" className="space-y-4">
           <TabsList className="bg-muted/50">
             <TabsTrigger value="holdings" className="gap-2">
               <PieChart className="h-4 w-4" />
-              Holdings
+              {smartAccountEnabled ? "Private Holdings" : "Holdings"}
             </TabsTrigger>
             <TabsTrigger value="activity" className="gap-2">
               <Clock className="h-4 w-4" />
               Activity
             </TabsTrigger>
-            <TabsTrigger value="pnl" className="gap-2">
-              <BarChart3 className="h-4 w-4" />
-              P&L Breakdown
+            <TabsTrigger value="allocation" className="gap-2">
+              <PieChart className="h-4 w-4" />
+              Allocation
             </TabsTrigger>
           </TabsList>
 
+          {/* Holdings Tab */}
           <TabsContent value="holdings">
             <Card className="bg-card border-border">
               <CardContent className="p-0">
@@ -381,84 +355,97 @@ const PortfolioPage = () => {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-border">
-                        <th className="text-left py-4 px-6 text-sm font-medium text-muted-foreground">
-                          Asset
+                        <th className="text-left py-4 px-6 text-sm font-medium text-muted-foreground">Asset</th>
+                        <th className="text-right py-4 px-6 text-sm font-medium text-muted-foreground">
+                          {smartAccountEnabled ? "Units" : "Balance"}
+                        </th>
+                        <th className="text-right py-4 px-6 text-sm font-medium text-muted-foreground">Value</th>
+                        <th className="text-right py-4 px-6 text-sm font-medium text-muted-foreground">
+                          {smartAccountEnabled ? "Yield" : "24h Change"}
                         </th>
                         <th className="text-right py-4 px-6 text-sm font-medium text-muted-foreground">
-                          Balance
-                        </th>
-                        <th className="text-right py-4 px-6 text-sm font-medium text-muted-foreground">
-                          Value
-                        </th>
-                        <th className="text-right py-4 px-6 text-sm font-medium text-muted-foreground">
-                          24h Change
-                        </th>
-                        <th className="text-right py-4 px-6 text-sm font-medium text-muted-foreground">
-                          Allocation
+                          {smartAccountEnabled ? "Maturity" : "Allocation"}
                         </th>
                       </tr>
                     </thead>
                     <tbody>
-                      {(loading ? [] : holdings).map((holding: Holding) => (
-                        <tr
-                          key={holding.id}
-                          className="border-b border-border hover:bg-muted/30 transition-colors"
-                        >
-                          <td className="py-4 px-6">
-                            <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                                <span className="text-sm font-bold text-primary">
-                                  {holding.asset[0]}
+                      {smartAccountEnabled ? (
+                        mockPrivateMarketHoldings.map((holding) => (
+                          <tr key={holding.id} className="border-b border-border hover:bg-muted/30 transition-colors">
+                            <td className="py-4 px-6">
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                  <Lock className="h-4 w-4 text-primary" />
+                                </div>
+                                <div>
+                                  <p className="font-medium text-foreground">{holding.asset}</p>
+                                  <div className="flex items-center gap-2">
+                                    <p className="text-xs text-muted-foreground">{holding.name}</p>
+                                    <Badge variant="outline" className="text-[10px] py-0">{holding.type}</Badge>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="text-right py-4 px-6 text-foreground font-mono">
+                              {holding.units.toLocaleString()}
+                            </td>
+                            <td className="text-right py-4 px-6 font-medium text-foreground">
+                              ₦{holding.currentValue.toLocaleString()}
+                            </td>
+                            <td className="text-right py-4 px-6">
+                              <span className="font-medium text-green-500">
+                                +{holding.yield.toFixed(2)}%
+                              </span>
+                            </td>
+                            <td className="text-right py-4 px-6 text-muted-foreground">
+                              {holding.maturity}
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        (loading ? [] : holdings).map((holding: Holding) => (
+                          <tr key={holding.id} className="border-b border-border hover:bg-muted/30 transition-colors">
+                            <td className="py-4 px-6">
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                  <span className="text-sm font-bold text-primary">{holding.asset[0]}</span>
+                                </div>
+                                <div>
+                                  <p className="font-medium text-foreground">{holding.asset}</p>
+                                  <p className="text-xs text-muted-foreground">{holding.name}</p>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="text-right py-4 px-6 text-foreground font-mono">
+                              {holding.balance.toLocaleString(undefined, { maximumFractionDigits: 4 })}
+                            </td>
+                            <td className="text-right py-4 px-6 font-medium text-foreground">
+                              ₦{holding.valueUsd.toLocaleString()}
+                            </td>
+                            <td className="text-right py-4 px-6">
+                              <span className={cn(
+                                "font-medium",
+                                holding.change24h >= 0 ? "text-green-500" : "text-red-500"
+                              )}>
+                                {holding.change24h >= 0 ? "+" : ""}{holding.change24h.toFixed(2)}%
+                              </span>
+                            </td>
+                            <td className="text-right py-4 px-6">
+                              <div className="flex items-center justify-end gap-3">
+                                <div className="w-16 h-2 bg-muted rounded-full overflow-hidden">
+                                  <div
+                                    className="h-full bg-primary rounded-full"
+                                    style={{ width: `${holding.allocation}%` }}
+                                  />
+                                </div>
+                                <span className="text-sm text-muted-foreground w-10 text-right">
+                                  {holding.allocation.toFixed(1)}%
                                 </span>
                               </div>
-                              <div>
-                                <p className="font-medium text-foreground">
-                                  {holding.asset}
-                                </p>
-                                <p className="text-xs text-muted-foreground">
-                                  {holding.name}
-                                </p>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="text-right py-4 px-6 text-foreground font-mono">
-                            {holding.balance.toLocaleString(undefined, {
-                              maximumFractionDigits: 4,
-                            })}
-                          </td>
-                          <td className="text-right py-4 px-6 font-medium text-foreground">
-                            ₦
-                            {holding.valueUsd.toLocaleString(undefined, {
-                              minimumFractionDigits: 2,
-                            })}
-                          </td>
-                          <td className="text-right py-4 px-6">
-                            <span
-                              className={`font-medium ${
-                                holding.change24h >= 0
-                                  ? "text-green-500"
-                                  : "text-red-500"
-                              }`}
-                            >
-                              {holding.change24h >= 0 ? "+" : ""}
-                              {holding.change24h.toFixed(2)}%
-                            </span>
-                          </td>
-                          <td className="text-right py-4 px-6">
-                            <div className="flex items-center justify-end gap-3">
-                              <div className="w-20 h-2 bg-muted rounded-full overflow-hidden">
-                                <div
-                                  className="h-full bg-primary rounded-full transition-all"
-                                  style={{ width: `${holding.allocation}%` }}
-                                />
-                              </div>
-                              <span className="text-sm text-muted-foreground w-12 text-right font-mono">
-                                {holding.allocation.toFixed(1)}%
-                              </span>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
+                            </td>
+                          </tr>
+                        ))
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -466,6 +453,7 @@ const PortfolioPage = () => {
             </Card>
           </TabsContent>
 
+          {/* Activity Tab */}
           <TabsContent value="activity">
             <Card className="bg-card border-border">
               <CardContent className="p-0">
@@ -473,92 +461,43 @@ const PortfolioPage = () => {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-border">
-                        <th className="text-left py-4 px-6 text-sm font-medium text-muted-foreground">
-                          Type
-                        </th>
-                        <th className="text-left py-4 px-6 text-sm font-medium text-muted-foreground">
-                          Asset
-                        </th>
-                        <th className="text-right py-4 px-6 text-sm font-medium text-muted-foreground">
-                          Amount
-                        </th>
-                        <th className="text-right py-4 px-6 text-sm font-medium text-muted-foreground">
-                          Price
-                        </th>
-                        <th className="text-right py-4 px-6 text-sm font-medium text-muted-foreground">
-                          Total
-                        </th>
-                        <th className="text-right py-4 px-6 text-sm font-medium text-muted-foreground">
-                          Date & Time
-                        </th>
+                        <th className="text-left py-4 px-6 text-sm font-medium text-muted-foreground">Type</th>
+                        <th className="text-left py-4 px-6 text-sm font-medium text-muted-foreground">Asset</th>
+                        <th className="text-right py-4 px-6 text-sm font-medium text-muted-foreground">Amount</th>
+                        <th className="text-right py-4 px-6 text-sm font-medium text-muted-foreground">Price</th>
+                        <th className="text-right py-4 px-6 text-sm font-medium text-muted-foreground">Total</th>
+                        <th className="text-right py-4 px-6 text-sm font-medium text-muted-foreground">Date</th>
                       </tr>
                     </thead>
                     <tbody>
                       {mockTransactions.map((tx) => (
-                        <tr
-                          key={tx.id}
-                          className="border-b border-border hover:bg-muted/30 transition-colors"
-                        >
+                        <tr key={tx.id} className="border-b border-border hover:bg-muted/30 transition-colors">
                           <td className="py-4 px-6">
-                            <div
-                              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium ${
-                                tx.type === "buy"
-                                  ? "bg-green-500/10 text-green-500"
-                                  : tx.type === "sell"
-                                  ? "bg-red-500/10 text-red-500"
-                                  : tx.type === "deposit"
-                                  ? "bg-blue-500/10 text-blue-500"
-                                  : "bg-orange-500/10 text-orange-500"
-                              }`}
-                            >
-                              {tx.type === "buy" && (
-                                <ArrowDownRight className="h-3 w-3" />
-                              )}
-                              {tx.type === "sell" && (
-                                <ArrowUpRight className="h-3 w-3" />
-                              )}
-                              {tx.type === "deposit" && (
-                                <Wallet className="h-3 w-3" />
-                              )}
-                              {tx.type === "withdraw" && (
-                                <Wallet className="h-3 w-3" />
-                              )}
-                              {tx.type.charAt(0).toUpperCase() +
-                                tx.type.slice(1)}
-                            </div>
+                            <Badge variant={
+                              tx.type === "buy" ? "default" :
+                              tx.type === "sell" ? "destructive" :
+                              tx.type === "deposit" ? "secondary" : "outline"
+                            } className="capitalize">
+                              {tx.type}
+                            </Badge>
                           </td>
                           <td className="py-4 px-6">
                             <div>
-                              <p className="font-medium text-foreground">
-                                {tx.symbol}
-                              </p>
-                              <p className="text-xs text-muted-foreground">
-                                {tx.name}
-                              </p>
+                              <p className="font-medium text-foreground">{tx.symbol}</p>
+                              <p className="text-xs text-muted-foreground">{tx.name}</p>
                             </div>
                           </td>
-                          <td className="text-right py-4 px-6 text-foreground font-mono">
+                          <td className="text-right py-4 px-6 font-mono text-foreground">
                             {tx.amount.toLocaleString()}
                           </td>
-                          <td className="text-right py-4 px-6 text-muted-foreground font-mono">
-                            ₦
-                            {tx.price.toLocaleString(undefined, {
-                              minimumFractionDigits: 2,
-                            })}
+                          <td className="text-right py-4 px-6 text-muted-foreground">
+                            ₦{tx.price.toLocaleString()}
                           </td>
-                          <td className="text-right py-4 px-6 font-medium text-foreground font-mono">
-                            ₦
-                            {tx.total.toLocaleString(undefined, {
-                              minimumFractionDigits: 2,
-                            })}
+                          <td className="text-right py-4 px-6 font-medium text-foreground">
+                            ₦{tx.total.toLocaleString()}
                           </td>
-                          <td className="text-right py-4 px-6">
-                            <div>
-                              <p className="text-foreground">{tx.date}</p>
-                              <p className="text-xs text-muted-foreground">
-                                {tx.time}
-                              </p>
-                            </div>
+                          <td className="text-right py-4 px-6 text-muted-foreground">
+                            {tx.date} {tx.time}
                           </td>
                         </tr>
                       ))}
@@ -569,88 +508,51 @@ const PortfolioPage = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="pnl">
+          {/* Allocation Tab */}
+          <TabsContent value="allocation">
             <Card className="bg-card border-border">
-              <CardContent className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* P&L by Asset */}
-                  <div>
-                    <h3 className="text-sm font-medium text-muted-foreground mb-4">
-                      P&L by Asset
-                    </h3>
-                    <div className="space-y-3">
-                      {holdings
-                        .filter((h) => h.asset !== "USDT")
-                        .map((holding) => {
-                          const pnl =
-                            holding.valueUsd * (holding.change24h / 100);
-                          return (
-                            <div
-                              key={holding.id}
-                              className="flex items-center justify-between p-3 bg-muted/30 rounded-lg"
-                            >
-                              <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                                  <span className="text-xs font-bold text-primary">
-                                    {holding.asset[0]}
-                                  </span>
-                                </div>
-                                <span className="font-medium text-foreground">
-                                  {holding.asset}
-                                </span>
-                              </div>
-                              <div className="text-right">
-                                <p
-                                  className={`font-medium ${
-                                    pnl >= 0 ? "text-green-500" : "text-red-500"
-                                  }`}
-                                >
-                                  {pnl >= 0 ? "+" : ""}₦{pnl.toFixed(2)}
-                                </p>
-                                <p
-                                  className={`text-xs ${
-                                    holding.change24h >= 0
-                                      ? "text-green-500"
-                                      : "text-red-500"
-                                  }`}
-                                >
-                                  {holding.change24h >= 0 ? "+" : ""}
-                                  {holding.change24h.toFixed(2)}%
-                                </p>
-                              </div>
-                            </div>
-                          );
-                        })}
-                    </div>
+              <CardContent className="py-6">
+                <div className="flex flex-col md:flex-row items-center gap-8">
+                  <div className="w-64 h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <RechartsPieChart>
+                        <Pie
+                          data={pieData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={60}
+                          outerRadius={100}
+                          paddingAngle={2}
+                          dataKey="value"
+                        >
+                          {pieData.map((_, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: "hsl(var(--card))",
+                            border: "1px solid hsl(var(--border))",
+                            borderRadius: "8px",
+                          }}
+                          formatter={(value: number) => [`₦${value.toLocaleString()}`, "Value"]}
+                        />
+                      </RechartsPieChart>
+                    </ResponsiveContainer>
                   </div>
-
-                  {/* P&L Summary */}
-                  <div>
-                    <h3 className="text-sm font-medium text-muted-foreground mb-4">
-                      Summary
-                    </h3>
-                    <div className="space-y-4">
-                      <div className="p-4 bg-green-500/10 rounded-lg border border-green-500/20">
-                        <p className="text-sm text-green-500">Realized P&L</p>
-                        <p className="text-2xl font-bold text-green-500">
-                          +₦3,247.80
-                        </p>
+                  <div className="flex-1 space-y-3">
+                    {pieData.map((item, index) => (
+                      <div key={item.name} className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div
+                            className="w-3 h-3 rounded-full"
+                            style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                          />
+                          <span className="text-foreground font-medium">{item.name}</span>
+                        </div>
+                        <span className="text-muted-foreground">₦{item.value.toLocaleString()}</span>
                       </div>
-                      <div className="p-4 bg-blue-500/10 rounded-lg border border-blue-500/20">
-                        <p className="text-sm text-blue-500">Unrealized P&L</p>
-                        <p className="text-2xl font-bold text-blue-500">
-                          +₦5,272.50
-                        </p>
-                      </div>
-                      <div className="p-4 bg-muted/50 rounded-lg border border-border">
-                        <p className="text-sm text-muted-foreground">
-                          Total P&L
-                        </p>
-                        <p className="text-2xl font-bold text-foreground">
-                          +₦8,520.30
-                        </p>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </CardContent>
