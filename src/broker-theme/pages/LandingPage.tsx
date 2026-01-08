@@ -117,6 +117,8 @@ const LandingPage = () => {
 
   const defaultMarketPath = services.includes("stock")
     ? `${appPrefix}/markets/stock`
+    : services.includes("private_markets")
+    ? `${appPrefix}/markets/private`
     : `${appPrefix}/markets`;
 
   return (

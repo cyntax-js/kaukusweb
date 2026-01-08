@@ -66,11 +66,21 @@ const AppHeader = ({ className }: AppHeaderProps) => {
           href: `${routePrefix}/markets/options`,
           enabled: config.services.includes("options"),
         },
+        {
+          id: "private",
+          label: "Private Market",
+          href: `${routePrefix}/markets/private`,
+          enabled: config.services.includes("private_markets"),
+        },
       ].filter((o) => o.enabled),
     [config.services, routePrefix]
   );
 
   const hasPrivateMarkets = config.services.includes("private_markets");
+  const onlyPrivateMarket =
+    Array.isArray(config.services) &&
+    new Set(config.services).size === 1 &&
+    config.services.includes("private_markets");
 
   const userInitials = user
     ? `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase()
@@ -106,57 +116,46 @@ const AppHeader = ({ className }: AppHeaderProps) => {
 
           <nav className="hidden md:flex items-center gap-2">
             {/* Markets dropdown - onClick */}
-            <DropdownMenu open={marketsOpen} onOpenChange={setMarketsOpen}>
-              <DropdownMenuTrigger asChild>
-                <button
-                  onClick={() => setMarketsOpen(!marketsOpen)}
-                  className={cn(
-                    "inline-flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                    location.pathname.includes("/markets")
-                      ? "text-foreground"
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  Markets
-                  <ChevronDown
+            {!onlyPrivateMarket && (
+              <DropdownMenu open={marketsOpen} onOpenChange={setMarketsOpen}>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    onClick={() => setMarketsOpen(!marketsOpen)}
                     className={cn(
-                      "h-4 w-4 transition-transform",
-                      marketsOpen && "rotate-180"
+                      "inline-flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                      location.pathname.includes("/markets")
+                        ? "text-foreground"
+                        : "text-muted-foreground hover:text-foreground"
                     )}
-                  />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="start"
-                className="z-50 w-48 bg-popover border border-border shadow-md"
-              >
-                {marketOptions.map((o) => (
-                  <DropdownMenuItem
-                    key={o.id}
-                    onClick={() => {
-                      navigate(o.href);
-                      setMarketsOpen(false);
-                    }}
-                    className="cursor-pointer"
                   >
-                    {o.label}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Portfolio link */}
-            <Link
-              to={`${routePrefix}/portfolio`}
-              className={cn(
-                "inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                location.pathname.includes("/portfolio")
-                  ? "text-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              Portfolio
-            </Link>
+                    Markets
+                    <ChevronDown
+                      className={cn(
+                        "h-4 w-4 transition-transform",
+                        marketsOpen && "rotate-180"
+                      )}
+                    />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="start"
+                  className="z-50 w-48 bg-popover border border-border shadow-md"
+                >
+                  {marketOptions.map((o) => (
+                    <DropdownMenuItem
+                      key={o.id}
+                      onClick={() => {
+                        navigate(o.href);
+                        setMarketsOpen(false);
+                      }}
+                      className="cursor-pointer"
+                    >
+                      {o.label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
 
             {/* Private Market link */}
             {hasPrivateMarkets && (
@@ -172,6 +171,19 @@ const AppHeader = ({ className }: AppHeaderProps) => {
                 Private Market
               </Link>
             )}
+
+            {/* Portfolio link */}
+            <Link
+              to={`${routePrefix}/portfolio`}
+              className={cn(
+                "inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                location.pathname.includes("/portfolio")
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              Portfolio
+            </Link>
           </nav>
         </div>
 

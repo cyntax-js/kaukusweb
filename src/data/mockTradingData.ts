@@ -21,7 +21,13 @@ export interface Market {
   volume24h: number;
   high24h: number;
   low24h: number;
-  type: "stock" | "derivative" | "crypto" | "etf" | "agriculture";
+  type:
+    | "stock"
+    | "derivative"
+    | "crypto"
+    | "etf"
+    | "agriculture"
+    | "private_market";
   image?: string;
   logoUrl?: string;
   color?: string;
@@ -1256,6 +1262,23 @@ export const mockMarkets: Market[] = [
     type: "etf",
     color: "#455a64",
     sector: "Energy ETF",
+  },
+
+  // ============================================================
+  // DERIVATIVES - Interest Rate Futures
+  // ============================================================
+  {
+    symbol: "GTCO-NGN",
+    baseAsset: "GTCO",
+    quoteAsset: "NGN",
+    name: "GT Bank",
+    price: 42.75,
+    change24h: 0.89,
+    volume24h: 8500000,
+    high24h: 43.5,
+    low24h: 42.0,
+    type: "private_market",
+    color: "#e35205",
   },
 ];
 

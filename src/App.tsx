@@ -137,7 +137,7 @@ const App = () => (
                 element={<BrokerMarketsPage />}
               />
               <Route
-                path=":serviceType/trade/:marketType/:pair"
+                path="trade/:marketType/:pair"
                 element={<BrokerTradingPage />}
               />
               <Route path="portfolio" element={<BrokerPortfolioPage />} />
