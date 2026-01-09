@@ -571,7 +571,7 @@ const PrivateMarket = () => {
           {/* Sidebar */}
           <aside className="space-y-6">
             {/* Stats Card */}
-            <Card className="border-gray-100 rounded-xl">
+            <Card className="border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
               <CardHeader className="pb-2">
                 <CardTitle className="text-base font-semibold text-gray-900">Market Overview</CardTitle>
               </CardHeader>
@@ -596,7 +596,7 @@ const PrivateMarket = () => {
             </Card>
 
             {/* Verified Badge */}
-            <Card className="border-gray-100 rounded-xl bg-gradient-to-br from-emerald-50 to-white">
+            <Card className="border-gray-100 rounded-xl shadow-sm bg-gradient-to-br from-emerald-50 to-white hover:shadow-md transition-shadow duration-200">
               <CardContent className="py-5">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center">
