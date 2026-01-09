@@ -278,7 +278,7 @@ const MarketsPage = () => {
   console.log("====================================");
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-gray-50/80">
       <AppHeader />
 
       {activeMarketType === "private" &&
@@ -289,27 +289,27 @@ const MarketsPage = () => {
       ) : activeMarketType === "secondary" ? (
         <SecondaryMarket />
       ) : (
-        <main className="flex-1 px-4 md:px-6 py-6">
-          <div className="mx-auto max-w-screen-2xl space-y-6">
+        <main className="flex-1">
+          <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-6">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h1 className="text-2xl font-bold text-foreground">Markets</h1>
-                <p className="text-muted-foreground text-sm">Trade stocks, futures, and derivatives</p>
+                <h1 className="text-2xl font-bold text-gray-900">Markets</h1>
+                <p className="text-gray-500 text-sm">Trade stocks, futures, and derivatives</p>
               </div>
             </div>
 
             {/* Market Type Tabs */}
-            <section className="flex items-center gap-2 border-b border-border pb-4 overflow-x-auto">
+            <section className="flex items-center gap-2 border-b border-gray-200 pb-4 overflow-x-auto">
               {availableTypes.map((type) => (
                 <button
                   key={type}
                   onClick={() => handleTypeChange(type)}
                   className={cn(
-                    "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap",
+                    "flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap",
                     activeMarketType === type
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                      ? "bg-gray-900 text-white shadow-sm"
+                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
                   )}
                 >
                   {marketTypeLabels[type].icon}
@@ -320,10 +320,10 @@ const MarketsPage = () => {
 
             {/* Top overview cards */}
             <section className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Card className="bg-card border-border">
-                <CardContent className="p-4">
-                  <div className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-                    <TrendingUp className="h-4 w-4 text-primary" /> Hot{" "}
+              <Card className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
+                <CardContent className="p-5">
+                  <div className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <TrendingUp className="h-4 w-4 text-emerald-500" /> Hot{" "}
                     {marketTypeLabels[activeMarketType].label}
                   </div>
                   <div className="space-y-3">
@@ -331,23 +331,23 @@ const MarketsPage = () => {
                       hotAssets.map((m) => (
                         <div
                           key={m.symbol}
-                          className="flex items-center justify-between gap-3 cursor-pointer hover:bg-muted/50 rounded p-1 -m-1"
+                          className="flex items-center justify-between gap-3 cursor-pointer hover:bg-gray-50 rounded-lg p-2 -m-2 transition-colors duration-150"
                           onClick={() => handleMarketClick(m)}
                         >
                           <div className="min-w-0">
-                            <div className="text-sm text-foreground truncate">
+                            <div className="text-sm text-gray-900 truncate font-medium">
                               {m.name}
                             </div>
                           </div>
                           <div className="text-right">
-                            <div className="text-sm text-foreground">
-                              {m.price.toFixed(2)}
+                            <div className="text-sm text-gray-900 font-medium">
+                              ₦{m.price.toFixed(2)}
                             </div>
                             <div
                               className={cn(
-                                "text-xs",
+                                "text-xs font-medium",
                                 m.change24h >= 0
-                                  ? "text-green-500"
+                                  ? "text-emerald-600"
                                   : "text-red-500"
                               )}
                             >
@@ -358,7 +358,7 @@ const MarketsPage = () => {
                         </div>
                       ))
                     ) : (
-                      <div className="text-sm text-muted-foreground">
+                      <div className="text-sm text-gray-500">
                         No assets available
                       </div>
                     )}
@@ -366,33 +366,33 @@ const MarketsPage = () => {
                 </CardContent>
               </Card>
 
-              <Card className="bg-card border-border">
-                <CardContent className="p-4">
-                  <div className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-                    <Star className="h-4 w-4 text-primary" /> New listings
+              <Card className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
+                <CardContent className="p-5">
+                  <div className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <Star className="h-4 w-4 text-amber-500" /> New listings
                   </div>
                   <div className="space-y-3">
                     {newListings.length > 0 ? (
                       newListings.map((m) => (
                         <div
                           key={m.symbol}
-                          className="flex items-center justify-between gap-3 cursor-pointer hover:bg-muted/50 rounded p-1 -m-1"
+                          className="flex items-center justify-between gap-3 cursor-pointer hover:bg-gray-50 rounded-lg p-2 -m-2 transition-colors duration-150"
                           onClick={() => handleMarketClick(m)}
                         >
                           <div className="min-w-0">
-                            <div className="text-sm text-foreground truncate">
+                            <div className="text-sm text-gray-900 truncate font-medium">
                               {m.name}
                             </div>
                           </div>
                           <div className="text-right">
-                            <div className="text-sm text-foreground">
-                              {m.price.toFixed(2)}
+                            <div className="text-sm text-gray-900 font-medium">
+                              ₦{m.price.toFixed(2)}
                             </div>
                             <div
                               className={cn(
-                                "text-xs",
+                                "text-xs font-medium",
                                 m.change24h >= 0
-                                  ? "text-green-500"
+                                  ? "text-emerald-600"
                                   : "text-red-500"
                               )}
                             >
@@ -403,7 +403,7 @@ const MarketsPage = () => {
                         </div>
                       ))
                     ) : (
-                      <div className="text-sm text-muted-foreground">
+                      <div className="text-sm text-gray-500">
                         No listings
                       </div>
                     )}
@@ -411,25 +411,25 @@ const MarketsPage = () => {
                 </CardContent>
               </Card>
 
-              <Card className="bg-card border-border">
-                <CardContent className="p-4">
-                  <div className="text-sm font-semibold text-foreground mb-3">
+              <Card className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
+                <CardContent className="p-5">
+                  <div className="text-sm font-semibold text-gray-900 mb-3">
                     Market Stats
                   </div>
-                  <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <div className="text-xs text-muted-foreground">
+                      <div className="text-xs text-gray-500">
                         Total Volume
                       </div>
-                      <div className="text-foreground font-semibold">
+                      <div className="text-gray-900 font-semibold text-lg">
                         ₦{(stats.totalVolume / 1_000_000).toFixed(1)}M
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs text-muted-foreground">
+                      <div className="text-xs text-gray-500">
                         Active Pairs
                       </div>
-                      <div className="text-foreground font-semibold">
+                      <div className="text-gray-900 font-semibold text-lg">
                         {typeMarkets.length}
                       </div>
                     </div>
@@ -437,18 +437,18 @@ const MarketsPage = () => {
                 </CardContent>
               </Card>
 
-              <Card className="bg-card border-border">
-                <CardContent className="p-4">
-                  <div className="text-sm font-semibold text-foreground mb-3">
+              <Card className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
+                <CardContent className="p-5">
+                  <div className="text-sm font-semibold text-gray-900 mb-3">
                     Market Type
                   </div>
                   <div className="flex items-center gap-2">
                     {marketTypeLabels[activeMarketType].icon}
-                    <span className="text-foreground font-medium">
+                    <span className="text-gray-900 font-medium">
                       {marketTypeLabels[activeMarketType].label}
                     </span>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-2">
+                  <p className="text-xs text-gray-500 mt-2">
                     {activeMarketType === "stock" &&
                       "Buy and sell assets at current market prices"}
                     {activeMarketType === "futures" &&
@@ -463,106 +463,107 @@ const MarketsPage = () => {
             </section>
 
             {/* Search */}
-            <section>
-              <div className="relative max-w-sm">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <section className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="relative w-full sm:w-64">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={`Search ${marketTypeLabels[
                     activeMarketType
                   ].label.toLowerCase()}...`}
-                  className="pl-10 h-10 bg-card border-border"
+                  className="pl-10 h-9 bg-white border-gray-200 rounded-lg text-sm"
                 />
               </div>
-            </section>
 
-            {/* Filters */}
-            <section className="flex flex-wrap gap-2">
-              {(
-                [
-                  ["all", "All"],
-                  ["top_gainers", "Top Gainers"],
-                  ["top_losers", "Top Losers"],
-                  ["most_active", "Most Active"],
-                  ["financial_services", "Financial Services"],
-                  ["consumer_goods", "Consumer Goods"],
-                  ["oil_gas", "Oil & Gas"],
-                  ["telecoms", "Telecommunications"],
-                ] as const
-              ).map(([key, label]) => (
-                <button
-                  key={key}
-                  onClick={() => setActiveFilter(key)}
-                  className={cn(
-                    "rounded-md border border-border px-3 py-1 text-xs transition-colors",
-                    activeFilter === key
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-card text-muted-foreground hover:text-foreground hover:bg-muted"
-                  )}
-                >
-                  {label}
-                </button>
-              ))}
+              {/* Filters */}
+              <div className="flex flex-wrap gap-2">
+                {(
+                  [
+                    ["all", "All"],
+                    ["top_gainers", "Top Gainers"],
+                    ["top_losers", "Top Losers"],
+                    ["most_active", "Most Active"],
+                    ["financial_services", "Financials"],
+                    ["consumer_goods", "Consumer"],
+                    ["oil_gas", "Oil & Gas"],
+                    ["telecoms", "Telecoms"],
+                  ] as const
+                ).map(([key, label]) => (
+                  <button
+                    key={key}
+                    onClick={() => setActiveFilter(key)}
+                    className={cn(
+                      "rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200",
+                      activeFilter === key
+                        ? "bg-gray-900 text-white"
+                        : "bg-white border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-gray-300"
+                    )}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
             </section>
 
             {/* Table */}
             <section>
-              <Card className="bg-card border-border">
+              <Card className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
                 <CardContent className="p-0">
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="border-b border-border text-muted-foreground">
-                          <th className="py-3 px-4 text-left w-10"></th>
-                          <th className="py-3 px-4 text-left">Symbol</th>
-                          <th className="py-3 px-4 text-right">Price</th>
-                          <th className="py-3 px-4 text-right">Change %</th>
-                          <th className="py-3 px-4 text-right hidden md:table-cell">
+                        <tr className="border-b border-gray-100 bg-gray-50/50">
+                          <th className="py-4 px-5 text-left w-10"></th>
+                          <th className="py-4 px-5 text-left text-xs font-medium text-gray-500">Symbol</th>
+                          <th className="py-4 px-5 text-right text-xs font-medium text-gray-500">Price</th>
+                          <th className="py-4 px-5 text-right text-xs font-medium text-gray-500">Change %</th>
+                          <th className="py-4 px-5 text-right hidden md:table-cell text-xs font-medium text-gray-500">
                             Volume
                           </th>
-                          <th className="py-3 px-4 text-right hidden lg:table-cell">
+                          <th className="py-4 px-5 text-right hidden lg:table-cell text-xs font-medium text-gray-500">
                             Rel Volume
                           </th>
-                          <th className="py-3 px-4 text-right hidden lg:table-cell">
+                          <th className="py-4 px-5 text-right hidden lg:table-cell text-xs font-medium text-gray-500">
                             Market cap
                           </th>
-                          <th className="py-3 px-4 text-right hidden xl:table-cell">
+                          <th className="py-4 px-5 text-right hidden xl:table-cell text-xs font-medium text-gray-500">
                             P/E
                           </th>
-                          <th className="py-3 px-4 text-right hidden lg:table-cell">
+                          <th className="py-4 px-5 text-right hidden lg:table-cell text-xs font-medium text-gray-500">
                             Sector
                           </th>
-                          <th className="py-3 px-4 text-right hidden lg:table-cell">
+                          <th className="py-4 px-5 text-right hidden lg:table-cell text-xs font-medium text-gray-500">
                             Rating
                           </th>
                         </tr>
                       </thead>
                       <tbody>
-                        {filteredMarkets.map((m) => {
+                        {filteredMarkets.map((m, index) => {
                           const f = fundamentalsFor(m);
                           const up = m.change24h >= 0;
                           return (
                             <tr
                               key={m.symbol}
-                              className="border-b border-border hover:bg-muted/40 transition-colors cursor-pointer"
+                              className="border-b border-gray-50 hover:bg-gray-50/80 transition-all duration-150 cursor-pointer group"
                               onClick={() => handleMarketClick(m)}
+                              style={{ animationDelay: `${index * 30}ms` }}
                             >
-                              <td className="py-3 px-4">
+                              <td className="py-4 px-5">
                                 <Star
                                   className={cn(
-                                    "h-4 w-4",
+                                    "h-4 w-4 transition-colors duration-150",
                                     m.isFavorite
-                                      ? "fill-yellow-500 text-yellow-500"
-                                      : "text-muted-foreground"
+                                      ? "fill-amber-400 text-amber-400"
+                                      : "text-gray-300 group-hover:text-gray-400"
                                   )}
                                   onClick={(e) => e.stopPropagation()}
                                 />
                               </td>
-                              <td className="py-3 px-4">
+                              <td className="py-4 px-5">
                                 <div className="flex items-center gap-3 min-w-[180px]">
                                   <div
-                                    className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs font-bold text-foreground"
+                                    className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-700 transition-transform duration-150 group-hover:scale-105"
                                     style={{
                                       backgroundColor: m.color || undefined,
                                     }}
@@ -570,16 +571,16 @@ const MarketsPage = () => {
                                     {m.baseAsset.slice(0, 2)}
                                   </div>
                                   <div className="min-w-0">
-                                    <div className="font-semibold text-foreground truncate">
+                                    <div className="font-semibold text-gray-900 truncate">
                                       {m.baseAsset}
                                     </div>
-                                    <div className="text-xs text-muted-foreground truncate">
+                                    <div className="text-xs text-gray-500 truncate">
                                       {m.name}
                                     </div>
                                   </div>
                                 </div>
                               </td>
-                              <td className="py-3 px-4 text-right text-foreground">
+                              <td className="py-4 px-5 text-right text-gray-900 font-medium">
                                 {m.quoteAsset === "USD" ? "$" : "₦"}
                                 {m.price.toLocaleString(undefined, {
                                   minimumFractionDigits: 2,
@@ -588,8 +589,8 @@ const MarketsPage = () => {
                               </td>
                               <td
                                 className={cn(
-                                  "py-3 px-4 text-right font-medium",
-                                  up ? "text-green-500" : "text-red-500"
+                                  "py-4 px-5 text-right font-medium",
+                                  up ? "text-emerald-600" : "text-red-500"
                                 )}
                               >
                                 <span className="inline-flex items-center justify-end gap-1">
@@ -602,27 +603,27 @@ const MarketsPage = () => {
                                   {m.change24h.toFixed(2)}%
                                 </span>
                               </td>
-                              <td className="py-3 px-4 text-right text-muted-foreground hidden md:table-cell">
+                              <td className="py-4 px-5 text-right text-gray-500 hidden md:table-cell">
                                 ₦{(m.volume24h / 1_000_000).toFixed(2)}M
                               </td>
-                              <td className="py-3 px-4 text-right text-muted-foreground hidden lg:table-cell">
+                              <td className="py-4 px-5 text-right text-gray-500 hidden lg:table-cell">
                                 {f.relVolume.toFixed(2)}
                               </td>
-                              <td className="py-3 px-4 text-right text-muted-foreground hidden lg:table-cell">
+                              <td className="py-4 px-5 text-right text-gray-500 hidden lg:table-cell">
                                 ₦{(f.marketCap / 1_000_000_000).toFixed(0)}B
                               </td>
-                              <td className="py-3 px-4 text-right text-muted-foreground hidden xl:table-cell">
+                              <td className="py-4 px-5 text-right text-gray-500 hidden xl:table-cell">
                                 {f.pe.toFixed(2)}
                               </td>
-                              <td className="py-3 px-4 text-right text-muted-foreground hidden lg:table-cell">
+                              <td className="py-4 px-5 text-right text-gray-500 hidden lg:table-cell">
                                 {m.sector ?? "—"}
                               </td>
                               <td
                                 className={cn(
-                                  "py-3 px-4 text-right hidden lg:table-cell",
+                                  "py-4 px-5 text-right hidden lg:table-cell font-medium",
                                   f.analyst === "Neutral"
-                                    ? "text-muted-foreground"
-                                    : "text-green-500"
+                                    ? "text-gray-500"
+                                    : "text-emerald-600"
                                 )}
                               >
                                 {f.analyst}
@@ -634,8 +635,8 @@ const MarketsPage = () => {
                     </table>
 
                     {filteredMarkets.length === 0 && (
-                      <div className="py-12 text-center text-muted-foreground">
-                        <p>
+                      <div className="py-16 text-center text-gray-500">
+                        <p className="font-medium">
                           No markets found for{" "}
                           {marketTypeLabels[activeMarketType].label}
                         </p>
