@@ -12,6 +12,7 @@
  */
 
 import { mockResponse, generateId, DELAYS } from "../client";
+import { apiFetch } from "@/lib/utils";
 
 // ============================================================
 // TYPES
@@ -47,6 +48,16 @@ export interface BrokerApplication {
   approvedAt?: Date;
 }
 
+export interface Broker {
+  company: {
+    id: string;
+    companyName: string;
+    website: string;
+    status: BrokerStatus;
+  };
+  message: string;
+}
+
 export interface DashboardStats {
   totalUsers: number;
   activeUsers: number;
@@ -75,30 +86,47 @@ export interface BrokerUser {
  * Submit a broker application
  */
 export async function submitApplication(
-  data: Partial<BrokerApplication>,
-): Promise<BrokerApplication> {
-  // TODO: Replace with real API call
-
+  request: Partial<BrokerApplication>,
+): Promise<Broker> {
   const application: BrokerApplication = {
     id: generateId("broker_app"),
     userId: generateId("user"),
-    companyName: data.companyName || "",
-    companyId: data.companyId || "",
-    registrationNumber: data.registrationNumber || "",
-    country: data.country || "",
-    address: data.address || "",
-    regulatoryLicense: data.regulatoryLicense || "",
-    licenseNumber: data.licenseNumber || "",
-    capitalRequirement: data.capitalRequirement || "",
-    contactEmail: data.contactEmail || "",
-    contactPhone: data.contactPhone || "",
-    website: data.website,
-    documents: data.documents || [],
+    companyName: request.companyName || "",
+    companyId: request.companyId || "",
+    registrationNumber: request.registrationNumber || "",
+    country: request.country || "",
+    address: request.address || "",
+    regulatoryLicense: request.regulatoryLicense || "",
+    licenseNumber: request.licenseNumber || "",
+    capitalRequirement: request.capitalRequirement || "",
+    contactEmail: request.contactEmail || "",
+    contactPhone: request.contactPhone || "",
+    website: request.website,
+    documents: request.documents || [],
     status: "pending",
     submittedAt: new Date(),
   };
 
-  return mockResponse(application, DELAYS.LONG);
+  const response = await apiFetch(`/api/v2/company`, {
+    method: "POST",
+    body: JSON.stringify(request),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message);
+  }
+
+  return {
+    company: {
+      id: data.id,
+      companyName: data.companyName,
+      website: data.website,
+      status: data.status,
+    },
+    message: data.message,
+  };
 }
 
 /**

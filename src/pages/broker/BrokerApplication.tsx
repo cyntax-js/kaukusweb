@@ -22,6 +22,7 @@ import {
   Upload,
   CheckCircle2,
   Loader2,
+  AlertCircle,
 } from "lucide-react";
 
 type Step = "company" | "regulatory" | "documents" | "review";
@@ -48,14 +49,81 @@ export default function BrokerApplication() {
   const { application, setApplicationField, submitApplication, isSubmitting } =
     useBrokerStore();
   const [currentStep, setCurrentStep] = useState<Step>("company");
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   const [uploadedDocs, setUploadedDocs] = useState<Record<string, string>>({});
 
   const currentStepIndex = steps.findIndex((s) => s.id === currentStep);
 
+  const validateStep = (step: Step): boolean => {
+    const newErrors: Record<string, string> = {};
+    let isValid = true;
+
+    if (step === "company") {
+      if (!application?.companyName?.trim())
+        newErrors.companyName = "Company Name is required";
+      if (!application?.registrationNumber?.trim())
+        newErrors.registrationNumber = "Registration Number is required";
+      if (!application?.companyId?.trim())
+        newErrors.companyId = "Company ID is required";
+      if (!application?.country) newErrors.country = "Country is required";
+      if (!application?.address) newErrors.address = "Address is required";
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!application?.contactEmail?.trim()) {
+        newErrors.contactEmail = "Email is required";
+      } else if (!emailRegex.test(application.contactEmail)) {
+        newErrors.contactEmail = "Invalid email address";
+      }
+
+      if (!application?.contactPhone?.trim())
+        newErrors.contactPhone = "Phone number is required";
+    }
+
+    if (step === "regulatory") {
+      if (!application?.regulatoryLicense)
+        newErrors.regulatoryLicense = "Regulatory Body is required";
+      if (!application?.licenseNumber?.trim())
+        newErrors.licenseNumber = "License Number is required";
+      if (!application?.capitalRequirement)
+        newErrors.capitalRequirement = "Capital Requirement is required";
+    }
+
+    if (step === "documents") {
+      documentTypes.forEach((doc) => {
+        if (doc.required && !uploadedDocs[doc.id]) {
+          isValid = false;
+          newErrors[doc.id] = "Required";
+        }
+      });
+
+      if (Object.keys(newErrors).length > 0) isValid = false;
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0 && isValid;
+  };
+
+  const handleFieldChange = (field: string, value: string) => {
+    setApplicationField(field as any, value);
+    if (errors[field]) {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
+  };
+
   const handleNext = () => {
-    const nextIndex = currentStepIndex + 1;
-    if (nextIndex < steps.length) {
-      setCurrentStep(steps[nextIndex].id);
+    // 4. Check validation before moving
+    if (validateStep(currentStep)) {
+      const nextIndex = currentStepIndex + 1;
+      if (nextIndex < steps.length) {
+        setCurrentStep(steps[nextIndex].id);
+        window.scrollTo(0, 0);
+      }
     }
   };
 
@@ -63,26 +131,38 @@ export default function BrokerApplication() {
     const prevIndex = currentStepIndex - 1;
     if (prevIndex >= 0) {
       setCurrentStep(steps[prevIndex].id);
+      setErrors({}); // Clear errors when going back
     }
   };
 
   const handleSubmit = async () => {
-    await submitApplication();
-    navigate("/broker/awaiting-approval");
+    // Final check
+    if (validateStep("review")) {
+      await submitApplication();
+      navigate("/broker/awaiting-approval");
+    }
   };
 
   const simulateUpload = (docId: string) => {
-    // Simulate file upload
     setUploadedDocs((prev) => ({
       ...prev,
       [docId]: `document_${docId}_${Date.now()}.pdf`,
     }));
+
+    // Clear error for this doc if exists
+    if (errors[docId]) {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[docId];
+        return newErrors;
+      });
+    }
   };
 
   return (
     <div className="min-h-screen bg-background py-12 px-4">
       <div className="max-w-3xl mx-auto">
-        {/* Header */}
+        {/* Header and Progress Steps  */}
         <div className="text-center mb-8 animate-fade-in">
           <h1 className="text-2xl md:text-3xl font-bold mb-2">
             Broker Application
@@ -92,7 +172,6 @@ export default function BrokerApplication() {
           </p>
         </div>
 
-        {/* Progress Steps */}
         <div className="flex items-center justify-between mb-12 relative">
           <div className="absolute top-5 left-0 right-0 h-0.5 bg-border -z-10" />
           <div
@@ -144,18 +223,39 @@ export default function BrokerApplication() {
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="companyName">Company Name *</Label>
+                  <Label
+                    htmlFor="companyName"
+                    className={errors.companyName ? "text-destructive" : ""}
+                  >
+                    Company Name *
+                  </Label>
                   <Input
                     id="companyName"
                     placeholder="Acme Trading Ltd"
                     value={application?.companyName || ""}
                     onChange={(e) =>
-                      setApplicationField("companyName", e.target.value)
+                      handleFieldChange("companyName", e.target.value)
+                    }
+                    className={
+                      errors.companyName
+                        ? "border-destructive focus-visible:ring-destructive"
+                        : ""
                     }
                   />
+                  {errors.companyName && (
+                    <span className="text-xs text-destructive">
+                      {errors.companyName}
+                    </span>
+                  )}
                 </div>
+
                 <div className="space-y-2">
-                  <Label htmlFor="registrationNumber">
+                  <Label
+                    htmlFor="registrationNumber"
+                    className={
+                      errors.registrationNumber ? "text-destructive" : ""
+                    }
+                  >
                     Registration Number *
                   </Label>
                   <Input
@@ -163,30 +263,68 @@ export default function BrokerApplication() {
                     placeholder="12345678"
                     value={application?.registrationNumber || ""}
                     onChange={(e) =>
-                      setApplicationField("registrationNumber", e.target.value)
+                      handleFieldChange("registrationNumber", e.target.value)
+                    }
+                    className={
+                      errors.registrationNumber
+                        ? "border-destructive focus-visible:ring-destructive"
+                        : ""
                     }
                   />
+                  {errors.registrationNumber && (
+                    <span className="text-xs text-destructive">
+                      {errors.registrationNumber}
+                    </span>
+                  )}
                 </div>
+
                 <div className="space-y-2">
-                  <Label htmlFor="companyId">Company ID *</Label>
+                  <Label
+                    htmlFor="companyId"
+                    className={errors.companyId ? "text-destructive" : ""}
+                  >
+                    Company ID *
+                  </Label>
                   <Input
                     id="companyId"
-                    placeholder="46e171d1-62b8-485d-98f6-bc529a963bff"
+                    placeholder="UUID..."
                     value={application?.companyId || ""}
                     onChange={(e) =>
-                      setApplicationField("companyId", e.target.value)
+                      handleFieldChange("companyId", e.target.value)
+                    }
+                    className={
+                      errors.companyId
+                        ? "border-destructive focus-visible:ring-destructive"
+                        : ""
                     }
                   />
+                  {errors.companyId && (
+                    <span className="text-xs text-destructive">
+                      {errors.companyId}
+                    </span>
+                  )}
                 </div>
+
                 <div className="space-y-2">
-                  <Label htmlFor="country">Country of Incorporation *</Label>
+                  <Label
+                    htmlFor="country"
+                    className={errors.country ? "text-destructive" : ""}
+                  >
+                    Country of Incorporation *
+                  </Label>
                   <Select
                     value={application?.country || ""}
                     onValueChange={(value) =>
-                      setApplicationField("country", value)
+                      handleFieldChange("country", value)
                     }
                   >
-                    <SelectTrigger>
+                    <SelectTrigger
+                      className={
+                        errors.country
+                          ? "border-destructive focus:ring-destructive"
+                          : ""
+                      }
+                    >
                       <SelectValue placeholder="Select country" />
                     </SelectTrigger>
                     <SelectContent>
@@ -197,18 +335,40 @@ export default function BrokerApplication() {
                       ))}
                     </SelectContent>
                   </Select>
+                  {errors.country && (
+                    <span className="text-xs text-destructive">
+                      {errors.country}
+                    </span>
+                  )}
                 </div>
+
                 <div className="space-y-2">
-                  <Label htmlFor="address">Address</Label>
+                  <Label
+                    htmlFor="address"
+                    className={errors.address ? "text-destructive" : ""}
+                  >
+                    Address *
+                  </Label>
                   <Input
                     id="address"
                     placeholder="123 Main St"
                     value={application?.address || ""}
                     onChange={(e) =>
-                      setApplicationField("address", e.target.value)
+                      handleFieldChange("address", e.target.value)
+                    }
+                    className={
+                      errors.address
+                        ? "border-destructive focus-visible:ring-destructive"
+                        : ""
                     }
                   />
+                  {errors.address && (
+                    <span className="text-xs text-destructive">
+                      {errors.address}
+                    </span>
+                  )}
                 </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="website">Website (Optional)</Label>
                   <Input
@@ -220,28 +380,60 @@ export default function BrokerApplication() {
                     }
                   />
                 </div>
+
                 <div className="space-y-2">
-                  <Label htmlFor="contactEmail">Contact Email *</Label>
+                  <Label
+                    htmlFor="contactEmail"
+                    className={errors.contactEmail ? "text-destructive" : ""}
+                  >
+                    Contact Email *
+                  </Label>
                   <Input
                     id="contactEmail"
                     type="email"
                     placeholder="contact@company.com"
                     value={application?.contactEmail || ""}
                     onChange={(e) =>
-                      setApplicationField("contactEmail", e.target.value)
+                      handleFieldChange("contactEmail", e.target.value)
+                    }
+                    className={
+                      errors.contactEmail
+                        ? "border-destructive focus-visible:ring-destructive"
+                        : ""
                     }
                   />
+                  {errors.contactEmail && (
+                    <span className="text-xs text-destructive">
+                      {errors.contactEmail}
+                    </span>
+                  )}
                 </div>
+
                 <div className="space-y-2">
-                  <Label htmlFor="contactPhone">Contact Phone *</Label>
+                  <Label
+                    htmlFor="contactPhone"
+                    className={errors.contactPhone ? "text-destructive" : ""}
+                  >
+                    Contact Phone *
+                  </Label>
                   <Input
                     id="contactPhone"
                     placeholder="+1 234 567 8900"
                     value={application?.contactPhone || ""}
                     onChange={(e) =>
-                      setApplicationField("contactPhone", e.target.value)
+                      handleFieldChange("contactPhone", e.target.value)
+                    }
+                    className={
+                      errors.contactPhone
+                        ? "border-destructive focus-visible:ring-destructive"
+                        : ""
                     }
                   />
+                  {errors.contactPhone && (
+                    <span className="text-xs text-destructive">
+                      {errors.contactPhone}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -264,14 +456,27 @@ export default function BrokerApplication() {
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="regulatoryLicense">Regulatory Body *</Label>
+                  <Label
+                    htmlFor="regulatoryLicense"
+                    className={
+                      errors.regulatoryLicense ? "text-destructive" : ""
+                    }
+                  >
+                    Regulatory Body *
+                  </Label>
                   <Select
                     value={application?.regulatoryLicense || ""}
                     onValueChange={(value) =>
-                      setApplicationField("regulatoryLicense", value)
+                      handleFieldChange("regulatoryLicense", value)
                     }
                   >
-                    <SelectTrigger>
+                    <SelectTrigger
+                      className={
+                        errors.regulatoryLicense
+                          ? "border-destructive focus:ring-destructive"
+                          : ""
+                      }
+                    >
                       <SelectValue placeholder="Select regulatory body" />
                     </SelectTrigger>
                     <SelectContent>
@@ -282,29 +487,62 @@ export default function BrokerApplication() {
                       ))}
                     </SelectContent>
                   </Select>
+                  {errors.regulatoryLicense && (
+                    <span className="text-xs text-destructive">
+                      {errors.regulatoryLicense}
+                    </span>
+                  )}
                 </div>
+
                 <div className="space-y-2">
-                  <Label htmlFor="licenseNumber">License Number *</Label>
+                  <Label
+                    htmlFor="licenseNumber"
+                    className={errors.licenseNumber ? "text-destructive" : ""}
+                  >
+                    License Number *
+                  </Label>
                   <Input
                     id="licenseNumber"
                     placeholder="LIC-2024-12345"
                     value={application?.licenseNumber || ""}
                     onChange={(e) =>
-                      setApplicationField("licenseNumber", e.target.value)
+                      handleFieldChange("licenseNumber", e.target.value)
+                    }
+                    className={
+                      errors.licenseNumber
+                        ? "border-destructive focus-visible:ring-destructive"
+                        : ""
                     }
                   />
+                  {errors.licenseNumber && (
+                    <span className="text-xs text-destructive">
+                      {errors.licenseNumber}
+                    </span>
+                  )}
                 </div>
+
                 <div className="space-y-2">
-                  <Label htmlFor="capitalRequirement">
+                  <Label
+                    htmlFor="capitalRequirement"
+                    className={
+                      errors.capitalRequirement ? "text-destructive" : ""
+                    }
+                  >
                     Operational Capital *
                   </Label>
                   <Select
                     value={application?.capitalRequirement || ""}
                     onValueChange={(value) =>
-                      setApplicationField("capitalRequirement", value)
+                      handleFieldChange("capitalRequirement", value)
                     }
                   >
-                    <SelectTrigger>
+                    <SelectTrigger
+                      className={
+                        errors.capitalRequirement
+                          ? "border-destructive focus:ring-destructive"
+                          : ""
+                      }
+                    >
                       <SelectValue placeholder="Select capital range" />
                     </SelectTrigger>
                     <SelectContent>
@@ -320,6 +558,11 @@ export default function BrokerApplication() {
                       <SelectItem value="1000000+">₦1,000,000+</SelectItem>
                     </SelectContent>
                   </Select>
+                  {errors.capitalRequirement && (
+                    <span className="text-xs text-destructive">
+                      {errors.capitalRequirement}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -340,6 +583,14 @@ export default function BrokerApplication() {
                 </div>
               </div>
 
+              {/* Global document error message */}
+              {Object.keys(errors).length > 0 && (
+                <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-md flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4" />
+                  Please upload all required documents to continue.
+                </div>
+              )}
+
               <div className="space-y-4">
                 {documentTypes.map((doc) => (
                   <div
@@ -347,20 +598,30 @@ export default function BrokerApplication() {
                     className={`p-4 rounded-lg border-2 border-dashed transition-colors ${
                       uploadedDocs[doc.id]
                         ? "border-success bg-success/5"
-                        : "border-border hover:border-primary/50"
+                        : errors[doc.id]
+                          ? "border-destructive bg-destructive/5"
+                          : "border-border hover:border-primary/50"
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         {uploadedDocs[doc.id] ? (
                           <CheckCircle2 className="w-5 h-5 text-success" />
+                        ) : errors[doc.id] ? (
+                          <AlertCircle className="w-5 h-5 text-destructive" />
                         ) : (
                           <FileText className="w-5 h-5 text-muted-foreground" />
                         )}
                         <div>
-                          <span className="font-medium">{doc.name}</span>
+                          <span
+                            className={`font-medium ${errors[doc.id] ? "text-destructive" : ""}`}
+                          >
+                            {doc.name}
+                          </span>
                           {doc.required && (
-                            <span className="text-xs text-destructive ml-2">
+                            <span
+                              className={`text-xs ml-2 ${errors[doc.id] ? "text-destructive font-bold" : "text-destructive"}`}
+                            >
                               Required
                             </span>
                           )}
