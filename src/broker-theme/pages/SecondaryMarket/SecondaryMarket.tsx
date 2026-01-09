@@ -145,25 +145,25 @@ const SecondaryMarket: React.FC = () => {
   return (
     <div className="flex-1 bg-gray-50/80">
       <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {/* Stats Cards - Matching reference design */}
+        <div className="flex snap-x snap-mandatory gap-4 overflow-auto scroll-smooth md:grid md:grid-cols-2 xl:grid-cols-4 mb-8">
           {/* Pre-market Volume */}
-          <Card className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-            <CardContent className="p-5">
-              <p className="text-xs text-gray-500 mb-2">Pre-market Vol</p>
-              <div className="flex items-baseline gap-2 mb-3">
-                <span className="text-2xl font-bold text-gray-900">
+          <Card className="h-40 min-w-[280px] flex-shrink-0 snap-start bg-white border border-gray-200 rounded-xl shadow-sm md:flex-shrink lg:min-w-[unset] hover:shadow-md transition-shadow duration-200">
+            <CardContent className="p-4 h-full flex flex-col">
+              <p className="text-xs font-medium text-gray-500 mb-3">Pre-market Vol</p>
+              <div className="flex items-end gap-2 mb-2">
+                <span className="text-[28px] font-medium leading-9 text-gray-900">
                   ₦{(totalVolume / 1000000).toFixed(1)}M
                 </span>
-                <span className="text-xs text-emerald-600 flex items-center font-medium">
+                <span className="text-xs font-medium text-emerald-600 mb-1">
                   + ₦160.2K
                 </span>
               </div>
-              <div className="h-12">
-                <ResponsiveContainer width="100%" height="100%">
+              <div className="flex-1 flex flex-col justify-end">
+                <ResponsiveContainer width="100%" height={68}>
                   <AreaChart data={volumeChartData.slice(-14)}>
                     <defs>
-                      <linearGradient id="volumeGradient" x1="0" y1="0" x2="0" y2="1">
+                      <linearGradient id="volumeGradientSM" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="#10b981" stopOpacity={0.3} />
                         <stop offset="100%" stopColor="#10b981" stopOpacity={0} />
                       </linearGradient>
@@ -173,7 +173,7 @@ const SecondaryMarket: React.FC = () => {
                       dataKey="volume"
                       stroke="#10b981"
                       strokeWidth={1.5}
-                      fill="url(#volumeGradient)"
+                      fill="url(#volumeGradientSM)"
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -181,81 +181,93 @@ const SecondaryMarket: React.FC = () => {
             </CardContent>
           </Card>
 
-          {/* Fear & Greed */}
-          <Card className="bg-white border border-gray-200 rounded-xl shadow-sm">
-            <CardContent className="p-5">
-              <p className="text-xs text-gray-500 mb-2">Fear & Greed</p>
-              <div className="flex items-center justify-center">
-                <div className="relative w-24 h-12">
-                  <svg viewBox="0 0 100 50" className="w-full h-full">
-                    <path
-                      d="M 10 45 A 40 40 0 0 1 90 45"
-                      fill="none"
-                      stroke="#e5e7eb"
-                      strokeWidth="8"
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M 10 45 A 40 40 0 0 1 90 45"
-                      fill="none"
-                      stroke="url(#gaugeGradient)"
-                      strokeWidth="8"
-                      strokeLinecap="round"
-                      strokeDasharray="125.6"
-                      strokeDashoffset="75"
-                    />
-                    <defs>
-                      <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#ef4444" />
-                        <stop offset="50%" stopColor="#eab308" />
-                        <stop offset="100%" stopColor="#22c55e" />
-                      </linearGradient>
-                    </defs>
-                    <circle cx="50" cy="45" r="3" fill="#10b981" />
-                  </svg>
+          {/* Fear & Greed - Exact SVG from reference */}
+          <Card className="h-40 min-w-[280px] flex-shrink-0 snap-start bg-white border border-gray-200 rounded-xl shadow-sm md:flex-shrink lg:min-w-[unset] hover:shadow-md transition-shadow duration-200">
+            <CardContent className="p-4 h-full">
+              <p className="text-xs font-medium text-gray-500 mb-3">Fear & Greed</p>
+              <div className="relative flex items-center justify-center" style={{ marginBottom: '-1rem' }}>
+                <svg width="160" height="100" viewBox="0 0 200 140">
+                  <defs>
+                    <linearGradient id="gaugeGradientRef" x1="100%" y1="0%" x2="0%" y2="0%">
+                      <stop offset="2.5%" stopColor="#16C284" />
+                      <stop offset="50%" stopColor="#FDBA74" />
+                      <stop offset="97.5%" stopColor="#EC4899" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    d="M 10 130 A 90 90 0 0 1 190 130"
+                    fill="none"
+                    stroke="#e5e7eb"
+                    strokeWidth="10"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M 10 130 A 90 90 0 0 1 190 130"
+                    fill="none"
+                    stroke="url(#gaugeGradientRef)"
+                    strokeWidth="10"
+                    strokeLinecap="round"
+                    strokeDasharray="282.7"
+                    strokeDashoffset="0"
+                  />
+                  <circle
+                    cx="74.89"
+                    cy="43.57"
+                    r="8"
+                    strokeWidth="3"
+                    stroke="white"
+                    fill="white"
+                    filter="drop-shadow(0 2px 4px rgba(0,0,0,0.2))"
+                  />
+                </svg>
+                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex flex-col items-center">
+                  <p className="text-[28px] font-medium leading-9 text-gray-900">41</p>
+                  <p className="text-xs text-gray-500">Neutral</p>
                 </div>
-              </div>
-              <div className="text-center mt-1">
-                <span className="text-2xl font-bold text-gray-900">41</span>
-                <p className="text-xs text-gray-500">Neutral</p>
               </div>
             </CardContent>
           </Card>
 
-          {/* Market Season */}
-          <Card className="bg-white border border-gray-200 rounded-xl shadow-sm">
-            <CardContent className="p-5">
-              <p className="text-xs text-gray-500 mb-2">Market Season</p>
-              <div className="flex items-baseline gap-1 mb-3">
-                <span className="text-2xl font-bold text-gray-900">36</span>
-                <span className="text-lg text-gray-400">/100</span>
-              </div>
-              <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
-                <span>Bear</span>
-                <span>Bull</span>
-              </div>
-              <div className="relative h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-gray-400 to-emerald-500" />
-                <div 
-                  className="absolute w-3 h-3 bg-white rounded-full border-2 border-gray-400 top-1/2 -translate-y-1/2"
-                  style={{ left: `${36}%` }}
-                />
+          {/* Market Season - Slider style from reference */}
+          <Card className="h-40 min-w-[280px] flex-shrink-0 snap-start bg-white border border-gray-200 rounded-xl shadow-sm md:flex-shrink lg:min-w-[unset] hover:shadow-md transition-shadow duration-200">
+            <CardContent className="p-4 h-full flex flex-col">
+              <p className="text-xs font-medium text-gray-500 mb-3">Market Season</p>
+              <div className="flex flex-col gap-3 flex-1">
+                <div>
+                  <span className="text-[28px] font-medium text-gray-900">36</span>
+                  <span className="text-[28px] font-medium text-gray-400">/100</span>
+                </div>
+                <div className="flex flex-col mt-auto">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-medium text-gray-700">Bear</span>
+                    <span className="text-xs font-medium text-gray-700">Bull</span>
+                  </div>
+                  <div className="relative flex h-5 w-full items-center">
+                    <span 
+                      className="relative h-2 flex-grow rounded-full"
+                      style={{ background: 'linear-gradient(90deg, #e5e7eb 1.44%, #16C284 100%)' }}
+                    />
+                    <span 
+                      className="absolute block h-6 w-6 rounded-full border-4 border-white bg-white shadow-md"
+                      style={{ 
+                        left: 'calc(36% - 12px)',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+                      }}
+                    />
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
 
           {/* Next Settlement */}
-          <Card className="bg-white border border-gray-200 rounded-xl shadow-sm">
-            <CardContent className="p-5">
-              <p className="text-xs text-gray-500 mb-2">Next Settlement</p>
-              <div className="flex items-center justify-center h-16">
-                <div className="text-center">
-                  <div className="flex items-center justify-center gap-2 mb-1">
-                    <Clock className="h-4 w-4 text-gray-400" />
-                    <span className="text-sm font-medium text-gray-600">No markets in</span>
-                  </div>
-                  <p className="text-sm text-gray-500">upcoming settlements</p>
-                </div>
+          <Card className="h-40 min-w-[280px] flex-shrink-0 snap-start bg-white border border-gray-200 rounded-xl shadow-sm md:flex-shrink lg:min-w-[unset] hover:shadow-md transition-shadow duration-200">
+            <CardContent className="p-4 h-full flex flex-col">
+              <p className="text-xs font-medium text-gray-500 mb-3">Next Settlement</p>
+              <div className="flex flex-1 items-center justify-center overflow-hidden rounded-lg bg-gray-50/80 text-sm text-gray-500">
+                <p className="font-medium text-sm max-w-[180px] text-center text-gray-700">
+                  No markets in upcoming settlements
+                </p>
               </div>
             </CardContent>
           </Card>
