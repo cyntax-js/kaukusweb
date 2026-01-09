@@ -330,7 +330,7 @@ const SecondaryMarket: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-100">
+                <tr className="border-b border-gray-100 bg-gray-50/50">
                   <th className="text-left py-4 px-5 text-xs font-medium text-gray-500">Token</th>
                   <th 
                     className="text-right py-4 px-5 text-xs font-medium text-gray-500 cursor-pointer select-none hover:text-gray-700"
@@ -361,16 +361,17 @@ const SecondaryMarket: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredTokens.map((token) => (
+                {filteredTokens.map((token, index) => (
                   <tr
                     key={token.id}
                     onClick={() => handleTokenClick(token)}
-                    className="border-b border-gray-50 hover:bg-gray-50/50 cursor-pointer transition-colors"
+                    className="border-b border-gray-50 hover:bg-gray-50/80 cursor-pointer transition-all duration-150 group"
+                    style={{ animationDelay: `${index * 30}ms` }}
                   >
                     <td className="py-4 px-5">
                       <div className="flex items-center gap-3">
                         <div className={cn(
-                          "w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold",
+                          "w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold transition-transform duration-150 group-hover:scale-105",
                           token.logoColor
                         )}>
                           {token.symbol.slice(0, 2)}

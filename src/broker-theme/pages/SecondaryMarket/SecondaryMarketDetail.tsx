@@ -208,7 +208,7 @@ const SecondaryMarketDetail: React.FC = () => {
             </div>
 
             {/* Price Chart */}
-            <Card className="bg-white border border-gray-200 rounded-xl shadow-sm">
+            <Card className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -311,7 +311,7 @@ const SecondaryMarketDetail: React.FC = () => {
             </Card>
 
             {/* Order Book */}
-            <Card className="bg-white border border-gray-200 rounded-xl shadow-sm">
+            <Card className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -408,7 +408,7 @@ const SecondaryMarketDetail: React.FC = () => {
             </Card>
 
             {/* Recent Activities */}
-            <Card className="bg-white border border-gray-200 rounded-xl shadow-sm">
+            <Card className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base font-semibold text-gray-900">Recent Activities</CardTitle>
@@ -473,7 +473,7 @@ const SecondaryMarketDetail: React.FC = () => {
           {/* Right Column - Trading Panel */}
           <div className="space-y-6">
             {/* Trade Panel */}
-            <Card className="bg-white border border-gray-200 rounded-xl shadow-sm">
+            <Card className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
               <CardHeader className="pb-3">
                 <CardTitle className="text-base font-semibold text-gray-900">
                   Trade {mockMarketData.symbol}
@@ -515,7 +515,7 @@ const SecondaryMarketDetail: React.FC = () => {
             </Card>
 
             {/* My Orders */}
-            <Card className="bg-white border border-gray-200 rounded-xl shadow-sm">
+            <Card className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
               <CardHeader className="pb-2">
                 <div className="flex items-center gap-4">
                   <button className="text-sm font-medium text-gray-900 border-b-2 border-gray-900 pb-2 -mb-2">
