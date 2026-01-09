@@ -1,6 +1,6 @@
 /**
- * SECONDARY MARKET PAGE - Clean, minimalist design
- * Nigerian Pre-market and OTC Securities Trading
+ * SECONDARY MARKET PAGE - Light, minimalist design matching reference
+ * Clean table-based layout with stats cards
  */
 
 import React, { useState, useMemo } from "react";
@@ -9,7 +9,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Search,
   TrendingUp,
@@ -17,19 +16,13 @@ import {
   Activity,
   Clock,
   BarChart3,
-  ArrowUpRight,
-  ArrowDownRight,
-  Sparkles,
-  Filter,
-  ChevronRight,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 import {
   AreaChart,
   Area,
-  XAxis,
-  YAxis,
   ResponsiveContainer,
-  Tooltip,
 } from "recharts";
 import { cn } from "@/lib/utils";
 
@@ -54,46 +47,28 @@ interface TokenData {
   lastPrice: number;
   priceChange: number;
   volume24h: number;
+  volumeChange: number;
   totalVolume: number;
+  totalVolumeChange: number;
   impliedFDV: string;
   settleTime: string;
-  status: "active" | "upcoming" | "settled";
+  status: "live" | "upcoming" | "ended";
+  logoColor: string;
 }
 
 const mockTokenData: TokenData[] = [
-  { id: "1", name: "Dangote Cement Pre-IPO", symbol: "DANGCEM-P", sector: "Industrial", lastPrice: 285.50, priceChange: 12.5, volume24h: 45600000, totalVolume: 892000000, impliedFDV: "₦4.2T", settleTime: "Mar 2025", status: "active" },
-  { id: "2", name: "MTN Nigeria Rights", symbol: "MTNN-R", sector: "Telecoms", lastPrice: 195.20, priceChange: -3.2, volume24h: 32100000, totalVolume: 567000000, impliedFDV: "₦3.8T", settleTime: "Feb 2025", status: "active" },
-  { id: "3", name: "BUA Foods Private Placement", symbol: "BUAFOODS-PP", sector: "Consumer Goods", lastPrice: 142.80, priceChange: 8.7, volume24h: 28900000, totalVolume: 445000000, impliedFDV: "₦2.1T", settleTime: "Apr 2025", status: "active" },
-  { id: "4", name: "Airtel Africa Pre-IPO", symbol: "AIRTEL-P", sector: "Telecoms", lastPrice: 1850.00, priceChange: 5.2, volume24h: 67800000, totalVolume: 1230000000, impliedFDV: "₦6.5T", settleTime: "TBA", status: "upcoming" },
-  { id: "5", name: "Seplat Energy Convertible", symbol: "SEPLAT-CV", sector: "Oil & Gas", lastPrice: 2450.00, priceChange: -1.8, volume24h: 89200000, totalVolume: 1560000000, impliedFDV: "₦1.8T", settleTime: "Q1 2025", status: "active" },
-  { id: "6", name: "Access Holdings Rights", symbol: "ACCESS-R", sector: "Banking", lastPrice: 18.50, priceChange: 4.3, volume24h: 12300000, totalVolume: 234000000, impliedFDV: "₦850B", settleTime: "Jan 2025", status: "active" },
-  { id: "7", name: "Zenith Bank Private Placement", symbol: "ZENITH-PP", sector: "Banking", lastPrice: 35.80, priceChange: 2.1, volume24h: 19800000, totalVolume: 389000000, impliedFDV: "₦1.2T", settleTime: "Mar 2025", status: "active" },
-  { id: "8", name: "GTBank Holdco Convertible", symbol: "GTCO-CV", sector: "Banking", lastPrice: 42.30, priceChange: -0.5, volume24h: 15600000, totalVolume: 298000000, impliedFDV: "₦980B", settleTime: "Feb 2025", status: "active" },
-  { id: "9", name: "Nestle Nigeria Pre-IPO", symbol: "NESTLE-P", sector: "Consumer Goods", lastPrice: 1285.00, priceChange: 6.8, volume24h: 34500000, totalVolume: 678000000, impliedFDV: "₦1.5T", settleTime: "TBA", status: "upcoming" },
-  { id: "10", name: "Nigerian Breweries Rights", symbol: "NB-R", sector: "Consumer Goods", lastPrice: 45.20, priceChange: 1.2, volume24h: 8900000, totalVolume: 156000000, impliedFDV: "₦420B", settleTime: "Q2 2025", status: "active" },
-  { id: "11", name: "First Bank Holdings PP", symbol: "FBNH-PP", sector: "Banking", lastPrice: 22.40, priceChange: 3.5, volume24h: 11200000, totalVolume: 198000000, impliedFDV: "₦680B", settleTime: "Apr 2025", status: "active" },
-  { id: "12", name: "Oando Energy Pre-IPO", symbol: "OANDO-P", sector: "Oil & Gas", lastPrice: 8.90, priceChange: -2.3, volume24h: 5600000, totalVolume: 89000000, impliedFDV: "₦320B", settleTime: "TBA", status: "upcoming" },
-];
-
-// Recent activity data
-interface ActivityData {
-  id: string;
-  time: string;
-  orderType: "Open" | "Filled";
-  side: "Buy" | "Sell";
-  symbol: string;
-  pair: string;
-  price: number;
-  amount: number;
-  collateral: number;
-}
-
-const mockActivityData: ActivityData[] = [
-  { id: "1", time: "2m ago", orderType: "Filled", side: "Buy", symbol: "DANGCEM-P", pair: "DANGCEM-P/NGN", price: 285.50, amount: 5000, collateral: 1427500 },
-  { id: "2", time: "5m ago", orderType: "Open", side: "Sell", symbol: "MTNN-R", pair: "MTNN-R/NGN", price: 198.00, amount: 10000, collateral: 1980000 },
-  { id: "3", time: "12m ago", orderType: "Filled", side: "Buy", symbol: "SEPLAT-CV", pair: "SEPLAT-CV/NGN", price: 2445.00, amount: 200, collateral: 489000 },
-  { id: "4", time: "18m ago", orderType: "Open", side: "Buy", symbol: "ACCESS-R", pair: "ACCESS-R/NGN", price: 18.20, amount: 50000, collateral: 910000 },
-  { id: "5", time: "25m ago", orderType: "Filled", side: "Sell", symbol: "BUAFOODS-PP", pair: "BUAFOODS-PP/NGN", price: 143.50, amount: 3000, collateral: 430500 },
+  { id: "1", name: "Dangote Cement", symbol: "DANGCEM", sector: "Industrial", lastPrice: 285.50, priceChange: 7.32, volume24h: 3833500, volumeChange: 202.8, totalVolume: 21444000, totalVolumeChange: 21.8, impliedFDV: "₦960B", settleTime: "TBA", status: "live", logoColor: "bg-emerald-500" },
+  { id: "2", name: "MTN Nigeria", symbol: "MTNN", sector: "Telecoms", lastPrice: 195.20, priceChange: 0, volume24h: 3612900, volumeChange: 471.2, totalVolume: 1251047000, totalVolumeChange: 0.29, impliedFDV: "₦3B", settleTime: "TBA", status: "live", logoColor: "bg-amber-500" },
+  { id: "3", name: "Access Holdings", symbol: "ACCESS", sector: "Banking", lastPrice: 18.50, priceChange: 0, volume24h: 210000, volumeChange: 0, totalVolume: 10458000, totalVolumeChange: 2.05, impliedFDV: "N/A", settleTime: "TBA", status: "live", logoColor: "bg-blue-500" },
+  { id: "4", name: "Airtel Africa", symbol: "AIRTEL", sector: "Telecoms", lastPrice: 1850.00, priceChange: 0, volume24h: 57600, volumeChange: 64.6, totalVolume: 748600, totalVolumeChange: 8.34, impliedFDV: "₦100M", settleTime: "TBA", status: "live", logoColor: "bg-red-500" },
+  { id: "5", name: "Zenith Bank", symbol: "ZENITH", sector: "Banking", lastPrice: 35.80, priceChange: 0, volume24h: 14000, volumeChange: -98.149, totalVolume: 46515000, totalVolumeChange: 0.03, impliedFDV: "N/A", settleTime: "TBA", status: "live", logoColor: "bg-purple-500" },
+  { id: "6", name: "Seplat Energy", symbol: "SEPLAT", sector: "Oil & Gas", lastPrice: 2450.00, priceChange: -1.8, volume24h: 26000, volumeChange: 0, totalVolume: 23497000, totalVolumeChange: 0.00011, impliedFDV: "₦130M", settleTime: "TBA", status: "live", logoColor: "bg-teal-500" },
+  { id: "7", name: "BUA Foods", symbol: "BUAFOODS", sector: "Consumer Goods", lastPrice: 142.80, priceChange: 0, volume24h: 0, volumeChange: 0, totalVolume: 30000, totalVolumeChange: 0, impliedFDV: "N/A", settleTime: "TBA", status: "live", logoColor: "bg-orange-500" },
+  { id: "8", name: "GTBank Holdco", symbol: "GTCO", sector: "Banking", lastPrice: 42.30, priceChange: 0, volume24h: 0, volumeChange: 0, totalVolume: 174720, totalVolumeChange: 0, impliedFDV: "₦69M", settleTime: "TBA", status: "live", logoColor: "bg-pink-500" },
+  { id: "9", name: "First Bank Holdings", symbol: "FBNH", sector: "Banking", lastPrice: 22.40, priceChange: 3.5, volume24h: 112000, volumeChange: 15.2, totalVolume: 198000, totalVolumeChange: 4.1, impliedFDV: "₦680B", settleTime: "Q2 2025", status: "upcoming", logoColor: "bg-slate-600" },
+  { id: "10", name: "Nestle Nigeria", symbol: "NESTLE", sector: "Consumer Goods", lastPrice: 1285.00, priceChange: 6.8, volume24h: 345000, volumeChange: 28.5, totalVolume: 678000, totalVolumeChange: 12.3, impliedFDV: "₦1.5T", settleTime: "TBA", status: "upcoming", logoColor: "bg-indigo-500" },
+  { id: "11", name: "Nigerian Breweries", symbol: "NB", sector: "Consumer Goods", lastPrice: 45.20, priceChange: 1.2, volume24h: 89000, volumeChange: 5.8, totalVolume: 156000, totalVolumeChange: 2.4, impliedFDV: "₦420B", settleTime: "Ended", status: "ended", logoColor: "bg-cyan-500" },
+  { id: "12", name: "Oando Plc", symbol: "OANDO", sector: "Oil & Gas", lastPrice: 8.90, priceChange: -2.3, volume24h: 56000, volumeChange: -12.4, totalVolume: 89000, totalVolumeChange: -5.2, impliedFDV: "₦320B", settleTime: "Ended", status: "ended", logoColor: "bg-lime-600" },
 ];
 
 const volumeChartData = generateVolumeData();
@@ -102,17 +77,14 @@ const SecondaryMarket: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeFilter, setActiveFilter] = useState<"all" | "active" | "upcoming">("all");
-  const [activeTab, setActiveTab] = useState<"markets" | "activity">("markets");
+  const [activeFilter, setActiveFilter] = useState<"live" | "upcoming" | "ended">("live");
+  const [sortField, setSortField] = useState<string | null>(null);
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
 
   const routePrefix = location.pathname.includes("/preview/app") ? "/preview/app" : "/app";
 
   const filteredTokens = useMemo(() => {
-    let tokens = mockTokenData;
-    
-    if (activeFilter !== "all") {
-      tokens = tokens.filter(t => t.status === activeFilter);
-    }
+    let tokens = mockTokenData.filter(t => t.status === activeFilter);
     
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
@@ -122,306 +94,341 @@ const SecondaryMarket: React.FC = () => {
              t.sector.toLowerCase().includes(q)
       );
     }
+
+    if (sortField) {
+      tokens.sort((a, b) => {
+        let aVal: number, bVal: number;
+        switch (sortField) {
+          case "price": aVal = a.lastPrice; bVal = b.lastPrice; break;
+          case "volume24h": aVal = a.volume24h; bVal = b.volume24h; break;
+          case "totalVolume": aVal = a.totalVolume; bVal = b.totalVolume; break;
+          default: return 0;
+        }
+        return sortDirection === "asc" ? aVal - bVal : bVal - aVal;
+      });
+    }
     
     return tokens;
-  }, [searchQuery, activeFilter]);
+  }, [searchQuery, activeFilter, sortField, sortDirection]);
 
   const handleTokenClick = (token: TokenData) => {
     navigate(`${routePrefix}/markets/secondary/${token.id}`);
   };
 
+  const handleSort = (field: string) => {
+    if (sortField === field) {
+      setSortDirection(prev => prev === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortDirection("desc");
+    }
+  };
+
   const totalVolume = mockTokenData.reduce((sum, t) => sum + t.volume24h, 0);
-  const activeMarkets = mockTokenData.filter(t => t.status === "active").length;
+  const liveCount = mockTokenData.filter(t => t.status === "live").length;
+  const upcomingCount = mockTokenData.filter(t => t.status === "upcoming").length;
+  const endedCount = mockTokenData.filter(t => t.status === "ended").length;
+
+  const formatVolume = (val: number) => {
+    if (val >= 1000000) return `${(val / 1000000).toFixed(1)}M`;
+    if (val >= 1000) return `${(val / 1000).toFixed(1)}K`;
+    return val.toLocaleString();
+  };
+
+  const SortIcon = ({ field }: { field: string }) => (
+    <span className="inline-flex flex-col ml-1">
+      <ChevronUp className={cn("h-3 w-3 -mb-1", sortField === field && sortDirection === "asc" ? "text-foreground" : "text-muted-foreground/40")} />
+      <ChevronDown className={cn("h-3 w-3", sortField === field && sortDirection === "desc" ? "text-foreground" : "text-muted-foreground/40")} />
+    </span>
+  );
 
   return (
-    <div className="flex-1 px-4 md:px-6 py-6 space-y-6">
-      {/* Header Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Pre-market Volume */}
-        <Card className="bg-card border-border overflow-hidden">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <BarChart3 className="h-4 w-4 text-muted-foreground" />
-              <span className="text-xs text-muted-foreground">Pre-market Volume</span>
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-foreground">
-                ₦{(totalVolume / 1000000).toFixed(1)}M
-              </span>
-              <span className="text-xs text-green-500 flex items-center">
-                <ArrowUpRight className="h-3 w-3" />
-                12.5%
-              </span>
-            </div>
-            <div className="h-12 mt-2">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={volumeChartData.slice(-14)}>
-                  <defs>
-                    <linearGradient id="volumeGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
-                      <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <Area
-                    type="monotone"
-                    dataKey="volume"
-                    stroke="hsl(var(--primary))"
-                    strokeWidth={1.5}
-                    fill="url(#volumeGradient)"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
+    <div className="flex-1 bg-gray-50/80">
+      <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          {/* Pre-market Volume */}
+          <Card className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+            <CardContent className="p-5">
+              <p className="text-xs text-gray-500 mb-2">Pre-market Vol</p>
+              <div className="flex items-baseline gap-2 mb-3">
+                <span className="text-2xl font-bold text-gray-900">
+                  ₦{(totalVolume / 1000000).toFixed(1)}M
+                </span>
+                <span className="text-xs text-emerald-600 flex items-center font-medium">
+                  + ₦160.2K
+                </span>
+              </div>
+              <div className="h-12">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={volumeChartData.slice(-14)}>
+                    <defs>
+                      <linearGradient id="volumeGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#10b981" stopOpacity={0.3} />
+                        <stop offset="100%" stopColor="#10b981" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <Area
+                      type="monotone"
+                      dataKey="volume"
+                      stroke="#10b981"
+                      strokeWidth={1.5}
+                      fill="url(#volumeGradient)"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
 
-        {/* Market Sentiment */}
-        <Card className="bg-card border-border">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Activity className="h-4 w-4 text-muted-foreground" />
-              <span className="text-xs text-muted-foreground">Market Sentiment</span>
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-foreground">67</span>
-              <span className="text-sm text-green-500">Bullish</span>
-            </div>
-            <div className="mt-3 h-2 bg-muted rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500"
-                style={{ width: "100%" }}
-              />
-            </div>
-            <div className="flex justify-between mt-1">
-              <span className="text-[10px] text-muted-foreground">Fear</span>
-              <span className="text-[10px] text-muted-foreground">Greed</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Active Markets */}
-        <Card className="bg-card border-border">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Sparkles className="h-4 w-4 text-muted-foreground" />
-              <span className="text-xs text-muted-foreground">Active Markets</span>
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-foreground">{activeMarkets}</span>
-              <span className="text-xs text-muted-foreground">of {mockTokenData.length}</span>
-            </div>
-            <div className="mt-3 flex gap-1">
-              {mockTokenData.slice(0, 8).map((t, i) => (
-                <div
-                  key={i}
-                  className={cn(
-                    "flex-1 h-6 rounded text-[9px] flex items-center justify-center font-medium",
-                    t.priceChange >= 0 ? "bg-green-500/10 text-green-500" : "bg-red-500/10 text-red-500"
-                  )}
-                >
-                  {t.priceChange >= 0 ? "+" : ""}{t.priceChange.toFixed(0)}%
+          {/* Fear & Greed */}
+          <Card className="bg-white border border-gray-200 rounded-xl shadow-sm">
+            <CardContent className="p-5">
+              <p className="text-xs text-gray-500 mb-2">Fear & Greed</p>
+              <div className="flex items-center justify-center">
+                <div className="relative w-24 h-12">
+                  <svg viewBox="0 0 100 50" className="w-full h-full">
+                    <path
+                      d="M 10 45 A 40 40 0 0 1 90 45"
+                      fill="none"
+                      stroke="#e5e7eb"
+                      strokeWidth="8"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M 10 45 A 40 40 0 0 1 90 45"
+                      fill="none"
+                      stroke="url(#gaugeGradient)"
+                      strokeWidth="8"
+                      strokeLinecap="round"
+                      strokeDasharray="125.6"
+                      strokeDashoffset="75"
+                    />
+                    <defs>
+                      <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#ef4444" />
+                        <stop offset="50%" stopColor="#eab308" />
+                        <stop offset="100%" stopColor="#22c55e" />
+                      </linearGradient>
+                    </defs>
+                    <circle cx="50" cy="45" r="3" fill="#10b981" />
+                  </svg>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+              </div>
+              <div className="text-center mt-1">
+                <span className="text-2xl font-bold text-gray-900">41</span>
+                <p className="text-xs text-gray-500">Neutral</p>
+              </div>
+            </CardContent>
+          </Card>
 
-        {/* Next Settlement */}
-        <Card className="bg-card border-border">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Clock className="h-4 w-4 text-muted-foreground" />
-              <span className="text-xs text-muted-foreground">Next Settlement</span>
-            </div>
-            <div className="text-lg font-bold text-foreground">Jan 2025</div>
-            <p className="text-xs text-muted-foreground mt-1">ACCESS-R Rights Issue</p>
-            <div className="mt-2 flex items-center gap-1 text-xs text-primary">
-              <span>View calendar</span>
-              <ChevronRight className="h-3 w-3" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          {/* Market Season */}
+          <Card className="bg-white border border-gray-200 rounded-xl shadow-sm">
+            <CardContent className="p-5">
+              <p className="text-xs text-gray-500 mb-2">Market Season</p>
+              <div className="flex items-baseline gap-1 mb-3">
+                <span className="text-2xl font-bold text-gray-900">36</span>
+                <span className="text-lg text-gray-400">/100</span>
+              </div>
+              <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
+                <span>Bear</span>
+                <span>Bull</span>
+              </div>
+              <div className="relative h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-gray-400 to-emerald-500" />
+                <div 
+                  className="absolute w-3 h-3 bg-white rounded-full border-2 border-gray-400 top-1/2 -translate-y-1/2"
+                  style={{ left: `${36}%` }}
+                />
+              </div>
+            </CardContent>
+          </Card>
 
-      {/* Main Content */}
-      <div className="space-y-4">
-        {/* Tabs and Search */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
-            <TabsList className="bg-muted/50">
-              <TabsTrigger value="markets" className="gap-2">
-                <TrendingUp className="h-4 w-4" />
-                Markets
-              </TabsTrigger>
-              <TabsTrigger value="activity" className="gap-2">
-                <Activity className="h-4 w-4" />
-                Activity
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+          {/* Next Settlement */}
+          <Card className="bg-white border border-gray-200 rounded-xl shadow-sm">
+            <CardContent className="p-5">
+              <p className="text-xs text-gray-500 mb-2">Next Settlement</p>
+              <div className="flex items-center justify-center h-16">
+                <div className="text-center">
+                  <div className="flex items-center justify-center gap-2 mb-1">
+                    <Clock className="h-4 w-4 text-gray-400" />
+                    <span className="text-sm font-medium text-gray-600">No markets in</span>
+                  </div>
+                  <p className="text-sm text-gray-500">upcoming settlements</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search markets..."
-                className="pl-10 w-64 h-9 bg-card border-border"
-              />
-            </div>
-            <div className="flex gap-1">
-              {(["all", "active", "upcoming"] as const).map((filter) => (
-                <Button
-                  key={filter}
-                  variant={activeFilter === filter ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setActiveFilter(filter)}
-                  className="capitalize text-xs"
-                >
-                  {filter}
-                </Button>
-              ))}
-            </div>
+        {/* Filter Tabs & Search */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div className="flex items-center gap-2">
+            <Button
+              variant={activeFilter === "live" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setActiveFilter("live")}
+              className={cn(
+                "rounded-full px-4 gap-2",
+                activeFilter === "live" 
+                  ? "bg-emerald-500 hover:bg-emerald-600 text-white" 
+                  : "border-gray-300 text-gray-600 hover:bg-gray-100"
+              )}
+            >
+              <span>Live</span>
+              <Badge variant="secondary" className="bg-white/20 text-current text-xs px-1.5">
+                {liveCount}
+              </Badge>
+            </Button>
+            <Button
+              variant={activeFilter === "upcoming" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setActiveFilter("upcoming")}
+              className={cn(
+                "rounded-full px-4 gap-2",
+                activeFilter === "upcoming" 
+                  ? "bg-gray-800 hover:bg-gray-900 text-white" 
+                  : "border-gray-300 text-gray-600 hover:bg-gray-100"
+              )}
+            >
+              <span>Upcoming</span>
+              <Badge variant="secondary" className="bg-white/20 text-current text-xs px-1.5">
+                {upcomingCount}
+              </Badge>
+            </Button>
+            <Button
+              variant={activeFilter === "ended" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setActiveFilter("ended")}
+              className={cn(
+                "rounded-full px-4 gap-2",
+                activeFilter === "ended" 
+                  ? "bg-gray-800 hover:bg-gray-900 text-white" 
+                  : "border-gray-300 text-gray-600 hover:bg-gray-100"
+              )}
+            >
+              <span>Ended</span>
+              <Badge variant="secondary" className="bg-white/20 text-current text-xs px-1.5">
+                {endedCount}
+              </Badge>
+            </Button>
+          </div>
+
+          <div className="relative w-full sm:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search"
+              className="pl-10 h-9 bg-white border-gray-200 rounded-lg text-sm"
+            />
           </div>
         </div>
 
-        {/* Markets Tab Content */}
-        {activeTab === "markets" && (
-          <Card className="bg-card border-border overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-border">
-                    <th className="text-left py-4 px-4 text-xs font-medium text-muted-foreground">Token</th>
-                    <th className="text-right py-4 px-4 text-xs font-medium text-muted-foreground">Last Price</th>
-                    <th className="text-right py-4 px-4 text-xs font-medium text-muted-foreground hidden md:table-cell">24h Change</th>
-                    <th className="text-right py-4 px-4 text-xs font-medium text-muted-foreground hidden lg:table-cell">24h Volume</th>
-                    <th className="text-right py-4 px-4 text-xs font-medium text-muted-foreground hidden lg:table-cell">Implied FDV</th>
-                    <th className="text-right py-4 px-4 text-xs font-medium text-muted-foreground hidden md:table-cell">Settlement</th>
-                    <th className="text-right py-4 px-4 text-xs font-medium text-muted-foreground">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredTokens.map((token) => (
-                    <tr
-                      key={token.id}
-                      onClick={() => handleTokenClick(token)}
-                      className="border-b border-border hover:bg-muted/30 cursor-pointer transition-colors"
-                    >
-                      <td className="py-4 px-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                            <span className="text-sm font-bold text-primary">
-                              {token.symbol.slice(0, 2)}
-                            </span>
-                          </div>
-                          <div>
-                            <p className="font-medium text-foreground text-sm">{token.symbol}</p>
-                            <p className="text-xs text-muted-foreground">{token.name}</p>
-                          </div>
+        {/* Markets Table */}
+        <Card className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-100">
+                  <th className="text-left py-4 px-5 text-xs font-medium text-gray-500">Token</th>
+                  <th 
+                    className="text-right py-4 px-5 text-xs font-medium text-gray-500 cursor-pointer select-none hover:text-gray-700"
+                    onClick={() => handleSort("price")}
+                  >
+                    <span className="inline-flex items-center">
+                      Last Price ($) <SortIcon field="price" />
+                    </span>
+                  </th>
+                  <th 
+                    className="text-right py-4 px-5 text-xs font-medium text-gray-500 cursor-pointer select-none hover:text-gray-700 hidden md:table-cell"
+                    onClick={() => handleSort("volume24h")}
+                  >
+                    <span className="inline-flex items-center">
+                      24h Vol. ($) <SortIcon field="volume24h" />
+                    </span>
+                  </th>
+                  <th 
+                    className="text-right py-4 px-5 text-xs font-medium text-gray-500 cursor-pointer select-none hover:text-gray-700 hidden lg:table-cell"
+                    onClick={() => handleSort("totalVolume")}
+                  >
+                    <span className="inline-flex items-center">
+                      Total Vol. ($) <SortIcon field="totalVolume" />
+                    </span>
+                  </th>
+                  <th className="text-right py-4 px-5 text-xs font-medium text-gray-500 hidden lg:table-cell">Implied FDV ($)</th>
+                  <th className="text-right py-4 px-5 text-xs font-medium text-gray-500 hidden md:table-cell">Settle Time (UTC)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredTokens.map((token) => (
+                  <tr
+                    key={token.id}
+                    onClick={() => handleTokenClick(token)}
+                    className="border-b border-gray-50 hover:bg-gray-50/50 cursor-pointer transition-colors"
+                  >
+                    <td className="py-4 px-5">
+                      <div className="flex items-center gap-3">
+                        <div className={cn(
+                          "w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold",
+                          token.logoColor
+                        )}>
+                          {token.symbol.slice(0, 2)}
                         </div>
-                      </td>
-                      <td className="text-right py-4 px-4">
-                        <span className="font-medium text-foreground">
+                        <div>
+                          <p className="font-medium text-gray-900 text-sm">{token.symbol}</p>
+                          <p className="text-xs text-gray-500">{token.name}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="text-right py-4 px-5">
+                      <div>
+                        <span className="font-medium text-gray-900 text-sm">
                           ₦{token.lastPrice.toLocaleString()}
                         </span>
-                      </td>
-                      <td className="text-right py-4 px-4 hidden md:table-cell">
-                        <span className={cn(
-                          "flex items-center justify-end gap-1 font-medium",
-                          token.priceChange >= 0 ? "text-green-500" : "text-red-500"
+                        <div className={cn(
+                          "text-xs font-medium",
+                          token.priceChange >= 0 ? "text-emerald-600" : "text-red-500"
                         )}>
-                          {token.priceChange >= 0 ? (
-                            <TrendingUp className="h-3 w-3" />
-                          ) : (
-                            <TrendingDown className="h-3 w-3" />
-                          )}
                           {token.priceChange >= 0 ? "+" : ""}{token.priceChange.toFixed(2)}%
-                        </span>
-                      </td>
-                      <td className="text-right py-4 px-4 hidden lg:table-cell">
-                        <span className="text-muted-foreground">
-                          ₦{(token.volume24h / 1000000).toFixed(1)}M
-                        </span>
-                      </td>
-                      <td className="text-right py-4 px-4 hidden lg:table-cell">
-                        <span className="text-muted-foreground">{token.impliedFDV}</span>
-                      </td>
-                      <td className="text-right py-4 px-4 hidden md:table-cell">
-                        <span className="text-muted-foreground text-sm">{token.settleTime}</span>
-                      </td>
-                      <td className="text-right py-4 px-4">
-                        <Badge variant={token.status === "active" ? "default" : "secondary"} className="capitalize">
-                          {token.status}
-                        </Badge>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </Card>
-        )}
-
-        {/* Activity Tab Content */}
-        {activeTab === "activity" && (
-          <Card className="bg-card border-border overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-border">
-                    <th className="text-left py-4 px-4 text-xs font-medium text-muted-foreground">Time</th>
-                    <th className="text-left py-4 px-4 text-xs font-medium text-muted-foreground">Type</th>
-                    <th className="text-left py-4 px-4 text-xs font-medium text-muted-foreground">Side</th>
-                    <th className="text-left py-4 px-4 text-xs font-medium text-muted-foreground">Pair</th>
-                    <th className="text-right py-4 px-4 text-xs font-medium text-muted-foreground">Price</th>
-                    <th className="text-right py-4 px-4 text-xs font-medium text-muted-foreground">Amount</th>
-                    <th className="text-right py-4 px-4 text-xs font-medium text-muted-foreground">Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {mockActivityData.map((activity) => (
-                    <tr key={activity.id} className="border-b border-border hover:bg-muted/30 transition-colors">
-                      <td className="py-4 px-4 text-sm text-muted-foreground">{activity.time}</td>
-                      <td className="py-4 px-4">
-                        <Badge variant={activity.orderType === "Filled" ? "default" : "outline"}>
-                          {activity.orderType}
-                        </Badge>
-                      </td>
-                      <td className="py-4 px-4">
-                        <span className={cn(
-                          "flex items-center gap-1 font-medium text-sm",
-                          activity.side === "Buy" ? "text-green-500" : "text-red-500"
+                        </div>
+                      </div>
+                    </td>
+                    <td className="text-right py-4 px-5 hidden md:table-cell">
+                      <div>
+                        <span className="text-gray-700 text-sm">{formatVolume(token.volume24h)}</span>
+                        <div className={cn(
+                          "text-xs font-medium",
+                          token.volumeChange >= 0 ? "text-emerald-600" : "text-red-500"
                         )}>
-                          {activity.side === "Buy" ? (
-                            <ArrowUpRight className="h-3 w-3" />
-                          ) : (
-                            <ArrowDownRight className="h-3 w-3" />
-                          )}
-                          {activity.side}
-                        </span>
-                      </td>
-                      <td className="py-4 px-4">
-                        <span className="font-medium text-foreground text-sm">{activity.pair}</span>
-                      </td>
-                      <td className="text-right py-4 px-4 font-mono text-sm text-foreground">
-                        ₦{activity.price.toLocaleString()}
-                      </td>
-                      <td className="text-right py-4 px-4 text-sm text-muted-foreground">
-                        {activity.amount.toLocaleString()}
-                      </td>
-                      <td className="text-right py-4 px-4 font-medium text-foreground text-sm">
-                        ₦{activity.collateral.toLocaleString()}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </Card>
-        )}
-      </div>
+                          {token.volumeChange >= 0 ? "+" : ""}{token.volumeChange.toFixed(1)}%
+                        </div>
+                      </div>
+                    </td>
+                    <td className="text-right py-4 px-5 hidden lg:table-cell">
+                      <div>
+                        <span className="text-gray-700 text-sm">{formatVolume(token.totalVolume)}</span>
+                        <div className={cn(
+                          "text-xs font-medium",
+                          token.totalVolumeChange >= 0 ? "text-emerald-600" : "text-red-500"
+                        )}>
+                          {token.totalVolumeChange >= 0 ? "+" : ""}{token.totalVolumeChange.toFixed(2)}%
+                        </div>
+                      </div>
+                    </td>
+                    <td className="text-right py-4 px-5 text-gray-600 text-sm hidden lg:table-cell">
+                      {token.impliedFDV}
+                    </td>
+                    <td className="text-right py-4 px-5 text-gray-600 text-sm hidden md:table-cell">
+                      {token.settleTime}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      </main>
     </div>
   );
 };
