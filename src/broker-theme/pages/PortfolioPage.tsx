@@ -127,7 +127,8 @@ const PortfolioPage = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6 p-6">
+      <div className="min-h-screen bg-gray-50/80">
+        <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-6">
         {/* Modals */}
         <DepositWithdrawModal open={depositModalOpen} onOpenChange={setDepositModalOpen} mode="deposit" />
         <DepositWithdrawModal open={withdrawModalOpen} onOpenChange={setWithdrawModalOpen} mode="withdraw" availableBalance={availableCash} />
@@ -190,27 +191,27 @@ const PortfolioPage = () => {
 
         {/* Portfolio Overview Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="bg-card border-border">
-            <CardContent className="p-4">
+          <Card className="bg-white border border-gray-200 rounded-xl shadow-sm">
+            <CardContent className="p-5">
               <div className="flex items-center gap-2 mb-2">
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">
+                <DollarSign className="h-4 w-4 text-gray-400" />
+                <span className="text-xs text-gray-500">
                   {smartAccountEnabled ? "Private Market Value" : "Portfolio Value"}
                 </span>
               </div>
-              <p className="text-2xl font-bold text-foreground">
+              <p className="text-2xl font-bold text-gray-900">
                 ₦{(smartAccountEnabled ? privateMarketValue : portfolioValue).toLocaleString()}
               </p>
               <div className={cn(
                 "flex items-center gap-1 mt-1",
-                (smartAccountEnabled ? privateMarketPnl : portfolioChange) >= 0 ? "text-green-500" : "text-red-500"
+                (smartAccountEnabled ? privateMarketPnl : portfolioChange) >= 0 ? "text-emerald-600" : "text-red-500"
               )}>
                 {(smartAccountEnabled ? privateMarketPnl : portfolioChange) >= 0 ? (
                   <TrendingUp className="h-3 w-3" />
                 ) : (
                   <TrendingDown className="h-3 w-3" />
                 )}
-                <span className="text-sm">
+                <span className="text-sm font-medium">
                   {(smartAccountEnabled ? privateMarketPnl : portfolioChange) >= 0 ? "+" : ""}
                   {smartAccountEnabled 
                     ? ((privateMarketPnl / privateMarketInvested) * 100).toFixed(2)
@@ -221,56 +222,56 @@ const PortfolioPage = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-card border-border">
-            <CardContent className="p-4">
+          <Card className="bg-white border border-gray-200 rounded-xl shadow-sm">
+            <CardContent className="p-5">
               <div className="flex items-center gap-2 mb-2">
-                <Percent className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">
+                <Percent className="h-4 w-4 text-gray-400" />
+                <span className="text-xs text-gray-500">
                   {smartAccountEnabled ? "Total Yield" : "Total P&L"}
                 </span>
               </div>
               <p className={cn(
                 "text-2xl font-bold",
-                (smartAccountEnabled ? privateMarketPnl : portfolioChange) >= 0 ? "text-green-500" : "text-red-500"
+                (smartAccountEnabled ? privateMarketPnl : portfolioChange) >= 0 ? "text-emerald-600" : "text-red-500"
               )}>
                 {(smartAccountEnabled ? privateMarketPnl : portfolioChange) >= 0 ? "+" : ""}
                 ₦{Math.abs(smartAccountEnabled ? privateMarketPnl : portfolioChange).toLocaleString()}
               </p>
-              <span className="text-sm text-muted-foreground">
+              <span className="text-xs text-gray-500">
                 {smartAccountEnabled ? "Accrued interest" : "All time"}
               </span>
             </CardContent>
           </Card>
 
-          <Card className="bg-card border-border">
-            <CardContent className="p-4">
+          <Card className="bg-white border border-gray-200 rounded-xl shadow-sm">
+            <CardContent className="p-5">
               <div className="flex items-center gap-2 mb-2">
-                <Wallet className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">
+                <Wallet className="h-4 w-4 text-gray-400" />
+                <span className="text-xs text-gray-500">
                   {smartAccountEnabled ? "Invested Capital" : "Available Cash"}
                 </span>
               </div>
-              <p className="text-2xl font-bold text-foreground">
+              <p className="text-2xl font-bold text-gray-900">
                 ₦{(smartAccountEnabled ? privateMarketInvested : availableCash).toLocaleString()}
               </p>
-              <span className="text-sm text-muted-foreground">
+              <span className="text-xs text-gray-500">
                 {smartAccountEnabled ? "Across instruments" : "Ready to invest"}
               </span>
             </CardContent>
           </Card>
 
-          <Card className="bg-card border-border">
-            <CardContent className="p-4">
+          <Card className="bg-white border border-gray-200 rounded-xl shadow-sm">
+            <CardContent className="p-5">
               <div className="flex items-center gap-2 mb-2">
-                <Activity className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">
+                <Activity className="h-4 w-4 text-gray-400" />
+                <span className="text-xs text-gray-500">
                   {smartAccountEnabled ? "Active Positions" : "Open Positions"}
                 </span>
               </div>
-              <p className="text-2xl font-bold text-foreground">
+              <p className="text-2xl font-bold text-gray-900">
                 {smartAccountEnabled ? mockPrivateMarketHoldings.length : openPositions}
               </p>
-              <span className="text-sm text-muted-foreground">
+              <span className="text-xs text-gray-500">
                 ₦{(smartAccountEnabled ? privateMarketInvested : invested).toLocaleString()} invested
               </span>
             </CardContent>
@@ -278,17 +279,20 @@ const PortfolioPage = () => {
         </div>
 
         {/* Performance Chart */}
-        <Card className="bg-card border-border">
+        <Card className="bg-white border border-gray-200 rounded-xl shadow-sm">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-lg font-semibold text-foreground">Performance</CardTitle>
+              <CardTitle className="text-base font-semibold text-gray-900">Performance</CardTitle>
               <div className="flex gap-1">
                 {(["1D", "1W", "1M", "3M", "1Y"] as const).map((range) => (
                   <Button
                     key={range}
                     variant={timeRange === range ? "default" : "ghost"}
                     size="sm"
-                    className="h-7 px-2 text-xs"
+                    className={cn(
+                      "h-7 px-3 text-xs rounded-full",
+                      timeRange === range ? "bg-gray-100 text-gray-900" : "text-gray-500"
+                    )}
                     onClick={() => setTimeRange(range)}
                   >
                     {range}
@@ -303,16 +307,16 @@ const PortfolioPage = () => {
                 <AreaChart data={performanceData}>
                   <defs>
                     <linearGradient id="performanceGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
-                      <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                      <stop offset="0%" stopColor="#10b981" stopOpacity={0.2} />
+                      <stop offset="100%" stopColor="#10b981" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <XAxis dataKey="date" hide />
                   <YAxis hide domain={["dataMin - 50000", "dataMax + 50000"]} />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: "hsl(var(--card))",
-                      border: "1px solid hsl(var(--border))",
+                      backgroundColor: "#fff",
+                      border: "1px solid #e5e7eb",
                       borderRadius: "8px",
                     }}
                     formatter={(value: number) => [`₦${value.toLocaleString()}`, "Value"]}
@@ -320,7 +324,7 @@ const PortfolioPage = () => {
                   <Area
                     type="monotone"
                     dataKey="value"
-                    stroke="hsl(var(--primary))"
+                    stroke="#10b981"
                     strokeWidth={2}
                     fill="url(#performanceGradient)"
                   />
@@ -332,16 +336,16 @@ const PortfolioPage = () => {
 
         {/* Holdings & Activity Tabs */}
         <Tabs defaultValue="holdings" className="space-y-4">
-          <TabsList className="bg-muted/50">
-            <TabsTrigger value="holdings" className="gap-2">
+          <TabsList className="bg-gray-100 rounded-lg p-1">
+            <TabsTrigger value="holdings" className="gap-2 rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm">
               <PieChart className="h-4 w-4" />
               {smartAccountEnabled ? "Private Holdings" : "Holdings"}
             </TabsTrigger>
-            <TabsTrigger value="activity" className="gap-2">
+            <TabsTrigger value="activity" className="gap-2 rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm">
               <Clock className="h-4 w-4" />
               Activity
             </TabsTrigger>
-            <TabsTrigger value="allocation" className="gap-2">
+            <TabsTrigger value="allocation" className="gap-2 rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm">
               <PieChart className="h-4 w-4" />
               Allocation
             </TabsTrigger>
@@ -349,7 +353,7 @@ const PortfolioPage = () => {
 
           {/* Holdings Tab */}
           <TabsContent value="holdings">
-            <Card className="bg-card border-border">
+            <Card className="bg-white border border-gray-200 rounded-xl shadow-sm">
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <table className="w-full">
@@ -559,6 +563,7 @@ const PortfolioPage = () => {
             </Card>
           </TabsContent>
         </Tabs>
+        </div>
       </div>
     </DashboardLayout>
   );
