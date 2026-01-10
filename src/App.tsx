@@ -140,14 +140,17 @@ const App = () => (
               {/* App pages - use AppHeader (trading, markets, portfolio) */}
               <Route path="app" element={<AppRoutesLayout />}>
                 <Route path="markets" element={<BrokerMarketsPage />} />
+
                 <Route
                   path="markets/:marketType"
                   element={<BrokerMarketsPage />}
                 />
+
                 <Route
                   path="markets/private/:marketId"
                   element={<BrokerMarketsPage />}
                 />
+
                 <Route
                   path="markets/secondary/:marketId"
                   element={<BrokerMarketsPage />}
