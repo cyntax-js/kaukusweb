@@ -27,7 +27,11 @@ import {
 
 type Step = "company" | "regulatory" | "documents" | "review";
 
-const steps: { id: Step; label: string; icon: any }[] = [
+const steps: {
+  id: Step;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+}[] = [
   { id: "company", label: "Company Info", icon: Building2 },
   { id: "regulatory", label: "Regulatory", icon: FileText },
   { id: "documents", label: "Documents", icon: Upload },
@@ -106,7 +110,7 @@ export default function BrokerApplication() {
   };
 
   const handleFieldChange = (field: string, value: string) => {
-    setApplicationField(field as any, value);
+    setApplicationField(field as keyof typeof application, value);
     if (errors[field]) {
       setErrors((prev) => {
         const newErrors = { ...prev };
@@ -555,7 +559,7 @@ export default function BrokerApplication() {
                       <SelectItem value="500000-1000000">
                         ₦5,000,000 - ₦10,000,000
                       </SelectItem>
-                      <SelectItem value="1000000+">₦1,000,000+</SelectItem>
+                      <SelectItem value="10000000+">₦10,000,000+</SelectItem>
                     </SelectContent>
                   </Select>
                   {errors.capitalRequirement && (
@@ -632,13 +636,62 @@ export default function BrokerApplication() {
                           )}
                         </div>
                       </div>
-                      <Button
-                        variant={uploadedDocs[doc.id] ? "outline" : "secondary"}
-                        size="sm"
-                        onClick={() => simulateUpload(doc.id)}
-                      >
-                        {uploadedDocs[doc.id] ? "Replace" : "Upload"}
-                      </Button>
+                      <div>
+                        <input
+                          type="file"
+                          id={`file-${doc.id}`}
+                          accept=".pdf,.jpg,.jpeg,.png"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              // Validate file size (10MB limit)
+                              if (file.size > 10 * 1024 * 1024) {
+                                alert("File size must be less than 10MB");
+                                return;
+                              }
+
+                              // Validate file type
+                              const allowedTypes = [
+                                "application/pdf",
+                                "image/jpeg",
+                                "image/jpg",
+                                "image/png",
+                              ];
+                              if (!allowedTypes.includes(file.type)) {
+                                alert("Please upload a PDF, JPG, or PNG file");
+                                return;
+                              }
+
+                              setUploadedDocs((prev) => ({
+                                ...prev,
+                                [doc.id]: file.name,
+                              }));
+
+                              // Clear error for this doc if exists
+                              if (errors[doc.id]) {
+                                setErrors((prev) => {
+                                  const newErrors = { ...prev };
+                                  delete newErrors[doc.id];
+                                  return newErrors;
+                                });
+                              }
+                            }
+                          }}
+                        />
+                        <Button
+                          variant={
+                            uploadedDocs[doc.id] ? "outline" : "secondary"
+                          }
+                          size="sm"
+                          onClick={() =>
+                            document.getElementById(`file-${doc.id}`)?.click()
+                          }
+                          type="button"
+                        >
+                          {uploadedDocs[doc.id] ? "Replace" : "Upload"}
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 ))}

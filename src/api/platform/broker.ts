@@ -107,9 +107,9 @@ export async function submitApplication(
     submittedAt: new Date(),
   };
 
-  const response = await apiFetch(`/api/v2/company`, {
+  const response = await apiFetch(`/api/v2/company/auth`, {
     method: "POST",
-    body: JSON.stringify(request),
+    body: JSON.stringify(application),
   });
 
   const data = await response.json();
