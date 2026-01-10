@@ -1,9 +1,10 @@
 /**
  * SECONDARY MARKET PAGE - Light, minimalist design matching reference
  * Clean table-based layout with stats cards
+ * Dynamic Fear & Greed with animated gauge, countdown timers
  */
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -247,7 +248,88 @@ const mockTokenData: TokenData[] = [
   },
 ];
 
+// Mock settlements with countdown
+interface Settlement {
+  id: string;
+  symbol: string;
+  name: string;
+  settlementDate: Date;
+}
+
+const mockSettlements: Settlement[] = [
+  {
+    id: "s1",
+    symbol: "DANGCEM",
+    name: "Dangote Cement",
+    settlementDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+  }, // 2 days
+  {
+    id: "s2",
+    symbol: "MTNN",
+    name: "MTN Nigeria",
+    settlementDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+  }, // 5 days
+];
+
 const volumeChartData = generateVolumeData();
+
+// Calculate Fear & Greed based on market data
+const calculateFearGreed = (tokens: TokenData[]): number => {
+  const avgPriceChange =
+    tokens.reduce((sum, t) => sum + t.priceChange, 0) / tokens.length;
+  const avgVolumeChange =
+    tokens.reduce((sum, t) => sum + t.volumeChange, 0) / tokens.length;
+
+  // Normalize to 0-100 scale
+  const priceScore = Math.min(100, Math.max(0, 50 + avgPriceChange * 5));
+  const volumeScore = Math.min(100, Math.max(0, 50 + avgVolumeChange * 0.1));
+
+  return Math.round((priceScore + volumeScore) / 2);
+};
+
+// Calculate market season score
+const calculateMarketSeason = (tokens: TokenData[]): number => {
+  const bullishTokens = tokens.filter((t) => t.priceChange > 0).length;
+  const score = (bullishTokens / tokens.length) * 100;
+  return Math.round(score);
+};
+
+// Get Fear & Greed label
+const getFearGreedLabel = (value: number): string => {
+  if (value <= 20) return "Extreme Fear";
+  if (value <= 40) return "Fear";
+  if (value <= 60) return "Neutral";
+  if (value <= 80) return "Greed";
+  return "Extreme Greed";
+};
+
+// Calculate gauge needle position (SVG coordinates)
+const calculateNeedlePosition = (value: number): { cx: number; cy: number } => {
+  // Map 0-100 to angle (180 to 0 degrees, for arc from left to right)
+  const angle = Math.PI - (value / 100) * Math.PI;
+  const radius = 90;
+  const centerX = 100;
+  const centerY = 130;
+
+  return {
+    cx: centerX + radius * Math.cos(angle),
+    cy: centerY - radius * Math.sin(angle),
+  };
+};
+
+// Format countdown time
+const formatCountdown = (ms: number): string => {
+  if (ms <= 0) return "Settling now";
+
+  const days = Math.floor(ms / (24 * 60 * 60 * 1000));
+  const hours = Math.floor((ms % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+  const minutes = Math.floor((ms % (60 * 60 * 1000)) / (60 * 1000));
+  const seconds = Math.floor((ms % (60 * 1000)) / 1000);
+
+  if (days > 0) return `${days}d ${hours}h ${minutes}m`;
+  if (hours > 0) return `${hours}h ${minutes}m ${seconds}s`;
+  return `${minutes}m ${seconds}s`;
+};
 
 const SecondaryMarket: React.FC = () => {
   const navigate = useNavigate();
@@ -259,9 +341,63 @@ const SecondaryMarket: React.FC = () => {
   const [sortField, setSortField] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
 
+  // Dynamic values
+  const [fearGreedValue, setFearGreedValue] = useState(0);
+  const [marketSeasonValue, setMarketSeasonValue] = useState(0);
+  const [countdowns, setCountdowns] = useState<Record<string, number>>({});
+  const [animatedFearGreed, setAnimatedFearGreed] = useState(0);
+  const [animatedMarketSeason, setAnimatedMarketSeason] = useState(0);
+
   const routePrefix = location.pathname.includes("/preview/app")
     ? "/preview/app"
     : "/app";
+
+  // Calculate dynamic values on mount
+  useEffect(() => {
+    const targetFearGreed = calculateFearGreed(mockTokenData);
+    const targetMarketSeason = calculateMarketSeason(mockTokenData);
+
+    setFearGreedValue(targetFearGreed);
+    setMarketSeasonValue(targetMarketSeason);
+  }, []);
+
+  // Animate Fear & Greed gauge
+  useEffect(() => {
+    if (animatedFearGreed < fearGreedValue) {
+      const timer = setTimeout(() => {
+        setAnimatedFearGreed((prev) => Math.min(prev + 1, fearGreedValue));
+      }, 20);
+      return () => clearTimeout(timer);
+    }
+  }, [animatedFearGreed, fearGreedValue]);
+
+  // Animate Market Season slider
+  useEffect(() => {
+    if (animatedMarketSeason < marketSeasonValue) {
+      const timer = setTimeout(() => {
+        setAnimatedMarketSeason((prev) =>
+          Math.min(prev + 1, marketSeasonValue),
+        );
+      }, 25);
+      return () => clearTimeout(timer);
+    }
+  }, [animatedMarketSeason, marketSeasonValue]);
+
+  // Update countdowns every second
+  useEffect(() => {
+    const updateCountdowns = () => {
+      const now = Date.now();
+      const newCountdowns: Record<string, number> = {};
+      mockSettlements.forEach((s) => {
+        newCountdowns[s.id] = s.settlementDate.getTime() - now;
+      });
+      setCountdowns(newCountdowns);
+    };
+
+    updateCountdowns();
+    const interval = setInterval(updateCountdowns, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const filteredTokens = useMemo(() => {
     let tokens = mockTokenData.filter((t) => t.status === activeFilter);
@@ -272,7 +408,7 @@ const SecondaryMarket: React.FC = () => {
         (t) =>
           t.name.toLowerCase().includes(q) ||
           t.symbol.toLowerCase().includes(q) ||
-          t.sector.toLowerCase().includes(q)
+          t.sector.toLowerCase().includes(q),
       );
     }
 
@@ -318,7 +454,7 @@ const SecondaryMarket: React.FC = () => {
   const totalVolume = mockTokenData.reduce((sum, t) => sum + t.volume24h, 0);
   const liveCount = mockTokenData.filter((t) => t.status === "live").length;
   const upcomingCount = mockTokenData.filter(
-    (t) => t.status === "upcoming"
+    (t) => t.status === "upcoming",
   ).length;
   const endedCount = mockTokenData.filter((t) => t.status === "ended").length;
 
@@ -335,7 +471,7 @@ const SecondaryMarket: React.FC = () => {
           "h-3 w-3 -mb-1",
           sortField === field && sortDirection === "asc"
             ? "text-foreground"
-            : "text-muted-foreground/40"
+            : "text-muted-foreground/40",
         )}
       />
       <ChevronDown
@@ -343,11 +479,14 @@ const SecondaryMarket: React.FC = () => {
           "h-3 w-3",
           sortField === field && sortDirection === "desc"
             ? "text-foreground"
-            : "text-muted-foreground/40"
+            : "text-muted-foreground/40",
         )}
       />
     </span>
   );
+
+  const needlePosition = calculateNeedlePosition(animatedFearGreed);
+  const upcomingSettlement = mockSettlements[0];
 
   return (
     <div className="flex-1 bg-gray-50/80">
@@ -404,7 +543,7 @@ const SecondaryMarket: React.FC = () => {
             </CardContent>
           </Card>
 
-          {/* Fear & Greed - Exact SVG from reference */}
+          {/* Fear & Greed - Animated SVG gauge */}
           <Card className="h-40 min-w-[280px] flex-shrink-0 snap-start bg-white border border-gray-200 rounded-xl shadow-sm md:flex-shrink lg:min-w-[unset] hover:shadow-md transition-shadow duration-200">
             <CardContent className="p-4 h-full">
               <p className="text-xs font-medium text-gray-500 mb-3">
@@ -427,7 +566,22 @@ const SecondaryMarket: React.FC = () => {
                       <stop offset="50%" stopColor="#FDBA74" />
                       <stop offset="97.5%" stopColor="#EC4899" />
                     </linearGradient>
+                    <filter
+                      id="needleShadow"
+                      x="-50%"
+                      y="-50%"
+                      width="200%"
+                      height="200%"
+                    >
+                      <feDropShadow
+                        dx="0"
+                        dy="2"
+                        stdDeviation="3"
+                        floodOpacity="0.3"
+                      />
+                    </filter>
                   </defs>
+                  {/* Background arc */}
                   <path
                     d="M 10 130 A 90 90 0 0 1 190 130"
                     fill="none"
@@ -435,6 +589,7 @@ const SecondaryMarket: React.FC = () => {
                     strokeWidth="10"
                     strokeLinecap="round"
                   />
+                  {/* Gradient arc */}
                   <path
                     d="M 10 130 A 90 90 0 0 1 190 130"
                     fill="none"
@@ -444,27 +599,33 @@ const SecondaryMarket: React.FC = () => {
                     strokeDasharray="282.7"
                     strokeDashoffset="0"
                   />
+                  {/* Animated needle indicator */}
                   <circle
-                    cx="74.89"
-                    cy="43.57"
+                    cx={needlePosition.cx}
+                    cy={needlePosition.cy}
                     r="8"
                     strokeWidth="3"
                     stroke="white"
                     fill="white"
-                    filter="drop-shadow(0 2px 4px rgba(0,0,0,0.2))"
+                    filter="url(#needleShadow)"
+                    style={{
+                      transition: "cx 0.5s ease-out, cy 0.5s ease-out",
+                    }}
                   />
                 </svg>
                 <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex flex-col items-center">
-                  <p className="text-[28px] font-medium leading-9 text-gray-900">
-                    41
+                  <p className="text-[28px] font-medium leading-9 text-gray-900 transition-all duration-300">
+                    {animatedFearGreed}
                   </p>
-                  <p className="text-xs text-gray-500">Neutral</p>
+                  <p className="text-xs text-gray-500">
+                    {getFearGreedLabel(animatedFearGreed)}
+                  </p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Market Season - Slider style from reference */}
+          {/* Market Season - Animated slider */}
           <Card className="h-40 min-w-[280px] flex-shrink-0 snap-start bg-white border border-gray-200 rounded-xl shadow-sm md:flex-shrink lg:min-w-[unset] hover:shadow-md transition-shadow duration-200">
             <CardContent className="p-4 h-full flex flex-col">
               <p className="text-xs font-medium text-gray-500 mb-3">
@@ -472,8 +633,8 @@ const SecondaryMarket: React.FC = () => {
               </p>
               <div className="flex flex-col gap-3 flex-1">
                 <div>
-                  <span className="text-[28px] font-medium text-gray-900">
-                    36
+                  <span className="text-[28px] font-medium text-gray-900 transition-all duration-300">
+                    {animatedMarketSeason}
                   </span>
                   <span className="text-[28px] font-medium text-gray-400">
                     /100
@@ -499,8 +660,9 @@ const SecondaryMarket: React.FC = () => {
                     <span
                       className="absolute block h-6 w-6 rounded-full border-4 border-white bg-white shadow-md"
                       style={{
-                        left: "calc(36% - 12px)",
+                        left: `calc(${animatedMarketSeason}% - 12px)`,
                         boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                        transition: "left 0.5s ease-out",
                       }}
                     />
                   </div>
@@ -509,17 +671,45 @@ const SecondaryMarket: React.FC = () => {
             </CardContent>
           </Card>
 
-          {/* Next Settlement */}
+          {/* Next Settlement - With countdown */}
           <Card className="h-40 min-w-[280px] flex-shrink-0 snap-start bg-white border border-gray-200 rounded-xl shadow-sm md:flex-shrink lg:min-w-[unset] hover:shadow-md transition-shadow duration-200">
             <CardContent className="p-4 h-full flex flex-col">
               <p className="text-xs font-medium text-gray-500 mb-3">
                 Next Settlement
               </p>
-              <div className="flex flex-1 items-center justify-center overflow-hidden rounded-lg bg-gray-50/80 text-sm text-gray-500">
-                <p className="font-medium text-sm max-w-[180px] text-center text-gray-700">
-                  No markets in upcoming settlements
-                </p>
-              </div>
+              {upcomingSettlement && countdowns[upcomingSettlement.id] ? (
+                <div className="flex flex-1 flex-col">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                      <Clock className="h-4 w-4 text-emerald-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">
+                        {upcomingSettlement.symbol}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {upcomingSettlement.name}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex-1 flex items-center justify-center">
+                    <div className="text-center">
+                      <p className="text-[24px] font-bold text-gray-900 tabular-nums">
+                        {formatCountdown(countdowns[upcomingSettlement.id])}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        until settlement
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-1 items-center justify-center overflow-hidden rounded-lg bg-gray-50/80 text-sm text-gray-500">
+                  <p className="font-medium text-sm max-w-[180px] text-center text-gray-700">
+                    No markets in upcoming settlements
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -532,10 +722,10 @@ const SecondaryMarket: React.FC = () => {
               size="sm"
               onClick={() => setActiveFilter("live")}
               className={cn(
-                "rounded-full px-4 gap-2",
+                "rounded-full px-4 gap-2 transition-colors",
                 activeFilter === "live"
                   ? "bg-emerald-500 hover:bg-emerald-600 text-white"
-                  : "border-gray-300 text-gray-600 hover:bg-gray-100"
+                  : "border-gray-300 text-gray-600 hover:bg-gray-100",
               )}
             >
               <span>Live</span>
@@ -551,10 +741,10 @@ const SecondaryMarket: React.FC = () => {
               size="sm"
               onClick={() => setActiveFilter("upcoming")}
               className={cn(
-                "rounded-full px-4 gap-2",
+                "rounded-full px-4 gap-2 transition-colors",
                 activeFilter === "upcoming"
                   ? "bg-gray-800 hover:bg-gray-900 text-white"
-                  : "border-gray-300 text-gray-600 hover:bg-gray-100"
+                  : "border-gray-300 text-gray-600 hover:bg-gray-100",
               )}
             >
               <span>Upcoming</span>
@@ -570,10 +760,10 @@ const SecondaryMarket: React.FC = () => {
               size="sm"
               onClick={() => setActiveFilter("ended")}
               className={cn(
-                "rounded-full px-4 gap-2",
+                "rounded-full px-4 gap-2 transition-colors",
                 activeFilter === "ended"
                   ? "bg-gray-800 hover:bg-gray-900 text-white"
-                  : "border-gray-300 text-gray-600 hover:bg-gray-100"
+                  : "border-gray-300 text-gray-600 hover:bg-gray-100",
               )}
             >
               <span>Ended</span>
@@ -630,105 +820,134 @@ const SecondaryMarket: React.FC = () => {
                       Total Vol. ($) <SortIcon field="totalVolume" />
                     </span>
                   </th>
-                  <th className="text-right py-4 px-5 text-xs font-medium text-gray-500 hidden lg:table-cell">
-                    Implied FDV ($)
+                  <th className="text-right py-4 px-5 text-xs font-medium text-gray-500 hidden xl:table-cell">
+                    Implied FDV
                   </th>
-                  <th className="text-right py-4 px-5 text-xs font-medium text-gray-500 hidden md:table-cell">
-                    Settle Time (UTC)
+                  <th className="text-right py-4 px-5 text-xs font-medium text-gray-500 hidden xl:table-cell">
+                    Settle Time
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {filteredTokens.map((token, index) => (
+                {filteredTokens.map((token) => (
                   <tr
                     key={token.id}
                     onClick={() => handleTokenClick(token)}
                     className="border-b border-gray-50 hover:bg-gray-50/80 cursor-pointer transition-all duration-150 group"
-                    style={{ animationDelay: `${index * 30}ms` }}
                   >
                     <td className="py-4 px-5">
                       <div className="flex items-center gap-3">
                         <div
                           className={cn(
-                            "w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold transition-transform duration-150 group-hover:scale-105",
-                            token.logoColor
+                            "w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold transition-transform group-hover:scale-110",
+                            token.logoColor,
                           )}
                         >
                           {token.symbol.slice(0, 2)}
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900 text-sm">
+                          <p className="font-medium text-sm text-gray-900">
                             {token.symbol}
                           </p>
                           <p className="text-xs text-gray-500">{token.name}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="text-right py-4 px-5">
-                      <div>
-                        <span className="font-medium text-gray-900 text-sm">
-                          ₦{token.lastPrice.toLocaleString()}
+                    <td className="py-4 px-5 text-right">
+                      <div className="flex flex-col items-end">
+                        <span className="font-medium text-sm text-gray-900">
+                          {token.lastPrice.toLocaleString()}
                         </span>
-                        <div
+                        <span
                           className={cn(
                             "text-xs font-medium",
-                            token.priceChange >= 0
+                            token.priceChange > 0
                               ? "text-emerald-600"
-                              : "text-red-500"
+                              : token.priceChange < 0
+                                ? "text-red-500"
+                                : "text-gray-400",
                           )}
                         >
-                          {token.priceChange >= 0 ? "+" : ""}
-                          {token.priceChange.toFixed(2)}%
-                        </div>
+                          {token.priceChange > 0 ? "+" : ""}
+                          {token.priceChange}%
+                        </span>
                       </div>
                     </td>
-                    <td className="text-right py-4 px-5 hidden md:table-cell">
-                      <div>
-                        <span className="text-gray-700 text-sm">
+                    <td className="py-4 px-5 text-right hidden md:table-cell">
+                      <div className="flex flex-col items-end">
+                        <span className="text-sm text-gray-700">
                           {formatVolume(token.volume24h)}
                         </span>
-                        <div
+                        <span
                           className={cn(
-                            "text-xs font-medium",
-                            token.volumeChange >= 0
+                            "text-xs",
+                            token.volumeChange > 0
                               ? "text-emerald-600"
-                              : "text-red-500"
+                              : token.volumeChange < 0
+                                ? "text-red-500"
+                                : "text-gray-400",
                           )}
                         >
-                          {token.volumeChange >= 0 ? "+" : ""}
+                          {token.volumeChange > 0 ? "+" : ""}
                           {token.volumeChange.toFixed(1)}%
-                        </div>
+                        </span>
                       </div>
                     </td>
-                    <td className="text-right py-4 px-5 hidden lg:table-cell">
-                      <div>
-                        <span className="text-gray-700 text-sm">
+                    <td className="py-4 px-5 text-right hidden lg:table-cell">
+                      <div className="flex flex-col items-end">
+                        <span className="text-sm text-gray-700">
                           {formatVolume(token.totalVolume)}
                         </span>
-                        <div
+                        <span
                           className={cn(
-                            "text-xs font-medium",
-                            token.totalVolumeChange >= 0
+                            "text-xs",
+                            token.totalVolumeChange > 0
                               ? "text-emerald-600"
-                              : "text-red-500"
+                              : token.totalVolumeChange < 0
+                                ? "text-red-500"
+                                : "text-gray-400",
                           )}
                         >
-                          {token.totalVolumeChange >= 0 ? "+" : ""}
+                          {token.totalVolumeChange > 0 ? "+" : ""}
                           {token.totalVolumeChange.toFixed(2)}%
-                        </div>
+                        </span>
                       </div>
                     </td>
-                    <td className="text-right py-4 px-5 text-gray-600 text-sm hidden lg:table-cell">
-                      {token.impliedFDV}
+                    <td className="py-4 px-5 text-right hidden xl:table-cell">
+                      <span className="text-sm text-gray-700">
+                        {token.impliedFDV}
+                      </span>
                     </td>
-                    <td className="text-right py-4 px-5 text-gray-600 text-sm hidden md:table-cell">
-                      {token.settleTime}
+                    <td className="py-4 px-5 text-right hidden xl:table-cell">
+                      <Badge
+                        variant="secondary"
+                        className={cn(
+                          "text-xs",
+                          token.status === "live" &&
+                            "bg-emerald-100 text-emerald-700",
+                          token.status === "upcoming" &&
+                            "bg-amber-100 text-amber-700",
+                          token.status === "ended" &&
+                            "bg-gray-100 text-gray-600",
+                        )}
+                      >
+                        {token.settleTime}
+                      </Badge>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+
+          {filteredTokens.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+              <p className="text-sm">No markets found</p>
+              <p className="text-xs text-gray-400 mt-1">
+                Try adjusting your search or filter
+              </p>
+            </div>
+          )}
         </Card>
       </main>
     </div>
