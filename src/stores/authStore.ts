@@ -131,6 +131,10 @@ export const useAuthStore = create<AuthStore>()(
 
       verifyOtp: async (code: string) => {
         const email = get().pendingEmail;
+        console.log({
+          Email: email,
+          Code: code,
+        });
         if (!email) return false;
 
         set({ isLoading: true });
