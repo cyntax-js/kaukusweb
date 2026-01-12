@@ -24,7 +24,7 @@ export const setCookie = (name: string, value: string, days = 1) => {
 };
 
 const CSRF_COOKIE_NAME = "XSRF-TOKEN";
-const CSRF_HEADER_NAME = "X-XSRF-TOKEN";
+const CSRF_HEADER_NAME = "X-CSRF-Token";
 
 export const apiFetch = async (url: string, options: RequestInit = {}) => {
   const headers = new Headers(options.headers || {});

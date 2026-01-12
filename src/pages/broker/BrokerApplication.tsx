@@ -11,7 +11,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { toast } from "sonner";
 import { useBrokerStore } from "@/stores/brokerStore";
+import { uploadToCDN } from "@/api/cdn";
 import { regulatoryBodies, countries } from "@/mocks/data";
 import {
   Building2,
@@ -56,7 +58,11 @@ export default function BrokerApplication() {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  const [selectedFiles, setSelectedFiles] = useState<Record<string, File>>({});
+
   const [uploadedDocs, setUploadedDocs] = useState<Record<string, string>>({});
+
+  const [isUploadingToCDN, setIsUploadingToCDN] = useState(false);
 
   const currentStepIndex = steps.findIndex((s) => s.id === currentStep);
 
@@ -69,8 +75,6 @@ export default function BrokerApplication() {
         newErrors.companyName = "Company Name is required";
       if (!application?.registrationNumber?.trim())
         newErrors.registrationNumber = "Registration Number is required";
-      if (!application?.companyId?.trim())
-        newErrors.companyId = "Company ID is required";
       if (!application?.country) newErrors.country = "Country is required";
       if (!application?.address) newErrors.address = "Address is required";
 
@@ -121,7 +125,7 @@ export default function BrokerApplication() {
   };
 
   const handleNext = () => {
-    // 4. Check validation before moving
+    // check validation before moving
     if (validateStep(currentStep)) {
       const nextIndex = currentStepIndex + 1;
       if (nextIndex < steps.length) {
@@ -140,26 +144,29 @@ export default function BrokerApplication() {
   };
 
   const handleSubmit = async () => {
-    // Final check
-    if (validateStep("review")) {
-      await submitApplication();
+    if (!validateStep("review")) return;
+
+    setIsUploadingToCDN(true);
+
+    try {
+      const docUrls: Record<string, string> = {};
+      const uploadPromises = Object.entries(selectedFiles).map(
+        async ([docId, file]) => {
+          const url = await uploadToCDN(file);
+          docUrls[docId] = url;
+        },
+      );
+
+      await Promise.all(uploadPromises);
+
+      await submitApplication(docUrls);
+
       navigate("/broker/awaiting-approval");
-    }
-  };
-
-  const simulateUpload = (docId: string) => {
-    setUploadedDocs((prev) => ({
-      ...prev,
-      [docId]: `document_${docId}_${Date.now()}.pdf`,
-    }));
-
-    // Clear error for this doc if exists
-    if (errors[docId]) {
-      setErrors((prev) => {
-        const newErrors = { ...prev };
-        delete newErrors[docId];
-        return newErrors;
-      });
+    } catch (error) {
+      console.error("Submission failed", error);
+      toast.error("Failed to upload documents. Please check your connection.");
+    } finally {
+      setIsUploadingToCDN(false);
     }
   };
 
@@ -278,33 +285,6 @@ export default function BrokerApplication() {
                   {errors.registrationNumber && (
                     <span className="text-xs text-destructive">
                       {errors.registrationNumber}
-                    </span>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="companyId"
-                    className={errors.companyId ? "text-destructive" : ""}
-                  >
-                    Company ID *
-                  </Label>
-                  <Input
-                    id="companyId"
-                    placeholder="UUID..."
-                    value={application?.companyId || ""}
-                    onChange={(e) =>
-                      handleFieldChange("companyId", e.target.value)
-                    }
-                    className={
-                      errors.companyId
-                        ? "border-destructive focus-visible:ring-destructive"
-                        : ""
-                    }
-                  />
-                  {errors.companyId && (
-                    <span className="text-xs text-destructive">
-                      {errors.companyId}
                     </span>
                   )}
                 </div>
@@ -668,6 +648,11 @@ export default function BrokerApplication() {
                                 [doc.id]: file.name,
                               }));
 
+                              setSelectedFiles((prev) => ({
+                                ...prev,
+                                [doc.id]: file,
+                              }));
+
                               // Clear error for this doc if exists
                               if (errors[doc.id]) {
                                 setErrors((prev) => {
@@ -818,10 +803,10 @@ export default function BrokerApplication() {
             {currentStep === "review" ? (
               <Button
                 onClick={handleSubmit}
-                disabled={isSubmitting}
+                disabled={isSubmitting || isUploadingToCDN}
                 className="shadow-glow"
               >
-                {isSubmitting ? (
+                {isSubmitting || isUploadingToCDN ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                     Submitting...
