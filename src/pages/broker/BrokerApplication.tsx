@@ -18,7 +18,6 @@ import { regulatoryBodies, countries } from "@/mocks/data";
 import {
   Building2,
   FileText,
-  User,
   ArrowRight,
   ArrowLeft,
   Upload,
@@ -52,9 +51,15 @@ const documentTypes = [
 
 export default function BrokerApplication() {
   const navigate = useNavigate();
-  const { application, setApplicationField, submitApplication, isSubmitting } =
-    useBrokerStore();
-  const [currentStep, setCurrentStep] = useState<Step>("company");
+  const {
+    application,
+    setApplicationField,
+    submitApplication,
+    isSubmitting,
+    currentStep,
+    setCurrentStep,
+    resetApplication,
+  } = useBrokerStore();
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -164,7 +169,7 @@ export default function BrokerApplication() {
       navigate("/broker/awaiting-approval");
     } catch (error) {
       console.error("Submission failed", error);
-      toast.error("Failed to upload documents. Please check your connection.");
+      toast.error(error.message);
     } finally {
       setIsUploadingToCDN(false);
     }
