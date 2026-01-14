@@ -43,12 +43,12 @@ export const apiFetch = async (url: string, options: RequestInit = {}) => {
     headers,
   });
 
-  // if (response.status === 401) {
-  //   localStorage.removeItem("auth_token");
-  //   if (window.location.pathname !== "/login") {
-  //     window.location.href = "/login";
-  //   }
-  // }
+  if (response.status === 401) {
+    localStorage.removeItem("auth_token");
+    if (window.location.pathname !== "/login") {
+      window.location.href = "/login";
+    }
+  }
 
   return response;
 };

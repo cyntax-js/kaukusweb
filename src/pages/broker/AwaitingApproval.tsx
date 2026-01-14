@@ -137,13 +137,13 @@ export default function AwaitingApproval() {
           </div>
 
           {/* Application Details */}
-          {application && (
+          {application && Object.keys(application).length > 0 && (
             <div className="p-4 rounded-lg bg-secondary/50 mb-8">
               <h3 className="font-semibold mb-2">Application Details</h3>
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div>
                   <span className="text-muted-foreground">Company:</span>{" "}
-                  {application.companyName}
+                  {application.name}
                 </div>
                 <div>
                   <span className="text-muted-foreground">Country:</span>{" "}
@@ -175,7 +175,7 @@ export default function AwaitingApproval() {
           )}
 
           {/* CTA */}
-          {isApproved && (
+          {isApproved ? (
             <Button
               className="w-full shadow-glow"
               size="lg"
@@ -183,6 +183,14 @@ export default function AwaitingApproval() {
             >
               Go to Broker Dashboard
               <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          ) : (
+            <Button
+              className="w-full shadow-glow"
+              size="lg"
+              onClick={() => navigate("/")}
+            >
+              Go to Home
             </Button>
           )}
         </Card>
