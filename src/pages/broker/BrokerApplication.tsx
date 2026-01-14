@@ -76,7 +76,7 @@ export default function BrokerApplication() {
     let isValid = true;
 
     if (step === "company") {
-      if (!application?.companyName?.trim())
+      if (!application?.name?.trim())
         newErrors.companyName = "Company Name is required";
       if (!application?.registrationNumber?.trim())
         newErrors.registrationNumber = "Registration Number is required";
@@ -150,6 +150,10 @@ export default function BrokerApplication() {
 
   const handleSubmit = async () => {
     if (!validateStep("review")) return;
+    if (Object.keys(selectedFiles).length === 0) {
+      toast.error("Please select at required documents");
+      return;
+    }
 
     setIsUploadingToCDN(true);
 
@@ -165,6 +169,8 @@ export default function BrokerApplication() {
       await Promise.all(uploadPromises);
 
       await submitApplication(docUrls);
+
+      resetApplication();
 
       navigate("/broker/awaiting-approval");
     } catch (error) {
@@ -248,7 +254,7 @@ export default function BrokerApplication() {
                   <Input
                     id="companyName"
                     placeholder="Acme Trading Ltd"
-                    value={application?.companyName || ""}
+                    value={application?.name || ""}
                     onChange={(e) =>
                       handleFieldChange("companyName", e.target.value)
                     }
@@ -718,7 +724,7 @@ export default function BrokerApplication() {
                   <div className="grid md:grid-cols-2 gap-2 text-sm">
                     <div>
                       <span className="text-muted-foreground">Company:</span>{" "}
-                      {application?.companyName || "-"}
+                      {application?.name || "-"}
                     </div>
                     <div>
                       <span className="text-muted-foreground">Reg. No:</span>{" "}

@@ -124,7 +124,7 @@ export const useBrokerStore = create<BrokerStore>()(
             throw new Error("Failed to create company: No ID returned.");
           }
 
-          if (!result?.company?.companyName) {
+          if (!result?.company?.name) {
             throw new Error(
               "Failed to create company: No company name returned.",
             );
@@ -139,7 +139,7 @@ export const useBrokerStore = create<BrokerStore>()(
 
           await platformApi.broker.submitCompanyDocuments({
             company_id: result.company.id,
-            legal_name: result.company.companyName,
+            legal_name: result.company.name,
             incorporation_date: "2022-05-10T00:00:00Z",
             business_type: "Fintech",
             document_type: "corporate",

@@ -31,7 +31,7 @@ export interface BrokerDocument {
 export interface BrokerApplication {
   id: string;
   userId: string;
-  companyName: string;
+  name: string;
   companyId: string;
   registrationNumber: string;
   country: string;
@@ -51,7 +51,7 @@ export interface BrokerApplication {
 export interface Broker {
   company: {
     id: string;
-    companyName: string;
+    name: string;
     website: string;
     status: BrokerStatus;
   };
@@ -90,6 +90,8 @@ export interface SubmitDocumentsPayload {
   }[];
 }
 
+const apiURL = import.meta.env.VITE_API_URL;
+
 // ============================================================
 // API FUNCTIONS
 // ============================================================
@@ -103,7 +105,7 @@ export async function submitApplication(
   const application: BrokerApplication = {
     id: generateId("broker_app"),
     userId: generateId("user"),
-    companyName: request.companyName || "",
+    name: request.companyName || "",
     companyId: "817ce15d-aba8-472f-867f-97ca1c30e14f",
     registrationNumber: request.registrationNumber || "",
     country: request.country || "",
@@ -119,7 +121,7 @@ export async function submitApplication(
     submittedAt: new Date(),
   };
 
-  const response = await apiFetch(`/api/v2/broker/company`, {
+  const response = await apiFetch(`${apiURL}/broker/company`, {
     method: "POST",
     body: JSON.stringify(application),
   });
@@ -138,7 +140,7 @@ export async function submitApplication(
 export async function submitCompanyDocuments(
   payload: SubmitDocumentsPayload,
 ): Promise<void> {
-  const response = await apiFetch(`/api/v2/broker/company-kyc`, {
+  const response = await apiFetch(`${apiURL}/broker/company-kyc`, {
     method: "POST",
     body: JSON.stringify(payload),
   });

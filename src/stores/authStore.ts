@@ -16,7 +16,6 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { platformApi, type User, type UserRole } from "@/api/platform";
 import { STORAGE_KEYS } from "@/lib/storage";
 import { indexedDBStateStorage } from "@/lib/indexedDBStorage";
-import { setCookie } from "@/lib/utils";
 
 // ============================================================
 // TYPES
@@ -25,6 +24,7 @@ import { setCookie } from "@/lib/utils";
 interface AuthStore {
   // State
   user: User | null;
+  token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   selectedRole: UserRole | null; // Allow null for initial state
@@ -50,6 +50,7 @@ export const useAuthStore = create<AuthStore>()(
     (set, get) => ({
       // Initial state
       user: null,
+      token: localStorage.getItem("auth_token"),
       isAuthenticated: false,
       isLoading: false,
       selectedRole: null,
@@ -65,17 +66,13 @@ export const useAuthStore = create<AuthStore>()(
         try {
           const response = await platformApi.auth.login({ email, password });
 
-          // --------------------------------------------------------
-          // SECURITY INTEGRATION: Save CSRF Token to Cookie
-          // --------------------------------------------------------
-          // Check if the response contains the token and save it.
-          // This keeps the sensitive token out of IndexedDB.
-          if (response.csrf_token) {
-            setCookie("XSRF-TOKEN", response.csrf_token);
+          if (response.jwt_token) {
+            localStorage.setItem("auth_token", response.jwt_token);
           }
 
           set({
             user: response.user,
+            token: response.jwt_token,
             isAuthenticated: true,
             isLoading: false,
           });
@@ -100,9 +97,9 @@ export const useAuthStore = create<AuthStore>()(
             password,
           });
 
-          // save CSRF Token to Cookie
-          if (response.csrf_token) {
-            setCookie("XSRF-TOKEN", response.csrf_token);
+          // save JWT Token to localStorage
+          if (response.jwt_token) {
+            localStorage.setItem("auth_token", response.jwt_token);
           }
 
           if (response.user.state === "pending") {
@@ -116,6 +113,7 @@ export const useAuthStore = create<AuthStore>()(
 
           set({
             user: response.user,
+            token: response.jwt_token,
             isAuthenticated: true,
             isLoading: false,
             pendingEmail: null,
@@ -144,8 +142,8 @@ export const useAuthStore = create<AuthStore>()(
             code: code,
           });
 
-          if (response.csrf_token) {
-            setCookie("XSRF-TOKEN", response.csrf_token);
+          if (response.jwt_token) {
+            localStorage.setItem("jwt_token", response.jwt_token);
           }
 
           set({
@@ -169,8 +167,8 @@ export const useAuthStore = create<AuthStore>()(
         // Call API logout if exists
         await platformApi.auth.logout();
 
-        // Clear the Security Cookie (expire it)
-        setCookie("XSRF-TOKEN", "", -1);
+        // Clear the JWT token (expire it)
+        localStorage.removeItem("jwt_token");
 
         // Clear the Store State
         set({

@@ -34,7 +34,7 @@ export interface SignupRequest {
 
 export interface AuthResponse {
   user: User;
-  csrf_token?: string;
+  jwt_token?: string;
 }
 
 export interface ResendEmailVerificationRequest {
@@ -46,6 +46,8 @@ export interface VerifyOtpRequest {
   code: string;
 }
 
+const apiURL = import.meta.env.VITE_API_URL;
+
 // ============================================================
 // API FUNCTIONS
 // ============================================================
@@ -54,7 +56,7 @@ export interface VerifyOtpRequest {
  * Log in a user with email and password
  */
 export async function login(request: LoginRequest): Promise<AuthResponse> {
-  const response = await apiFetch(`/api/v2/auth/identity/sessions`, {
+  const response = await apiFetch(`${apiURL}/auth/identity/caucus`, {
     method: "POST",
     body: JSON.stringify(request),
   });
@@ -75,7 +77,7 @@ export async function login(request: LoginRequest): Promise<AuthResponse> {
       state: data.state,
       createdAt: data.created_at,
     },
-    csrf_token: data.csrf_token,
+    jwt_token: data.csrf_token, // the backend is sending it named csrf_token, this line aliases it as jwt_token
   };
 }
 
@@ -83,7 +85,7 @@ export async function login(request: LoginRequest): Promise<AuthResponse> {
  * Register a new user
  */
 export async function signup(request: SignupRequest): Promise<AuthResponse> {
-  const response = await apiFetch(`/api/v2/auth/identity/users`, {
+  const response = await apiFetch(`${apiURL}/auth/identity/users`, {
     method: "POST",
     body: JSON.stringify(request),
   });
@@ -115,7 +117,7 @@ export async function signup(request: SignupRequest): Promise<AuthResponse> {
       state: data.state,
       createdAt: data.created_at,
     },
-    csrf_token: data.csrf_token,
+    jwt_token: data.csrf_token,
   };
 }
 
@@ -123,7 +125,7 @@ export async function resendEmailVerification(
   request: ResendEmailVerificationRequest,
 ): Promise<void> {
   const response = await apiFetch(
-    "/api/v2/auth/identity/users/email/generate_code",
+    `${apiURL}/auth/identity/users/email/generate_code`,
     {
       method: "POST",
       body: JSON.stringify(request),
@@ -152,7 +154,7 @@ export async function verifyOtp(
   request: VerifyOtpRequest,
 ): Promise<AuthResponse> {
   const response = await apiFetch(
-    "/api/v2/auth/identity/users/email/confirm_code",
+    `${apiURL}/auth/identity/users/email/confirm_code`,
     {
       method: "POST",
       body: JSON.stringify(request),
@@ -185,7 +187,7 @@ export async function verifyOtp(
       state: data.state, // active or verified
       createdAt: data.created_at,
     },
-    csrf_token: data.csrf_token,
+    jwt_token: data.csrf_token,
   };
 }
 
@@ -194,7 +196,7 @@ export async function verifyOtp(
  */
 export async function logout(): Promise<void> {
   try {
-    await apiFetch(`/api/v2/auth/identity/sessions`, {
+    await apiFetch(`${apiURL}/auth/identity/sessions`, {
       method: "DELETE",
     });
   } catch (err) {
