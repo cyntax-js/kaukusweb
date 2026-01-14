@@ -117,7 +117,7 @@ export async function signup(request: SignupRequest): Promise<AuthResponse> {
       state: data.state,
       createdAt: data.created_at,
     },
-    jwt_token: data.csrf_token,
+    jwt_token: data.csrf_token, // the backend is sending it named csrf_token, this line aliases it as jwt_token
   };
 }
 
@@ -187,7 +187,7 @@ export async function verifyOtp(
       state: data.state, // active or verified
       createdAt: data.created_at,
     },
-    jwt_token: data.csrf_token,
+    jwt_token: data.csrf_token, // the backend is sending it named csrf_token, this line aliases it as jwt_token
   };
 }
 

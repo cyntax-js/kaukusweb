@@ -98,9 +98,9 @@ export const useAuthStore = create<AuthStore>()(
           });
 
           // save JWT Token to localStorage
-          if (response.jwt_token) {
-            localStorage.setItem("auth_token", response.jwt_token);
-          }
+          // if (response.jwt_token) {
+          //   localStorage.setItem("auth_token", response.jwt_token);
+          // }
 
           if (response.user.state === "pending") {
             set({
@@ -143,7 +143,7 @@ export const useAuthStore = create<AuthStore>()(
           });
 
           if (response.jwt_token) {
-            localStorage.setItem("jwt_token", response.jwt_token);
+            localStorage.setItem("auth_token", response.jwt_token);
           }
 
           set({
@@ -168,7 +168,7 @@ export const useAuthStore = create<AuthStore>()(
         await platformApi.auth.logout();
 
         // Clear the JWT token (expire it)
-        localStorage.removeItem("jwt_token");
+        localStorage.removeItem("auth_token");
 
         // Clear the Store State
         set({
