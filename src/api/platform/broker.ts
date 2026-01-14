@@ -105,7 +105,7 @@ export async function submitApplication(
   const application: BrokerApplication = {
     id: generateId("broker_app"),
     userId: generateId("user"),
-    name: request.companyName || "",
+    name: request.name || "",
     companyId: "817ce15d-aba8-472f-867f-97ca1c30e14f",
     registrationNumber: request.registrationNumber || "",
     country: request.country || "",
