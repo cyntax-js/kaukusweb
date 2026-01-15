@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { TrendingUp, Menu, X } from "lucide-react";
 import { useState } from "react";
-import { useAuthStore } from "@/stores/authStore";
+import { useAuthStore, UserRole } from "@/stores/authStore";
 
 import Logo from "@/assets/logo.png";
 
@@ -21,7 +21,10 @@ const navLinks = [
 export function Navbar() {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { isAuthenticated, logout, _hasHydrated } = useAuthStore();
+  const { isAuthenticated, getSelectedRole, logout, _hasHydrated } =
+    useAuthStore();
+
+  const selectedRole: UserRole = getSelectedRole();
 
   const handleLogout = () => {
     logout();
@@ -61,12 +64,22 @@ export function Navbar() {
 
         {isAuthenticated ? (
           <div className="flex gap-3">
-            <Link
-              to="/dashboard"
-              className="text-xs text-muted-foreground hover:text-primary"
-            >
-              <Button size="lg">Dashboard</Button>
-            </Link>
+            {selectedRole === "broker" && (
+              <Link
+                to="/broker/dashboard"
+                className="text-xs text-muted-foreground hover:text-primary"
+              >
+                <Button size="lg">Broker Dashboard</Button>
+              </Link>
+            )}
+            {selectedRole === "dealer" && (
+              <Link
+                to="/dealer/dashboard"
+                className="text-xs text-muted-foreground hover:text-primary"
+              >
+                <Button size="lg">Dealer Dashboard</Button>
+              </Link>
+            )}
 
             <Button variant="outline" size="lg" onClick={handleLogout}>
               Logout
@@ -132,11 +145,21 @@ export function Navbar() {
             ))}
             {isAuthenticated ? (
               <div className="pt-4 space-y-2">
-                <Link to="/dashboard">
-                  <Button size="sm" className="w-full">
-                    Dashboard
-                  </Button>
-                </Link>
+                {selectedRole === "broker" && (
+                  <Link to="/broker/dashboard">
+                    <Button size="sm" className="w-full">
+                      Dashboard
+                    </Button>
+                  </Link>
+                )}
+                {selectedRole === "dealer" && (
+                  <Link to="/dealer/dashboard">
+                    <Button size="sm" className="w-full">
+                      Dashboard
+                    </Button>
+                  </Link>
+                )}
+
                 <Button
                   variant="outline"
                   size="sm"

@@ -37,9 +37,12 @@ interface AuthStore {
   verifyOtp: (code: string) => Promise<boolean>;
   logout: () => void;
   setSelectedRole: (role: UserRole) => void;
+  getSelectedRole: () => UserRole | null;
   setUser: (user: User) => void;
   setHasHydrated: (state: boolean) => void;
 }
+
+export type UserRole = "broker" | "dealer" | "member";
 
 // ============================================================
 // STORE WITH PERSISTENCE
@@ -191,6 +194,13 @@ export const useAuthStore = create<AuthStore>()(
         if (currentUser) {
           set({ user: { ...currentUser, role } });
         }
+      },
+
+      /**
+       * Get the user's currently selected role.
+       */
+      getSelectedRole: () => {
+        return get().selectedRole;
       },
 
       /**

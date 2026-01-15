@@ -32,6 +32,7 @@ import zenith from "@/assets/zenith.png";
 import ubabank from "@/assets/ubabank.png";
 import MarketSummaryChart from "@/components/layout/MarketSummaryChart";
 import { cn } from "@/lib";
+import { useAuthStore, UserRole } from "@/stores/authStore";
 
 // Market Ticker Component
 function MarketTicker() {
@@ -45,7 +46,7 @@ function MarketTicker() {
           price: market.price * (1 + (Math.random() - 0.5) * 0.002),
           change: market.change + (Math.random() - 0.5) * 0.1,
           changePercent: market.changePercent + (Math.random() - 0.5) * 0.05,
-        }))
+        })),
       );
     }, 2000);
 
@@ -177,7 +178,7 @@ function AudienceCards() {
           <img
             src={bgLines}
             alt=""
-            className="  
+            className="
            absolute
             right-[0px]
             left-[0px]
@@ -209,7 +210,7 @@ function AudienceCards() {
           <img
             src={bgLines}
             alt=""
-            className="  
+            className="
            absolute
             right-[0px]
             left-[0px]
@@ -241,7 +242,7 @@ function AudienceCards() {
         <img
           src={bgLines2}
           alt=""
-          className="  
+          className="
            absolute
             right-[0px]
             left-[0px]
@@ -266,7 +267,7 @@ function AudienceCards() {
           <img
             src={engineRing}
             alt=""
-            className="   
+            className="
             absolute
             right-[-50px]
             top-[-70px]
@@ -313,6 +314,8 @@ const forDealers = [
 
 // For Brokers/Dealers Section2
 function BrokerDealers() {
+  const { getSelectedRole } = useAuthStore();
+  const selectedRole: UserRole = getSelectedRole();
   return (
     <>
       <div className="relative bg-[#FAFAFA] rounded-3xl p-10 overflow-hidden flex items-center justify-between  rounded-[20px]">
@@ -333,8 +336,10 @@ function BrokerDealers() {
             asChild
             className="shadow-glow hover:shadow-glow-lg transition-shadow px-4 mt-10"
           >
-            <Link to="/services">
-              Continue as Broker
+            <Link to="/broker/dashboard">
+              {selectedRole === "broker"
+                ? "Continue as Broker"
+                : "Apply as Broker"}
               <ArrowRight className="w-4 h-4 ml-1" />
             </Link>
           </Button>
@@ -378,7 +383,11 @@ function BrokerDealers() {
             asChild
             className="py-6 hover:bg-black bg-[#fff] mt-10"
           >
-            <Link to="/signup">Apply as Dealer</Link>
+            <Link to="/signup">
+              {selectedRole === "dealer"
+                ? "Continue as Dealer"
+                : "Apply as Dealer"}
+            </Link>
           </Button>
         </div>
       </div>
@@ -501,6 +510,9 @@ export default function Landing() {
     { label: "Market Coverage", value: "24/7", symbol: "" },
   ];
 
+  const { getSelectedRole } = useAuthStore();
+  const selectedRole: UserRole = getSelectedRole();
+
   return (
     <div className="flex flex-col bg-white">
       {/* Hero Section */}
@@ -508,7 +520,7 @@ export default function Landing() {
         <img
           src={heroLines}
           alt=""
-          className="  
+          className="
            absolute
             right-[0px]
             left-[0px]
@@ -549,10 +561,17 @@ export default function Landing() {
                 asChild
                 className="shadow-glow hover:shadow-glow-lg transition-shadow px-4 py-6"
               >
-                <Link to="/services">
-                  Continue as Broker
-                  <ArrowRight className="w-4 h-4 ml-1" />
-                </Link>
+                {selectedRole === "broker" ? (
+                  <Link to="/broker/dashboard">
+                    Continue as Broker
+                    <ArrowRight className="w-4 h-4 ml-1" />
+                  </Link>
+                ) : (
+                  <Link to="/dealer/dashboard">
+                    Continue as Dealer
+                    <ArrowRight className="w-4 h-4 ml-1" />
+                  </Link>
+                )}
               </Button>
               <Button
                 size="lg"
@@ -560,7 +579,11 @@ export default function Landing() {
                 asChild
                 className="py-6 hover:bg-black bg-[#fff]"
               >
-                <Link to="/signup">Apply as Dealer</Link>
+                {selectedRole === "broker" ? (
+                  <Link to="/signup">Apply as Dealer</Link>
+                ) : (
+                  <Link to="/broker/requirements">Apply as Broker</Link>
+                )}
               </Button>
             </div>
           </div>
@@ -609,7 +632,7 @@ export default function Landing() {
                     <div className="flex items-center gap-3">
                       <div
                         className={cn(
-                          "w-10 h-10 rounded-full flex items-center justify-center font-semibold text-white"
+                          "w-10 h-10 rounded-full flex items-center justify-center font-semibold text-white",
                         )}
                         style={{
                           backgroundColor: (() => {
@@ -621,7 +644,7 @@ export default function Landing() {
                               .toUpperCase();
                             const hash = Array.from(initials).reduce(
                               (acc, c) => acc * 31 + c.charCodeAt(0),
-                              0
+                              0,
                             );
                             const hue = Math.abs(hash) % 360;
                             return `hsl(${hue} 65% 50%)`;
@@ -726,10 +749,17 @@ export default function Landing() {
               asChild
               className="shadow-glow hover:shadow-glow-lg transition-shadow px-4"
             >
-              <Link to="/services">
-                Continue as Broker
-                <ArrowRight className="w-4 h-4 ml-1" />
-              </Link>
+              {selectedRole === "broker" ? (
+                <Link to="/broker/dashboard">
+                  Continue as Broker
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </Link>
+              ) : (
+                <Link to="/dealer/dashboard">
+                  Continue as Dealer
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </Link>
+              )}
             </Button>
           </div>
           <AudienceCards />
@@ -897,7 +927,11 @@ export default function Landing() {
                   asChild
                   className="hover:bg-black hover:text-white bg-white px-6 py-4 text-[#000]"
                 >
-                  <Link to="/services">Continue as Broker</Link>
+                  {selectedRole === "broker" ? (
+                    <Link to="/broker/dashboard">Continue as Broker</Link>
+                  ) : (
+                    <Link to="/dealer/dashboard">Continue as Dealer</Link>
+                  )}
                 </Button>
                 <Button
                   size="lg"
@@ -905,7 +939,11 @@ export default function Landing() {
                   className="border-white text-[#fff] bg-white/0 hover:bg-black hover:text-white"
                   asChild
                 >
-                  <Link to="/signup">Apply as Dealer </Link>
+                  {selectedRole === "broker" ? (
+                    <Link to="/dealer/requirements">Apply as Dealer</Link>
+                  ) : (
+                    <Link to="/broker/requirements">Apply as Broker</Link>
+                  )}
                 </Button>
               </div>
             </div>
