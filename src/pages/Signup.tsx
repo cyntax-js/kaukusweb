@@ -57,9 +57,7 @@ export default function Signup() {
   return (
     <div className="animate-fade-in">
       <h1 className="text-2xl font-bold mb-2">{t("auth.createAccount")}</h1>
-      <p className="text-muted-foreground mb-8">
-        {t("auth.startJourney")}
-      </p>
+      <p className="text-muted-foreground mb-8">{t("auth.startJourney")}</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
@@ -92,7 +90,8 @@ export default function Signup() {
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? (
             <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t("auth.creatingAccount")}
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />{" "}
+              {t("auth.creatingAccount")}
             </>
           ) : (
             t("auth.createAccount")

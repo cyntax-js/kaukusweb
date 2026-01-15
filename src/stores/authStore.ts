@@ -94,13 +94,17 @@ export const useAuthStore = create<AuthStore>()(
        */
       signup: async (email: string, password: string) => {
         set({ isLoading: true });
-
+        console.log(email, password, "signupresss");
         try {
           const response = await platformApi.auth.signup({
             email,
             password,
           });
 
+          console.log("====================================");
+
+          console.log(response, "signupresss");
+          console.log("====================================");
           // save JWT Token to localStorage
           // if (response.jwt_token) {
           //   localStorage.setItem("auth_token", response.jwt_token);
