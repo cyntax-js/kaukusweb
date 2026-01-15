@@ -3,23 +3,35 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { TrendingUp, Menu, X } from "lucide-react";
 import { useState } from "react";
-import { useAuthStore } from "@/stores/authStore";
-import { useTranslation } from "react-i18next";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useAuthStore, UserRole } from "@/stores/authStore";
 
 import Logo from "@/assets/logo.png";
+
+type NavLink = { href: string; label: string };
+
+const navLinks: NavLink[] = [
+  { href: "/", label: "Home" },
+  { href: "/features", label: "Features" },
+  { href: "/pricing", label: "Pricing" },
+  { href: "/about", label: "About" },
+];
+
+function LanguageSwitcher() {
+  // minimal placeholder for the language switcher used in the navbar
+  return (
+    <button aria-label="Change language" className="text-sm px-2 py-1">
+      EN
+    </button>
+  );
+}
 
 export function Navbar() {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { isAuthenticated, logout, _hasHydrated } = useAuthStore();
-  const { t } = useTranslation();
+  const { isAuthenticated, getSelectedRole, logout, _hasHydrated } =
+    useAuthStore();
 
-  const navLinks = [
-    { href: "/", label: t("nav.home") },
-    { href: "/about", label: t("nav.about") },
-    { href: "/services", label: t("nav.services") },
-  ];
+  const selectedRole: UserRole = getSelectedRole();
 
   const handleLogout = () => {
     logout();
@@ -49,7 +61,7 @@ export function Navbar() {
                 "rounded-lg font-semibold transition-colors",
                 location.pathname === link.href
                   ? "text-primary"
-                  : "text-muted-foreground hover:text-primary",
+                  : "text-muted-foreground hover:text-primary"
               )}
             >
               {link.label}
@@ -57,38 +69,47 @@ export function Navbar() {
           ))}
         </div>
 
-        <div className="flex items-center gap-3">
-          <LanguageSwitcher />
+        <div>
           {isAuthenticated ? (
-            <>
-              <Link
-                to="/dashboard"
-                className="text-xs text-muted-foreground hover:text-primary"
-              >
-                <Button size="lg">{t("common.dashboard")}</Button>
-              </Link>
+            <div className="flex gap-3">
+              {selectedRole === "broker" && (
+                <Link
+                  to="/broker/dashboard"
+                  className="text-xs text-muted-foreground hover:text-primary"
+                >
+                  <Button size="lg">Broker Dashboard</Button>
+                </Link>
+              )}
+              {selectedRole === "dealer" && (
+                <Link
+                  to="/dealer/dashboard"
+                  className="text-xs text-muted-foreground hover:text-primary"
+                >
+                  <Button size="lg">Dealer Dashboard</Button>
+                </Link>
+              )}
 
               <Button variant="outline" size="lg" onClick={handleLogout}>
-                {t("common.logout")}
+                Logout
               </Button>
-            </>
+            </div>
           ) : (
-            <>
+            <div className="flex gap-3">
               <Link
                 to="/login"
                 className="text-xs text-muted-foreground hover:text-primary"
               >
                 <Button variant="outline" size="lg">
-                  {t("common.login")}
+                  Login
                 </Button>
               </Link>
               <Link
                 to="/signup"
                 className="text-xs text-muted-foreground hover:text-primary"
               >
-                <Button size="lg">{t("common.signup")}</Button>
+                <Button size="lg">Sign up</Button>
               </Link>
-            </>
+            </div>
           )}
         </div>
       </nav>
@@ -96,17 +117,22 @@ export function Navbar() {
       {/* Mobile nav */}
       <nav className="xl:hidden fixed top-6 left-4 right-4 z-50 flex items-center justify-between border border-border/50 rounded-2xl px-4 py-3 glass shadow-[0px_1px_2px_0px_#0A0D120D]">
         <Link to="/">
-          <img src={Logo} alt="" />
+          <img src={Logo} alt="ContiSX logo" />
         </Link>
 
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
-          <div
+          <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className=""
+            aria-label="Toggle menu"
+            className="p-2 rounded-md"
           >
-            {isMobileMenuOpen ? <X size={30} /> : <Menu size={30} />}
-          </div>
+            {isMobileMenuOpen ? (
+              <X className="w-5 h-5" />
+            ) : (
+              <Menu className="w-5 h-5" />
+            )}
+          </button>
         </div>
 
         {/* Mobile menu overlay */}
@@ -115,7 +141,7 @@ export function Navbar() {
             "absolute top-full left-0 right-0 mt-2 border border-border/50 rounded-2xl bg-white shadow-[0px_1px_2px_0px_#0A0D120D] transition-all duration-300 ease-in-out overflow-hidden",
             isMobileMenuOpen
               ? "opacity-100 max-h-[35rem] translate-y-0"
-              : "opacity-0 max-h-0 -translate-y-2 pointer-events-none",
+              : "opacity-0 max-h-0 -translate-y-2 pointer-events-none"
           )}
         >
           <div className="p-4 space-y-2">
@@ -128,7 +154,7 @@ export function Navbar() {
                   "block px-3 py-2 rounded-lg font-semibold transition-colors",
                   location.pathname === link.href
                     ? "text-primary bg-primary/10"
-                    : "text-muted-foreground hover:text-primary hover:bg-secondary",
+                    : "text-muted-foreground hover:text-primary hover:bg-secondary"
                 )}
               >
                 {link.label}
@@ -138,7 +164,7 @@ export function Navbar() {
               <div className="pt-4 space-y-2">
                 <Link to="/dashboard">
                   <Button size="sm" className="w-full">
-                    {t("common.dashboard")}
+                    Dashboard
                   </Button>
                 </Link>
                 <Button
@@ -147,19 +173,19 @@ export function Navbar() {
                   className="w-full"
                   onClick={handleLogout}
                 >
-                  {t("common.logout")}
+                  Logout
                 </Button>
               </div>
             ) : (
               <div className="pt-4 space-y-2">
                 <Link to="/login">
                   <Button variant="outline" size="sm" className="w-full">
-                    {t("common.login")}
+                    Login
                   </Button>
                 </Link>
                 <Link to="/signup">
                   <Button size="sm" className="w-full">
-                    {t("common.signup")}
+                    Sign up
                   </Button>
                 </Link>
               </div>
