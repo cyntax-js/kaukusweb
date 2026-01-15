@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useBrokerStore } from "@/stores/brokerStore";
 import { useBrokerDeploymentStore } from "@/stores/brokerDeploymentStore";
 import { mockDashboardStats } from "@/mocks/brokerData";
 import {
@@ -105,8 +107,18 @@ const quickStats = [
 
 export default function BrokerDashboard() {
   const navigate = useNavigate();
+  const { status } = useBrokerStore();
   const { isDeployed, config, currentStep, getPreviewUrl } =
     useBrokerDeploymentStore();
+
+  useEffect(() => {
+    if (status === "pending") {
+      navigate("/broker/awaiting-approval");
+    }
+  }, [status, navigate]);
+
+  if (status === "pending") return null;
+
   const needsSetup = !isDeployed && currentStep === "welcome";
   const previewUrl = getPreviewUrl();
 

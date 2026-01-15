@@ -31,7 +31,7 @@ export interface BrokerDocument {
 export interface BrokerApplication {
   id: string;
   userId: string;
-  companyName: string;
+  name: string;
   companyId: string;
   registrationNumber: string;
   country: string;
@@ -51,7 +51,7 @@ export interface BrokerApplication {
 export interface Broker {
   company: {
     id: string;
-    companyName: string;
+    name: string;
     website: string;
     status: BrokerStatus;
   };
@@ -78,6 +78,20 @@ export interface BrokerUser {
   lastActive: Date;
 }
 
+export interface SubmitDocumentsPayload {
+  company_id: string;
+  legal_name: string;
+  incorporation_date: string;
+  business_type: string;
+  document_type: string;
+  documents: {
+    name: string;
+    fileUrls: string[];
+  }[];
+}
+
+const apiURL = import.meta.env.VITE_API_URL;
+
 // ============================================================
 // API FUNCTIONS
 // ============================================================
@@ -91,8 +105,8 @@ export async function submitApplication(
   const application: BrokerApplication = {
     id: generateId("broker_app"),
     userId: generateId("user"),
-    companyName: request.companyName || "",
-    companyId: request.companyId || "",
+    name: request.name || "",
+    companyId: "817ce15d-aba8-472f-867f-97ca1c30e14f",
     registrationNumber: request.registrationNumber || "",
     country: request.country || "",
     address: request.address || "",
@@ -107,7 +121,7 @@ export async function submitApplication(
     submittedAt: new Date(),
   };
 
-  const response = await apiFetch(`/api/v2/company/auth`, {
+  const response = await apiFetch(`${apiURL}/broker/company`, {
     method: "POST",
     body: JSON.stringify(application),
   });
@@ -119,14 +133,22 @@ export async function submitApplication(
   }
 
   return {
-    company: {
-      id: data.id,
-      companyName: data.companyName,
-      website: data.website,
-      status: data.status,
-    },
-    message: data.message,
+    ...data,
   };
+}
+
+export async function submitCompanyDocuments(
+  payload: SubmitDocumentsPayload,
+): Promise<void> {
+  const response = await apiFetch(`${apiURL}/broker/company-kyc`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.message || "Failed to submit documents");
+  }
 }
 
 /**

@@ -11,12 +11,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { toast } from "sonner";
 import { useBrokerStore } from "@/stores/brokerStore";
+import { uploadToCDN } from "@/api/cdn";
 import { regulatoryBodies, countries } from "@/mocks/data";
 import {
   Building2,
   FileText,
-  User,
   ArrowRight,
   ArrowLeft,
   Upload,
@@ -50,13 +51,23 @@ const documentTypes = [
 
 export default function BrokerApplication() {
   const navigate = useNavigate();
-  const { application, setApplicationField, submitApplication, isSubmitting } =
-    useBrokerStore();
-  const [currentStep, setCurrentStep] = useState<Step>("company");
+  const {
+    application,
+    setApplicationField,
+    submitApplication,
+    isSubmitting,
+    currentStep,
+    setCurrentStep,
+    resetApplication,
+  } = useBrokerStore();
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  const [selectedFiles, setSelectedFiles] = useState<Record<string, File>>({});
+
   const [uploadedDocs, setUploadedDocs] = useState<Record<string, string>>({});
+
+  const [isUploadingToCDN, setIsUploadingToCDN] = useState(false);
 
   const currentStepIndex = steps.findIndex((s) => s.id === currentStep);
 
@@ -65,12 +76,10 @@ export default function BrokerApplication() {
     let isValid = true;
 
     if (step === "company") {
-      if (!application?.companyName?.trim())
+      if (!application?.name?.trim())
         newErrors.companyName = "Company Name is required";
       if (!application?.registrationNumber?.trim())
         newErrors.registrationNumber = "Registration Number is required";
-      if (!application?.companyId?.trim())
-        newErrors.companyId = "Company ID is required";
       if (!application?.country) newErrors.country = "Country is required";
       if (!application?.address) newErrors.address = "Address is required";
 
@@ -121,7 +130,7 @@ export default function BrokerApplication() {
   };
 
   const handleNext = () => {
-    // 4. Check validation before moving
+    // check validation before moving
     if (validateStep(currentStep)) {
       const nextIndex = currentStepIndex + 1;
       if (nextIndex < steps.length) {
@@ -140,26 +149,35 @@ export default function BrokerApplication() {
   };
 
   const handleSubmit = async () => {
-    // Final check
-    if (validateStep("review")) {
-      await submitApplication();
-      navigate("/broker/awaiting-approval");
+    if (!validateStep("review")) return;
+    if (Object.keys(selectedFiles).length === 0) {
+      toast.error("Please select at required documents");
+      return;
     }
-  };
 
-  const simulateUpload = (docId: string) => {
-    setUploadedDocs((prev) => ({
-      ...prev,
-      [docId]: `document_${docId}_${Date.now()}.pdf`,
-    }));
+    setIsUploadingToCDN(true);
 
-    // Clear error for this doc if exists
-    if (errors[docId]) {
-      setErrors((prev) => {
-        const newErrors = { ...prev };
-        delete newErrors[docId];
-        return newErrors;
-      });
+    try {
+      const docUrls: Record<string, string> = {};
+      const uploadPromises = Object.entries(selectedFiles).map(
+        async ([docId, file]) => {
+          const url = await uploadToCDN(file);
+          docUrls[docId] = url;
+        },
+      );
+
+      await Promise.all(uploadPromises);
+
+      await submitApplication(docUrls);
+
+      resetApplication();
+
+      navigate("/broker/awaiting-approval");
+    } catch (error) {
+      console.error("Submission failed", error);
+      toast.error(error.message);
+    } finally {
+      setIsUploadingToCDN(false);
     }
   };
 
@@ -236,7 +254,7 @@ export default function BrokerApplication() {
                   <Input
                     id="companyName"
                     placeholder="Acme Trading Ltd"
-                    value={application?.companyName || ""}
+                    value={application?.name || ""}
                     onChange={(e) =>
                       handleFieldChange("companyName", e.target.value)
                     }
@@ -278,33 +296,6 @@ export default function BrokerApplication() {
                   {errors.registrationNumber && (
                     <span className="text-xs text-destructive">
                       {errors.registrationNumber}
-                    </span>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="companyId"
-                    className={errors.companyId ? "text-destructive" : ""}
-                  >
-                    Company ID *
-                  </Label>
-                  <Input
-                    id="companyId"
-                    placeholder="UUID..."
-                    value={application?.companyId || ""}
-                    onChange={(e) =>
-                      handleFieldChange("companyId", e.target.value)
-                    }
-                    className={
-                      errors.companyId
-                        ? "border-destructive focus-visible:ring-destructive"
-                        : ""
-                    }
-                  />
-                  {errors.companyId && (
-                    <span className="text-xs text-destructive">
-                      {errors.companyId}
                     </span>
                   )}
                 </div>
@@ -668,6 +659,11 @@ export default function BrokerApplication() {
                                 [doc.id]: file.name,
                               }));
 
+                              setSelectedFiles((prev) => ({
+                                ...prev,
+                                [doc.id]: file,
+                              }));
+
                               // Clear error for this doc if exists
                               if (errors[doc.id]) {
                                 setErrors((prev) => {
@@ -728,7 +724,7 @@ export default function BrokerApplication() {
                   <div className="grid md:grid-cols-2 gap-2 text-sm">
                     <div>
                       <span className="text-muted-foreground">Company:</span>{" "}
-                      {application?.companyName || "-"}
+                      {application?.name || "-"}
                     </div>
                     <div>
                       <span className="text-muted-foreground">Reg. No:</span>{" "}
@@ -818,10 +814,10 @@ export default function BrokerApplication() {
             {currentStep === "review" ? (
               <Button
                 onClick={handleSubmit}
-                disabled={isSubmitting}
+                disabled={isSubmitting || isUploadingToCDN}
                 className="shadow-glow"
               >
-                {isSubmitting ? (
+                {isSubmitting || isUploadingToCDN ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                     Submitting...

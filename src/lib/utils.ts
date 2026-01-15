@@ -24,9 +24,39 @@ export const setCookie = (name: string, value: string, days = 1) => {
 };
 
 const CSRF_COOKIE_NAME = "XSRF-TOKEN";
-const CSRF_HEADER_NAME = "X-XSRF-TOKEN";
+const CSRF_HEADER_NAME = "X-CSRF-Token";
 
 export const apiFetch = async (url: string, options: RequestInit = {}) => {
+  const headers = new Headers(options.headers);
+
+  const token = localStorage.getItem("auth_token");
+  if (token) {
+    headers.set("Authorization", `Bearer ${token}`);
+  }
+
+  if (!headers.has("Content-Type") && !(options.body instanceof FormData)) {
+    headers.set("Content-Type", "application/json");
+  }
+
+  const response = await fetch(url, {
+    ...options,
+    headers,
+  });
+
+  if (response.status === 401) {
+    localStorage.removeItem("auth_token");
+    if (window.location.pathname !== "/login") {
+      window.location.href = "/login";
+    }
+  }
+
+  return response;
+};
+
+export const apiFetchCookie = async (
+  url: string,
+  options: RequestInit = {},
+) => {
   const headers = new Headers(options.headers || {});
 
   const csrfToken = getCookie(CSRF_COOKIE_NAME);
