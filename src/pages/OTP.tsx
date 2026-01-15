@@ -69,7 +69,7 @@ const OTPPage: React.FC = () => {
     try {
       await verifyOtp(otpCode);
       console.log("OTP submitted:", otpCode);
-      navigate("/");
+      navigate("/role-selection");
     } catch (error) {
       console.error("OTP verification failed:", error);
       toast.error("Invalid OTP");
