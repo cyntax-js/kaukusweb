@@ -255,9 +255,7 @@ export default function BrokerApplication() {
                     id="companyName"
                     placeholder="Acme Trading Ltd"
                     value={application?.name || ""}
-                    onChange={(e) =>
-                      handleFieldChange("companyName", e.target.value)
-                    }
+                    onChange={(e) => handleFieldChange("name", e.target.value)}
                     className={
                       errors.companyName
                         ? "border-destructive focus-visible:ring-destructive"
