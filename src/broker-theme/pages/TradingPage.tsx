@@ -1,12 +1,13 @@
 /**
- * BROKER TRADING PAGE - Pro Layout matching reference UI exactly
+ * BROKER TRADING PAGE - Pro Layout
  * DIV1: Markets | Chart + BuySell | OrderBook (swappable positions based on config)
  * DIV2: UserTrades | EquityBalance with Deposit/Withdraw modals
  */
 
 import { useState, useEffect, useMemo } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useTheme } from "@/broker-theme/config";
+import { useRoutePrefix } from "@/broker-theme/hooks";
 import { mockMarkets, Market } from "@/data/mockTradingData";
 
 import { AppHeader, DepositWithdrawModal } from "@/broker-theme/components";
@@ -17,6 +18,7 @@ import MarketsList from "./trading/MarketsList";
 import PriceInfo from "./trading/PriceInfo";
 import OrderHistory from "./trading/OrderHistory";
 import EquityBalance from "./trading/EquityBalance";
+import { TradingGrid } from "./trading/TradingGrid";
 import { useTradeHistoryStore } from "@/broker-theme/stores/tradeHistoryStore";
 
 const TradingPage = () => {
@@ -26,12 +28,7 @@ const TradingPage = () => {
     pair?: string;
   }>();
   const navigate = useNavigate();
-  const location = useLocation();
-
-  // Trading pages use /preview/app or /app prefix
-  const routePrefix = location.pathname.includes("/preview/app")
-    ? "/preview/app"
-    : "/app";
+  const routePrefix = useRoutePrefix();
 
   const [selectedMarket, setSelectedMarket] = useState<Market | null>(null);
   const [ngnBalance] = useState(1000000);
@@ -44,22 +41,11 @@ const TradingPage = () => {
 
   const orderBookPosition = config.theme.layout.orderBookPosition || "right";
 
-  console.log("mockMarkets", mockMarkets);
-
   const availableMarkets = useMemo(() => {
     return mockMarkets.filter((m) => {
       if (m.type === "stock" && config.services.includes("stock")) return true;
-      if (
-        m.type === "derivative" &&
-        (config.services.includes("futures") ||
-          config.services.includes("options"))
-      )
-        return true;
-      if (
-        m.type === "private_market" &&
-        config.services.includes("private_markets")
-      )
-        return true;
+      if (m.type === "derivative" && (config.services.includes("futures") || config.services.includes("options"))) return true;
+      if (m.type === "private_market" && config.services.includes("private_markets")) return true;
       if (m.type === "crypto" && config.services.includes("stock")) return true;
       return false;
     });
@@ -67,9 +53,7 @@ const TradingPage = () => {
 
   useEffect(() => {
     if (pairParam) {
-      const found = availableMarkets.find(
-        (m) => m.symbol.toLowerCase() === pairParam.toLowerCase()
-      );
+      const found = availableMarkets.find((m) => m.symbol.toLowerCase() === pairParam.toLowerCase());
       if (found) {
         setSelectedMarket(found);
         return;
@@ -83,21 +67,16 @@ const TradingPage = () => {
   const handleSelectMarket = (market: Market) => {
     setSelectedMarket(market);
     const serviceType = market.type === "derivative" ? "futures" : "stock";
-    navigate(
-      `${routePrefix}/${serviceType}/trade/${serviceType}/${market.symbol}`,
-      { replace: true }
-    );
+    navigate(`${routePrefix}/${serviceType}/trade/${serviceType}/${market.symbol}`, { replace: true });
   };
 
   const handlePlaceOrder = async (order: any) => {
-    console.log("Order placed:", order);
     return { success: true };
   };
 
   const getMarketType = (): "stock" | "futures" | "options" => {
     if (marketTypeParam === "options") return "options";
-    if (marketTypeParam === "futures" || selectedMarket?.type === "derivative")
-      return "futures";
+    if (marketTypeParam === "futures" || selectedMarket?.type === "derivative") return "futures";
     return "stock";
   };
 
@@ -114,9 +93,7 @@ const TradingPage = () => {
   if (!selectedMarket) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center text-muted-foreground">
-          Loading markets...
-        </div>
+        <div className="text-center text-muted-foreground">Loading markets...</div>
       </div>
     );
   }
@@ -127,131 +104,46 @@ const TradingPage = () => {
       <PriceInfo market={selectedMarket} />
 
       {/* Deposit/Withdraw Modals */}
-      <DepositWithdrawModal
-        open={depositModalOpen}
-        onOpenChange={setDepositModalOpen}
-        mode="deposit"
-      />
-      <DepositWithdrawModal
-        open={withdrawModalOpen}
-        onOpenChange={setWithdrawModalOpen}
-        mode="withdraw"
-        availableBalance={ngnBalance}
-      />
+      <DepositWithdrawModal open={depositModalOpen} onOpenChange={setDepositModalOpen} mode="deposit" />
+      <DepositWithdrawModal open={withdrawModalOpen} onOpenChange={setWithdrawModalOpen} mode="withdraw" availableBalance={ngnBalance} />
 
       {/* DIV1: Main Trading Workspace */}
-      <div className="grid grid-cols-12 gap-px bg-border scrollbar-hide">
-        {orderBookPosition === "left" ? (
+      <TradingGrid
+        orderBookPosition={orderBookPosition}
+        marketsPanel={
+          <MarketsList
+            markets={availableMarkets}
+            selectedMarket={selectedMarket}
+            onSelectMarket={handleSelectMarket}
+            enabledServices={config.services}
+          />
+        }
+        chartPanel={
           <>
-            {/* OrderBook - Left (2 cols) - swapped */}
-            <div
-              className="col-span-2 bg-card flex flex-col scrollbar-hide"
-              style={{ height: "900px" }}
-            >
-              <OrderBook
+            <div className="flex-1">
+              <TradingChart market={selectedMarket} />
+            </div>
+            <div className="border-t border-border h-[20%]">
+              <TradingPanel
                 market={selectedMarket}
-                isDerivative={selectedMarket.type === "derivative"}
-              />
-            </div>
-
-            {/* Chart + BuySell - Center (8 cols) */}
-            <div
-              className="col-span-8 bg-card flex flex-col scrollbar-hide"
-              style={{ height: "900px", overflowY: "auto" }}
-            >
-              <div className="" style={{ height: "100%" }}>
-                <TradingChart market={selectedMarket} />
-              </div>
-              <div className="border-t border-border" style={{ height: "20%" }}>
-                <TradingPanel
-                  market={selectedMarket}
-                  onPlaceOrder={handlePlaceOrder}
-                  ngnBalance={ngnBalance}
-                  portfolio={portfolio}
-                  marketType={getMarketType()}
-                />
-              </div>
-            </div>
-
-            {/* Markets - Right (2 cols) - swapped */}
-            <div
-              className="col-span-2 bg-card overflow-auto scrollbar-hide"
-              style={{
-                height: "900px",
-              }}
-            >
-              <MarketsList
-                markets={availableMarkets}
-                selectedMarket={selectedMarket}
-                onSelectMarket={handleSelectMarket}
-                enabledServices={config.services}
+                onPlaceOrder={handlePlaceOrder}
+                ngnBalance={ngnBalance}
+                portfolio={portfolio}
+                marketType={getMarketType()}
               />
             </div>
           </>
-        ) : (
-          <>
-            {/* Markets - Left (2 cols) */}
-            <div
-              className="col-span-2 bg-card overflow-auto scrollbar-hide"
-              style={{
-                height: "900px",
-              }}
-            >
-              <MarketsList
-                markets={availableMarkets}
-                selectedMarket={selectedMarket}
-                onSelectMarket={handleSelectMarket}
-                enabledServices={config.services}
-              />
-            </div>
-
-            {/* Chart + BuySell - Center (8 cols) */}
-            <div
-              className="col-span-8 bg-card flex flex-col scrollbar-hide"
-              style={{ height: "900px", overflowY: "auto" }}
-            >
-              <div className="" style={{ height: "100%" }}>
-                <TradingChart market={selectedMarket} />
-              </div>
-              <div className="border-t border-border" style={{ height: "20%" }}>
-                <TradingPanel
-                  market={selectedMarket}
-                  onPlaceOrder={handlePlaceOrder}
-                  ngnBalance={ngnBalance}
-                  portfolio={portfolio}
-                  marketType={getMarketType()}
-                />
-              </div>
-            </div>
-
-            {/* OrderBook - Right (2 cols) */}
-            <div
-              className="col-span-2 bg-card flex flex-col scrollbar-hide"
-              style={{ height: "900px" }}
-            >
-              <OrderBook
-                market={selectedMarket}
-                isDerivative={selectedMarket.type === "derivative"}
-              />
-            </div>
-          </>
-        )}
-      </div>
+        }
+        orderbookPanel={
+          <OrderBook market={selectedMarket} isDerivative={selectedMarket.type === "derivative"} />
+        }
+      />
 
       {/* DIV2: User Activity & Funds */}
-      <div
-        className="bg-card border-t border-border grid grid-cols-12 gap-px"
-        style={{ minHeight: "200px" }}
-      >
-        {/* User Trades / Order History (9 cols) */}
+      <div className="bg-card border-t border-border grid grid-cols-12 gap-px min-h-[200px]">
         <div className="col-span-10 bg-card overflow-hidden">
-          <OrderHistory
-            userTrades={trades}
-            isDerivative={selectedMarket.type === "derivative"}
-          />
+          <OrderHistory userTrades={trades} isDerivative={selectedMarket.type === "derivative"} />
         </div>
-
-        {/* Equity Balance Overview (3 cols) */}
         <div className="col-span-2 bg-card overflow-hidden">
           <EquityBalance
             ngnBalance={ngnBalance}
