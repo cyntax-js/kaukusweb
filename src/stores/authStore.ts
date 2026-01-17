@@ -13,7 +13,7 @@
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { platformApi, type User, type UserRole } from "@/api/platform";
+import { platformApi, type User } from "@/api/platform";
 import { STORAGE_KEYS } from "@/lib/storage";
 import { indexedDBStateStorage } from "@/lib/indexedDBStorage";
 
