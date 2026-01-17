@@ -195,21 +195,19 @@ export async function verifyOtp(
   }
 }
 
-export async function getUser(): Promise<UserResponse> {
-  try {
-    const response = await apiClient.get("/broker/user");
-    return {
-      companies: response.data.companies,
-      domains: response.data.domains,
-      kyc: response.data.kyc,
-      payments: response.data.payments,
-      services: response.data.services,
-    };
-  } catch (error) {
-    const errorData = error.response?.data;
+export async function getUser(request: string): Promise<UserResponse> {
+  const response = await apiFetch(`${apiURL}/user`, {
+    method: "POST",
+    body: JSON.stringify(request),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
     console.error(errorData);
     throw new Error(errorData.message || "user.fetch.failed");
   }
+  const data = await response.json();
+  return data;
 }
 
 /**
