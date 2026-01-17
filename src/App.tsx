@@ -49,12 +49,15 @@ import {
 
 // Dealer Pages
 import { DealerRequirements, DealerApplication, DealerAwaitingApproval, DealerDashboard } from "./pages/dealer";
+import { DealerTrading, DealerInventory, DealerBrokers } from "./pages/dealer/dashboard";
 
 // Issuing House Pages
 import { IssuingHouseRequirements, IssuingHouseApplication, IssuingHouseAwaitingApproval, IssuingHouseDashboard } from "./pages/issuing-house";
+import { NewOffering, ActiveDeals, Investors } from "./pages/issuing-house/dashboard";
 
 // Market Maker Pages
 import { MarketMakerRequirements, MarketMakerApplication, MarketMakerAwaitingApproval, MarketMakerDashboard } from "./pages/market-maker";
+import { QuotingEngine, RiskManagement } from "./pages/market-maker/dashboard";
 
 // Register mock brokers for development
 registerMockBrokers(mockBrokerConfigs);
@@ -136,6 +139,9 @@ const App = () => (
             <Route path="/dealer/awaiting-approval" element={<DealerAwaitingApproval />} />
             <Route path="/dealer/dashboard" element={<DealerAdminLayout />}>
               <Route index element={<DealerDashboard />} />
+              <Route path="trading" element={<DealerTrading />} />
+              <Route path="inventory" element={<DealerInventory />} />
+              <Route path="brokers" element={<DealerBrokers />} />
             </Route>
 
             {/* Issuing House */}
@@ -144,6 +150,9 @@ const App = () => (
             <Route path="/issuing-house/awaiting-approval" element={<IssuingHouseAwaitingApproval />} />
             <Route path="/issuing-house/dashboard" element={<IssuingHouseAdminLayout />}>
               <Route index element={<IssuingHouseDashboard />} />
+              <Route path="new-offering" element={<NewOffering />} />
+              <Route path="active-deals" element={<ActiveDeals />} />
+              <Route path="investors" element={<Investors />} />
             </Route>
 
             {/* Market Maker */}
@@ -152,6 +161,8 @@ const App = () => (
             <Route path="/market-maker/awaiting-approval" element={<MarketMakerAwaitingApproval />} />
             <Route path="/market-maker/dashboard" element={<MarketMakerAdminLayout />}>
               <Route index element={<MarketMakerDashboard />} />
+              <Route path="quoting-engine" element={<QuotingEngine />} />
+              <Route path="risk-management" element={<RiskManagement />} />
             </Route>
 
             {/* Broker Preview (deployment setup) */}
