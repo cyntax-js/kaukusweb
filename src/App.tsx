@@ -48,8 +48,13 @@ import {
 } from "./pages/broker/dashboard";
 
 // Dealer Pages
-import { DealerApplication, DealerAwaitingApproval } from "./pages/dealer";
+import { DealerRequirements, DealerApplication, DealerAwaitingApproval } from "./pages/dealer";
 
+// Issuing House Pages
+import { IssuingHouseRequirements, IssuingHouseApplication, IssuingHouseAwaitingApproval } from "./pages/issuing-house";
+
+// Market Maker Pages
+import { MarketMakerRequirements, MarketMakerApplication, MarketMakerAwaitingApproval } from "./pages/market-maker";
 // Register mock brokers for development
 registerMockBrokers(mockBrokerConfigs);
 
@@ -125,8 +130,19 @@ const App = () => (
             </Route>
 
             {/* Dealer */}
+            <Route path="/dealer/requirements" element={<DealerRequirements />} />
             <Route path="/dealer/application" element={<DealerApplication />} />
             <Route path="/dealer/awaiting-approval" element={<DealerAwaitingApproval />} />
+
+            {/* Issuing House */}
+            <Route path="/issuing-house/requirements" element={<IssuingHouseRequirements />} />
+            <Route path="/issuing-house/application" element={<IssuingHouseApplication />} />
+            <Route path="/issuing-house/awaiting-approval" element={<IssuingHouseAwaitingApproval />} />
+
+            {/* Market Maker */}
+            <Route path="/market-maker/requirements" element={<MarketMakerRequirements />} />
+            <Route path="/market-maker/application" element={<MarketMakerApplication />} />
+            <Route path="/market-maker/awaiting-approval" element={<MarketMakerAwaitingApproval />} />
 
             {/* Broker Preview (deployment setup) */}
             <Route path="/preview" element={<PreviewLayout />}>
