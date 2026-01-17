@@ -35,6 +35,7 @@ interface AuthStore {
   login: (email: string, password: string) => Promise<boolean>;
   signup: (email: string, password: string) => Promise<boolean>;
   verifyOtp: (code: string) => Promise<boolean>;
+  getUser: (request: string) => Promise<boolean>;
   logout: () => void;
   setSelectedRole: (role: UserRole) => void;
   getSelectedRole: () => UserRole | null;
@@ -126,6 +127,17 @@ export const useAuthStore = create<AuthStore>()(
         } catch (error) {
           console.error("Signup failed:", error);
           set({ isLoading: false });
+          throw error;
+        }
+      },
+
+      getUser: async (request: string) => {
+        try {
+          const response = await platformApi.auth.getUser(request);
+
+          return true;
+        } catch (error) {
+          console.error("Get User failed:", error);
           throw error;
         }
       },

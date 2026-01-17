@@ -46,6 +46,14 @@ export interface VerifyOtpRequest {
   code: string;
 }
 
+export interface UserResponse {
+  companies: object[];
+  domains: [];
+  kyc: object[];
+  payments: object[];
+  services: [];
+}
+
 const apiURL = import.meta.env.VITE_API_URL;
 
 // ============================================================
@@ -189,6 +197,21 @@ export async function verifyOtp(
     },
     jwt_token: data.csrf_token, // the backend is sending it named csrf_token, this line aliases it as jwt_token
   };
+}
+
+export async function getUser(request: string): Promise<UserResponse> {
+  const response = await apiFetch(`${apiURL}/user`, {
+    method: "POST",
+    body: JSON.stringify(request),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    console.error(errorData);
+    throw new Error(errorData.message || "user.fetch.failed");
+  }
+  const data = await response.json();
+  return data;
 }
 
 /**

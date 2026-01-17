@@ -566,9 +566,14 @@ export default function Landing() {
                     Continue as Broker
                     <ArrowRight className="w-4 h-4 ml-1" />
                   </Link>
-                ) : (
+                ) : selectedRole === "dealer" ? (
                   <Link to="/dealer/dashboard">
                     Continue as Dealer
+                    <ArrowRight className="w-4 h-4 ml-1" />
+                  </Link>
+                ) : (
+                  <Link to="/user/dashboard">
+                    Apply as Broker
                     <ArrowRight className="w-4 h-4 ml-1" />
                   </Link>
                 )}
@@ -581,8 +586,10 @@ export default function Landing() {
               >
                 {selectedRole === "broker" ? (
                   <Link to="/signup">Apply as Dealer</Link>
+                ) : selectedRole === "dealer" ? (
+                  <Link to="/dealer/requirements">Apply as Broker</Link>
                 ) : (
-                  <Link to="/broker/requirements">Apply as Broker</Link>
+                  <Link to="/broker/requirements">Apply as Dealer</Link>
                 )}
               </Button>
             </div>
@@ -754,9 +761,14 @@ export default function Landing() {
                   Continue as Broker
                   <ArrowRight className="w-4 h-4 ml-1" />
                 </Link>
-              ) : (
+              ) : selectedRole === "dealer" ? (
                 <Link to="/dealer/dashboard">
                   Continue as Dealer
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </Link>
+              ) : (
+                <Link to="/signup">
+                  Apply as Broker
                   <ArrowRight className="w-4 h-4 ml-1" />
                 </Link>
               )}
@@ -929,8 +941,10 @@ export default function Landing() {
                 >
                   {selectedRole === "broker" ? (
                     <Link to="/broker/dashboard">Continue as Broker</Link>
-                  ) : (
+                  ) : selectedRole === "dealer" ? (
                     <Link to="/dealer/dashboard">Continue as Dealer</Link>
+                  ) : (
+                    <Link to="/broker/dashboard">Apply as Broker</Link>
                   )}
                 </Button>
                 <Button
@@ -941,8 +955,10 @@ export default function Landing() {
                 >
                   {selectedRole === "broker" ? (
                     <Link to="/dealer/requirements">Apply as Dealer</Link>
-                  ) : (
+                  ) : selectedRole === "dealer" ? (
                     <Link to="/broker/requirements">Apply as Broker</Link>
+                  ) : (
+                    <Link to="/dealer/requirements">Apply as Dealer</Link>
                   )}
                 </Button>
               </div>
