@@ -35,7 +35,7 @@ interface AuthStore {
   login: (email: string, password: string) => Promise<boolean>;
   signup: (email: string, password: string) => Promise<boolean>;
   verifyOtp: (code: string) => Promise<boolean>;
-  getUser: (request: string) => Promise<boolean>;
+  getUser: () => Promise<boolean>;
   logout: () => void;
   setSelectedRole: (role: UserRole) => void;
   getSelectedRole: () => UserRole | null;
@@ -124,10 +124,10 @@ export const useAuthStore = create<AuthStore>()(
         }
       },
 
-      getUser: async (request: string) => {
+      getUser: async () => {
         try {
-          const response = await platformApi.auth.getUser(request);
-
+          const response = await platformApi.auth.getUser();
+          console.log(response);
           return true;
         } catch (error) {
           console.error("Get User failed:", error);
