@@ -81,8 +81,7 @@ export const useAuthStore = create<AuthStore>()(
           });
 
           return true;
-        } catch (error) {
-          console.error("Login failed:", error);
+        } catch {
           set({ isLoading: false });
           return false;
         }
@@ -93,17 +92,8 @@ export const useAuthStore = create<AuthStore>()(
        */
       signup: async (email: string, password: string) => {
         set({ isLoading: true });
-        console.log(email, password, "signupresss");
         try {
-          const response = await platformApi.auth.signup({
-            email,
-            password,
-          });
-
-          console.log("====================================");
-
-          console.log(response, "signupresss");
-          console.log("====================================");
+          const response = await platformApi.auth.signup({ email, password });
           // save JWT Token to localStorage
           // if (response.jwt_token) {
           //   localStorage.setItem("auth_token", response.jwt_token);
@@ -128,7 +118,6 @@ export const useAuthStore = create<AuthStore>()(
 
           return true;
         } catch (error) {
-          console.error("Signup failed:", error);
           set({ isLoading: false });
           throw error;
         }
@@ -136,10 +125,6 @@ export const useAuthStore = create<AuthStore>()(
 
       verifyOtp: async (code: string) => {
         const email = get().pendingEmail;
-        console.log({
-          Email: email,
-          Code: code,
-        });
         if (!email) return false;
 
         set({ isLoading: true });
@@ -237,5 +222,3 @@ export const useAuthStore = create<AuthStore>()(
     }
   )
 );
-
-("DM Sans");
