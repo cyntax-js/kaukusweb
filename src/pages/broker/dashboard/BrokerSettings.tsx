@@ -44,8 +44,8 @@ export default function BrokerSettings() {
   })();
 
   const [generalSettings, setGeneralSettings] = useState({
-    companyName: application?.companyName || "My Broker",
-    legalName: application?.companyName || "My Broker Inc.",
+    companyName: application?.name || "My Broker",
+    legalName: application?.name || "My Broker Inc.",
     contactEmail: application?.contactEmail || "",
     supportEmail: "support@mybroker.com",
     phone: "+1 (555) 123-4567",
