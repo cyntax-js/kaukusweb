@@ -1,6 +1,6 @@
-import { Link, useLocation, Outlet } from "react-router-dom";
-import { cn } from "@/lib/utils";
+import { Outlet } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { NavLink } from "@/components/NavLink";
 import {
   Sidebar,
   SidebarContent,
@@ -20,7 +20,6 @@ import {
   TrendingUp,
   Package,
   Users,
-  FileText,
   BarChart3,
   Settings,
   LogOut,
@@ -28,24 +27,21 @@ import {
 } from "lucide-react";
 
 const sidebarItems = [
-  { title: "Dashboard", url: "/dealer/dashboard", icon: LayoutDashboard },
+  { title: "Dashboard", url: "/dealer/dashboard", icon: LayoutDashboard, end: true },
   { title: "Trading", url: "/dealer/dashboard/trading", icon: TrendingUp },
   { title: "Inventory", url: "/dealer/dashboard/inventory", icon: Package },
   { title: "Brokers", url: "/dealer/dashboard/brokers", icon: Users },
-  { title: "Reports", url: "/dealer/dashboard/reports", icon: FileText },
   { title: "Analytics", url: "/dealer/dashboard/analytics", icon: BarChart3 },
   { title: "Settings", url: "/dealer/dashboard/settings", icon: Settings },
 ];
 
 function DealerSidebar() {
-  const location = useLocation();
-
   return (
     <Sidebar className="border-r border-sidebar-border">
       <SidebarHeader className="p-4 border-b border-sidebar-border">
-        <Link to="/dealer/dashboard" className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-chart-2 flex items-center justify-center shadow-glow">
-            <Building2 className="w-5 h-5 text-white" />
+        <NavLink to="/dealer/dashboard" className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-chart-2 flex items-center justify-center">
+            <Building2 className="w-5 h-5 text-primary-foreground" />
           </div>
           <div>
             <span className="font-bold text-sidebar-foreground">ContiSX</span>
@@ -53,7 +49,7 @@ function DealerSidebar() {
               Dealer Admin
             </span>
           </div>
-        </Link>
+        </NavLink>
       </SidebarHeader>
       <SidebarContent className="px-2 py-4">
         <SidebarGroup>
@@ -65,18 +61,15 @@ function DealerSidebar() {
               {sidebarItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <Link
+                    <NavLink
                       to={item.url}
-                      className={cn(
-                        "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors",
-                        location.pathname === item.url
-                          ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                          : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
-                      )}
+                      end={item.end}
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                      activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-medium"
                     >
                       <item.icon className="w-5 h-5" />
                       <span>{item.title}</span>
-                    </Link>
+                    </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -90,10 +83,10 @@ function DealerSidebar() {
           className="w-full justify-start text-sidebar-foreground/70"
           asChild
         >
-          <Link to="/">
+          <NavLink to="/">
             <LogOut className="w-4 h-4 mr-2" />
             Exit Admin
-          </Link>
+          </NavLink>
         </Button>
       </SidebarFooter>
     </Sidebar>
