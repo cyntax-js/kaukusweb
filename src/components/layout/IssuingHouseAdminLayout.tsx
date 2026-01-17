@@ -1,6 +1,6 @@
-import { Link, useLocation, Outlet } from "react-router-dom";
-import { cn } from "@/lib/utils";
+import { Outlet } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { NavLink } from "@/components/NavLink";
 import {
   Sidebar,
   SidebarContent,
@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/sidebar";
 import {
   LayoutDashboard,
-  FileText,
   Users,
   Briefcase,
   BarChart3,
@@ -28,24 +27,21 @@ import {
 } from "lucide-react";
 
 const sidebarItems = [
-  { title: "Dashboard", url: "/issuing-house/dashboard", icon: LayoutDashboard },
+  { title: "Dashboard", url: "/issuing-house/dashboard", icon: LayoutDashboard, end: true },
   { title: "New Offering", url: "/issuing-house/dashboard/new-offering", icon: PlusCircle },
-  { title: "Active Deals", url: "/issuing-house/dashboard/deals", icon: Briefcase },
+  { title: "Active Deals", url: "/issuing-house/dashboard/active-deals", icon: Briefcase },
   { title: "Investors", url: "/issuing-house/dashboard/investors", icon: Users },
-  { title: "Documents", url: "/issuing-house/dashboard/documents", icon: FileText },
   { title: "Analytics", url: "/issuing-house/dashboard/analytics", icon: BarChart3 },
   { title: "Settings", url: "/issuing-house/dashboard/settings", icon: Settings },
 ];
 
 function IssuingHouseSidebar() {
-  const location = useLocation();
-
   return (
     <Sidebar className="border-r border-sidebar-border">
       <SidebarHeader className="p-4 border-b border-sidebar-border">
-        <Link to="/issuing-house/dashboard" className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-chart-4 flex items-center justify-center shadow-glow">
-            <Landmark className="w-5 h-5 text-white" />
+        <NavLink to="/issuing-house/dashboard" className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-chart-4 flex items-center justify-center">
+            <Landmark className="w-5 h-5 text-primary-foreground" />
           </div>
           <div>
             <span className="font-bold text-sidebar-foreground">ContiSX</span>
@@ -53,7 +49,7 @@ function IssuingHouseSidebar() {
               Issuing House
             </span>
           </div>
-        </Link>
+        </NavLink>
       </SidebarHeader>
       <SidebarContent className="px-2 py-4">
         <SidebarGroup>
@@ -65,18 +61,15 @@ function IssuingHouseSidebar() {
               {sidebarItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <Link
+                    <NavLink
                       to={item.url}
-                      className={cn(
-                        "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors",
-                        location.pathname === item.url
-                          ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                          : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
-                      )}
+                      end={item.end}
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                      activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-medium"
                     >
                       <item.icon className="w-5 h-5" />
                       <span>{item.title}</span>
-                    </Link>
+                    </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -90,10 +83,10 @@ function IssuingHouseSidebar() {
           className="w-full justify-start text-sidebar-foreground/70"
           asChild
         >
-          <Link to="/">
+          <NavLink to="/">
             <LogOut className="w-4 h-4 mr-2" />
             Exit Admin
-          </Link>
+          </NavLink>
         </Button>
       </SidebarFooter>
     </Sidebar>
