@@ -3,7 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { MainLayout, AuthLayout, BrokerAdminLayout } from "@/components/layout";
+import { MainLayout, AuthLayout, BrokerAdminLayout, DealerAdminLayout, IssuingHouseAdminLayout, MarketMakerAdminLayout } from "@/components/layout";
 import { GuestRoute, ProtectedRoute } from "@/components/AuthWrappers";
 
 // Broker Theme System
@@ -48,13 +48,14 @@ import {
 } from "./pages/broker/dashboard";
 
 // Dealer Pages
-import { DealerRequirements, DealerApplication, DealerAwaitingApproval } from "./pages/dealer";
+import { DealerRequirements, DealerApplication, DealerAwaitingApproval, DealerDashboard } from "./pages/dealer";
 
 // Issuing House Pages
-import { IssuingHouseRequirements, IssuingHouseApplication, IssuingHouseAwaitingApproval } from "./pages/issuing-house";
+import { IssuingHouseRequirements, IssuingHouseApplication, IssuingHouseAwaitingApproval, IssuingHouseDashboard } from "./pages/issuing-house";
 
 // Market Maker Pages
-import { MarketMakerRequirements, MarketMakerApplication, MarketMakerAwaitingApproval } from "./pages/market-maker";
+import { MarketMakerRequirements, MarketMakerApplication, MarketMakerAwaitingApproval, MarketMakerDashboard } from "./pages/market-maker";
+
 // Register mock brokers for development
 registerMockBrokers(mockBrokerConfigs);
 
@@ -133,16 +134,25 @@ const App = () => (
             <Route path="/dealer/requirements" element={<DealerRequirements />} />
             <Route path="/dealer/application" element={<DealerApplication />} />
             <Route path="/dealer/awaiting-approval" element={<DealerAwaitingApproval />} />
+            <Route path="/dealer/dashboard" element={<DealerAdminLayout />}>
+              <Route index element={<DealerDashboard />} />
+            </Route>
 
             {/* Issuing House */}
             <Route path="/issuing-house/requirements" element={<IssuingHouseRequirements />} />
             <Route path="/issuing-house/application" element={<IssuingHouseApplication />} />
             <Route path="/issuing-house/awaiting-approval" element={<IssuingHouseAwaitingApproval />} />
+            <Route path="/issuing-house/dashboard" element={<IssuingHouseAdminLayout />}>
+              <Route index element={<IssuingHouseDashboard />} />
+            </Route>
 
             {/* Market Maker */}
             <Route path="/market-maker/requirements" element={<MarketMakerRequirements />} />
             <Route path="/market-maker/application" element={<MarketMakerApplication />} />
             <Route path="/market-maker/awaiting-approval" element={<MarketMakerAwaitingApproval />} />
+            <Route path="/market-maker/dashboard" element={<MarketMakerAdminLayout />}>
+              <Route index element={<MarketMakerDashboard />} />
+            </Route>
 
             {/* Broker Preview (deployment setup) */}
             <Route path="/preview" element={<PreviewLayout />}>
