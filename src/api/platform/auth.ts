@@ -4,7 +4,7 @@
  * ============================================================
  */
 
-import { apiFetch } from "@/lib/utils";
+import { apiFetch, apiClient } from "@/lib/utils";
 import { getFriendlyErrorMessage } from "@/lib/utils";
 
 // ============================================================
@@ -64,44 +64,54 @@ const apiURL = import.meta.env.VITE_API_URL;
  * Log in a user with email and password
  */
 export async function login(request: LoginRequest): Promise<AuthResponse> {
-  const response = await apiFetch(`${apiURL}/auth/identity/caucus`, {
-    method: "POST",
-    body: JSON.stringify(request),
-  });
+  try {
+    const response = await apiClient.post("/auth/identity/caucus", request);
+    const data = await response.data;
 
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || "Login failed");
+    return {
+      user: {
+        id: data.uid,
+        email: data.email,
+        name: data.username || data.name,
+        role: data.role,
+        state: data.state,
+        createdAt: data.created_at,
+      },
+      jwt_token: data.csrf_token,
+    };
+  } catch (error) {
+    const message = error.message || "Login failed";
+    throw new Error(message);
   }
-
-  const data = await response.json();
-
-  return {
-    user: {
-      id: data.uid,
-      email: data.email,
-      name: data.username || data.name,
-      role: data.role,
-      state: data.state,
-      createdAt: data.created_at,
-    },
-    jwt_token: data.csrf_token, // the backend is sending it named csrf_token, this line aliases it as jwt_token
-  };
 }
 
 /**
  * Register a new user
  */
+
 export async function signup(request: SignupRequest): Promise<AuthResponse> {
-  const response = await apiFetch(`${apiURL}/auth/identity/users`, {
-    method: "POST",
-    body: JSON.stringify(request),
-  });
+  try {
+    const response = await apiClient.post("/auth/identity/users", request);
+    const data = await response.data;
+    return {
+      user: {
+        id: data.uid,
+        email: data.email,
+        name: data.username,
+        role: data.role,
+        state: data.state,
+        createdAt: data.created_at,
+      },
+      jwt_token: data.csrf_token, // the backend is sending it named csrf_token, this line aliases it as jwt_token
+    };
+  } catch (error) {
+    const errorData = error.response?.data;
 
-  if (!response.ok) {
-    const errorData = await response.json();
-
-    if (Array.isArray(errorData.errors) && errorData.errors.length > 0) {
+    if (
+      errorData &&
+      Array.isArray(errorData.errors) &&
+      errorData.errors.length > 0
+    ) {
       const friendlyErrors = errorData.errors.map((code: string) =>
         getFriendlyErrorMessage(code),
       );
@@ -110,108 +120,98 @@ export async function signup(request: SignupRequest): Promise<AuthResponse> {
     }
 
     throw new Error(
-      getFriendlyErrorMessage(errorData.message || "server.error"),
+      getFriendlyErrorMessage(
+        errorData?.message || error.message || "server.error",
+      ),
     );
   }
-
-  const data = await response.json();
-
-  return {
-    user: {
-      id: data.uid,
-      email: data.email,
-      name: data.username,
-      role: data.role,
-      state: data.state,
-      createdAt: data.created_at,
-    },
-    jwt_token: data.csrf_token, // the backend is sending it named csrf_token, this line aliases it as jwt_token
-  };
 }
 
 export async function resendEmailVerification(
   request: ResendEmailVerificationRequest,
 ): Promise<void> {
-  const response = await apiFetch(
-    `${apiURL}/auth/identity/users/email/generate_code`,
-    {
-      method: "POST",
-      body: JSON.stringify(request),
-    },
-  );
+  try {
+    await apiClient.post("/auth/identity/users/email/generate_code", request);
+    console.log("Verification mail sent successfully");
+  } catch (error) {
+    const errorData = error.response?.data;
 
-  if (!response.ok) {
-    const errorData = await response.json();
+    if (errorData) {
+      if (Array.isArray(errorData.errors) && errorData.errors.length > 0) {
+        const friendlyErrors = errorData.errors.map((code: string) =>
+          getFriendlyErrorMessage(code),
+        );
+        throw new Error(friendlyErrors.join("\n"));
+      }
 
-    if (Array.isArray(errorData.errors) && errorData.errors.length > 0) {
-      const friendlyErrors = errorData.errors.map((code: string) =>
-        getFriendlyErrorMessage(code),
-      );
-      throw new Error(friendlyErrors.join("\n"));
+      if (errorData.message) {
+        throw new Error(getFriendlyErrorMessage(errorData.message));
+      }
     }
 
     throw new Error(
-      getFriendlyErrorMessage(errorData.message || "email.resend_failed"),
+      getFriendlyErrorMessage(error.message || "email.resend_failed"),
     );
-  } else {
-    console.log(response);
   }
 }
 
 export async function verifyOtp(
   request: VerifyOtpRequest,
 ): Promise<AuthResponse> {
-  const response = await apiFetch(
-    `${apiURL}/auth/identity/users/email/confirm_code`,
-    {
-      method: "POST",
-      body: JSON.stringify(request),
-    },
-  );
+  try {
+    const response = await apiClient.post(
+      "/auth/identity/users/email/confirm_code",
+      request,
+    );
+    const data = await response.data;
+    return {
+      user: {
+        id: data.uid,
+        email: data.email,
+        name: data.username || data.name,
+        role: data.role,
+        state: data.state, // active or verified
+        createdAt: data.created_at,
+      },
+      jwt_token: data.csrf_token, // the backend is sending it named csrf_token, this line aliases it as jwt_token
+    };
+  } catch (error) {
+    const errorData = error.response?.data;
 
-  if (!response.ok) {
-    const errorData = await response.json();
+    if (errorData) {
+      if (Array.isArray(errorData.errors) && errorData.errors.length > 0) {
+        const friendlyErrors = errorData.errors.map((code: string) =>
+          getFriendlyErrorMessage(code),
+        );
+        throw new Error(friendlyErrors.join("\n"));
+      }
 
-    if (Array.isArray(errorData.errors) && errorData.errors.length > 0) {
-      const friendlyErrors = errorData.errors.map((code: string) =>
-        getFriendlyErrorMessage(code),
-      );
-      throw new Error(friendlyErrors.join("\n"));
+      if (errorData.message) {
+        throw new Error(getFriendlyErrorMessage(errorData.message));
+      }
     }
 
     throw new Error(
-      getFriendlyErrorMessage(errorData.message || "otp.invalid"),
+      getFriendlyErrorMessage(error.message || "email.resend_failed"),
     );
   }
-
-  const data = await response.json();
-
-  return {
-    user: {
-      id: data.uid,
-      email: data.email,
-      name: data.username || data.name,
-      role: data.role,
-      state: data.state, // active or verified
-      createdAt: data.created_at,
-    },
-    jwt_token: data.csrf_token, // the backend is sending it named csrf_token, this line aliases it as jwt_token
-  };
 }
 
-export async function getUser(request: string): Promise<UserResponse> {
-  const response = await apiFetch(`${apiURL}/user`, {
-    method: "POST",
-    body: JSON.stringify(request),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
+export async function getUser(): Promise<UserResponse> {
+  try {
+    const response = await apiClient.get("/broker/user");
+    return {
+      companies: response.data.companies,
+      domains: response.data.domains,
+      kyc: response.data.kyc,
+      payments: response.data.payments,
+      services: response.data.services,
+    };
+  } catch (error) {
+    const errorData = error.response?.data;
     console.error(errorData);
     throw new Error(errorData.message || "user.fetch.failed");
   }
-  const data = await response.json();
-  return data;
 }
 
 /**
@@ -219,9 +219,7 @@ export async function getUser(request: string): Promise<UserResponse> {
  */
 export async function logout(): Promise<void> {
   try {
-    await apiFetch(`${apiURL}/auth/identity/sessions`, {
-      method: "DELETE",
-    });
+    await apiClient.delete(`${apiURL}/auth/identity/sessions`);
   } catch (err) {
     console.warn("Server logout failed:", err);
   }
