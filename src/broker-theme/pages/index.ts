@@ -16,3 +16,4 @@ export { default as PortfolioPage } from './PortfolioPage';
 export { default as SettingsPage } from './SettingsPage';
 export { default as AboutPage } from './AboutPage';
 export { default as LegalPage } from './LegalPage';
+export { default as OTCDexPage } from './OTCDexPage';

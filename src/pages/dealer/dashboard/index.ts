@@ -4,7 +4,7 @@ export { default as DealerBrokers } from './DealerBrokers';
 export { default as DealerSettings } from './DealerSettings';
 export { default as DealerAnalytics } from './DealerAnalytics';
 export { default as DealerPrimaryMarket } from './DealerPrimaryMarket';
-export { default as DealerSecondaryMarket } from './DealerSecondaryMarket';
 export { default as DealerRiskCompliance } from './DealerRiskCompliance';
 export { default as DealerSettlement } from './DealerSettlement';
 export { default as DealerReports } from './DealerReports';
+export { default as DealerOTCDex } from './DealerOTCDex';
