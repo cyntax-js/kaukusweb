@@ -25,10 +25,13 @@ import {
 } from "lucide-react";
 
 const sidebarItems = [
-  { title: "Dashboard", url: "/market-maker/dashboard", icon: LayoutDashboard, end: true },
-  { title: "Quoting Engine", url: "/market-maker/dashboard/quoting-engine", icon: Zap },
-  { title: "Risk Management", url: "/market-maker/dashboard/risk-management", icon: Shield },
-  { title: "Analytics", url: "/market-maker/dashboard/analytics", icon: BarChart3 },
+  { title: "Overview", url: "/market-maker/dashboard", icon: LayoutDashboard, end: true },
+  { title: "Quote Management", url: "/market-maker/dashboard/quoting-engine", icon: Zap },
+  { title: "Market Depth", url: "/market-maker/dashboard/market-depth", icon: BarChart3 },
+  { title: "Inventory Control", url: "/market-maker/dashboard/inventory", icon: BarChart3 },
+  { title: "Performance", url: "/market-maker/dashboard/performance", icon: BarChart3 },
+  { title: "Compliance", url: "/market-maker/dashboard/compliance", icon: Shield },
+  { title: "Reports", url: "/market-maker/dashboard/reports", icon: BarChart3 },
   { title: "Settings", url: "/market-maker/dashboard/settings", icon: Settings },
 ];
 

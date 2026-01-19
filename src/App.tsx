@@ -47,13 +47,16 @@ import {
   ThemeGallery,
 } from "./pages/broker/dashboard";
 
+// Dashboard Selection
+import DashboardSelection from "./pages/DashboardSelection";
+
 // Dealer Pages
 import { DealerRequirements, DealerApplication, DealerAwaitingApproval, DealerDashboard } from "./pages/dealer";
-import { DealerTrading, DealerInventory, DealerBrokers } from "./pages/dealer/dashboard";
+import { DealerTrading, DealerInventory, DealerBrokers, DealerPrimaryMarket, DealerSecondaryMarket, DealerRiskCompliance, DealerSettlement, DealerReports } from "./pages/dealer/dashboard";
 
 // Issuing House Pages
 import { IssuingHouseRequirements, IssuingHouseApplication, IssuingHouseAwaitingApproval, IssuingHouseDashboard } from "./pages/issuing-house";
-import { NewOffering, ActiveDeals, Investors } from "./pages/issuing-house/dashboard";
+import { NewOffering, ActiveDeals, Investors, OfferManagement, SubscriptionMonitoring, AllocationAllotment, RegulatoryFilings, PostListing, IssuingHouseReports } from "./pages/issuing-house/dashboard";
 
 // Market Maker Pages
 import { MarketMakerRequirements, MarketMakerApplication, MarketMakerAwaitingApproval, MarketMakerDashboard } from "./pages/market-maker";
@@ -115,6 +118,7 @@ const App = () => (
 
           <Route element={<ProtectedRoute />}>
             <Route path="/role-selection" element={<RoleSelection />} />
+            <Route path="/dashboard-selection" element={<DashboardSelection />} />
 
             {/* Broker Onboarding */}
             <Route path="/broker/requirements" element={<BrokerRequirements />} />
@@ -139,8 +143,13 @@ const App = () => (
             <Route path="/dealer/awaiting-approval" element={<DealerAwaitingApproval />} />
             <Route path="/dealer/dashboard" element={<DealerAdminLayout />}>
               <Route index element={<DealerDashboard />} />
+              <Route path="primary-market" element={<DealerPrimaryMarket />} />
+              <Route path="secondary-market" element={<DealerSecondaryMarket />} />
               <Route path="trading" element={<DealerTrading />} />
               <Route path="inventory" element={<DealerInventory />} />
+              <Route path="risk" element={<DealerRiskCompliance />} />
+              <Route path="settlement" element={<DealerSettlement />} />
+              <Route path="reports" element={<DealerReports />} />
               <Route path="brokers" element={<DealerBrokers />} />
             </Route>
 
@@ -150,8 +159,14 @@ const App = () => (
             <Route path="/issuing-house/awaiting-approval" element={<IssuingHouseAwaitingApproval />} />
             <Route path="/issuing-house/dashboard" element={<IssuingHouseAdminLayout />}>
               <Route index element={<IssuingHouseDashboard />} />
+              <Route path="offers" element={<OfferManagement />} />
               <Route path="new-offering" element={<NewOffering />} />
               <Route path="active-deals" element={<ActiveDeals />} />
+              <Route path="subscriptions" element={<SubscriptionMonitoring />} />
+              <Route path="allocation" element={<AllocationAllotment />} />
+              <Route path="filings" element={<RegulatoryFilings />} />
+              <Route path="post-listing" element={<PostListing />} />
+              <Route path="reports" element={<IssuingHouseReports />} />
               <Route path="investors" element={<Investors />} />
             </Route>
 
