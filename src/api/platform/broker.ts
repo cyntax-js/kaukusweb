@@ -7,7 +7,7 @@
  * Used by: Broker application flow, broker dashboard.
  */
 
-import { mockResponse, DELAYS } from "../client";
+import { mockResponse, generateId, DELAYS } from "../client";
 import { apiClient, getFriendlyErrorMessage } from "@/lib/utils";
 
 // ============================================================
