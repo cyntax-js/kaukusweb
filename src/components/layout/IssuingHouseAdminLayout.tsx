@@ -27,11 +27,13 @@ import {
 } from "lucide-react";
 
 const sidebarItems = [
-  { title: "Dashboard", url: "/issuing-house/dashboard", icon: LayoutDashboard, end: true },
-  { title: "New Offering", url: "/issuing-house/dashboard/new-offering", icon: PlusCircle },
-  { title: "Active Deals", url: "/issuing-house/dashboard/active-deals", icon: Briefcase },
-  { title: "Investors", url: "/issuing-house/dashboard/investors", icon: Users },
-  { title: "Analytics", url: "/issuing-house/dashboard/analytics", icon: BarChart3 },
+  { title: "Overview", url: "/issuing-house/dashboard", icon: LayoutDashboard, end: true },
+  { title: "Offer Management", url: "/issuing-house/dashboard/offers", icon: Briefcase },
+  { title: "Subscriptions", url: "/issuing-house/dashboard/subscriptions", icon: Users },
+  { title: "Allocation", url: "/issuing-house/dashboard/allocation", icon: PlusCircle },
+  { title: "Regulatory Filings", url: "/issuing-house/dashboard/filings", icon: BarChart3 },
+  { title: "Post-Listing", url: "/issuing-house/dashboard/post-listing", icon: Landmark },
+  { title: "Reports", url: "/issuing-house/dashboard/reports", icon: BarChart3 },
   { title: "Settings", url: "/issuing-house/dashboard/settings", icon: Settings },
 ];
 
