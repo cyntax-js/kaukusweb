@@ -52,11 +52,11 @@ import DashboardSelection from "./pages/DashboardSelection";
 
 // Dealer Pages
 import { DealerRequirements, DealerApplication, DealerAwaitingApproval, DealerDashboard } from "./pages/dealer";
-import { DealerTrading, DealerInventory, DealerBrokers, DealerPrimaryMarket, DealerSecondaryMarket, DealerRiskCompliance, DealerSettlement, DealerReports } from "./pages/dealer/dashboard";
+import { DealerTrading, DealerInventory, DealerBrokers, DealerPrimaryMarket, DealerSecondaryMarket, DealerRiskCompliance, DealerSettlement, DealerReports, DealerSettings } from "./pages/dealer/dashboard";
 
 // Issuing House Pages
 import { IssuingHouseRequirements, IssuingHouseApplication, IssuingHouseAwaitingApproval, IssuingHouseDashboard } from "./pages/issuing-house";
-import { NewOffering, ActiveDeals, Investors, OfferManagement, SubscriptionMonitoring, AllocationAllotment, RegulatoryFilings, PostListing, IssuingHouseReports } from "./pages/issuing-house/dashboard";
+import { NewOffering, ActiveDeals, Investors, OfferManagement, SubscriptionMonitoring, AllocationAllotment, RegulatoryFilings, PostListing, IssuingHouseReports, IssuingHouseSettings } from "./pages/issuing-house/dashboard";
 
 // Market Maker Pages
 import { MarketMakerRequirements, MarketMakerApplication, MarketMakerAwaitingApproval, MarketMakerDashboard } from "./pages/market-maker";
@@ -150,6 +150,7 @@ const App = () => (
               <Route path="risk" element={<DealerRiskCompliance />} />
               <Route path="settlement" element={<DealerSettlement />} />
               <Route path="reports" element={<DealerReports />} />
+              <Route path="settings" element={<DealerSettings />} />
               <Route path="brokers" element={<DealerBrokers />} />
             </Route>
 
@@ -167,6 +168,7 @@ const App = () => (
               <Route path="filings" element={<RegulatoryFilings />} />
               <Route path="post-listing" element={<PostListing />} />
               <Route path="reports" element={<IssuingHouseReports />} />
+              <Route path="settings" element={<IssuingHouseSettings />} />
               <Route path="investors" element={<Investors />} />
             </Route>
 
