@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
-import { ChevronDown, Search, User, Wallet, LogOut } from "lucide-react";
+import { ChevronDown, Search, User, Wallet, LogOut, Repeat } from "lucide-react";
 import { toast } from "sonner";
 import BrokerLanguageSwitcher from "./BrokerLanguageSwitcher";
 
@@ -191,6 +191,20 @@ const AppHeader = ({ className }: AppHeaderProps) => {
                 Secondary Market
               </Link>
             )}
+
+            {/* OTC DEX link */}
+            <Link
+              to={`${routePrefix}/otc-dex`}
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                location.pathname.includes("/otc-dex")
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <Repeat className="h-4 w-4" />
+              OTC DEX
+            </Link>
 
             {/* Portfolio link */}
             <Link

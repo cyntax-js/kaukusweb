@@ -16,6 +16,7 @@ import {
   SettingsPage,
   AboutPage,
   LegalPage,
+  OTCDexPage,
 } from '../pages';
 
 /**
@@ -41,6 +42,8 @@ export const AppRoutes = () => (
     <Route path="markets/private/:marketId" element={<MarketsPage />} />
     <Route path="markets/secondary/:marketId" element={<MarketsPage />} />
     <Route path="trade/:serviceType/:pair" element={<TradingPage />} />
+    <Route path="otc-dex" element={<OTCDexPage />} />
+    <Route path="otc-dex/:offerId" element={<OTCDexPage />} />
     <Route path="portfolio" element={<PortfolioPage />} />
     <Route path="settings" element={<SettingsPage />} />
   </>
