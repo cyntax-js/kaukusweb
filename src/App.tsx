@@ -60,7 +60,7 @@ import { NewOffering, ActiveDeals, Investors, OfferManagement, SubscriptionMonit
 
 // Market Maker Pages
 import { MarketMakerRequirements, MarketMakerApplication, MarketMakerAwaitingApproval, MarketMakerDashboard } from "./pages/market-maker";
-import { QuotingEngine, RiskManagement } from "./pages/market-maker/dashboard";
+import { QuotingEngine, RiskManagement, QuoteManagement, MarketDepth, InventoryControl, PerformanceMetrics, CompliancePenalties, MarketMakerReports } from "./pages/market-maker/dashboard";
 
 // Register mock brokers for development
 registerMockBrokers(mockBrokerConfigs);
@@ -176,7 +176,12 @@ const App = () => (
             <Route path="/market-maker/awaiting-approval" element={<MarketMakerAwaitingApproval />} />
             <Route path="/market-maker/dashboard" element={<MarketMakerAdminLayout />}>
               <Route index element={<MarketMakerDashboard />} />
-              <Route path="quoting-engine" element={<QuotingEngine />} />
+              <Route path="quoting-engine" element={<QuoteManagement />} />
+              <Route path="market-depth" element={<MarketDepth />} />
+              <Route path="inventory" element={<InventoryControl />} />
+              <Route path="performance" element={<PerformanceMetrics />} />
+              <Route path="compliance" element={<CompliancePenalties />} />
+              <Route path="reports" element={<MarketMakerReports />} />
               <Route path="risk-management" element={<RiskManagement />} />
             </Route>
 

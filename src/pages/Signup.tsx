@@ -47,7 +47,7 @@ export default function Signup() {
 
     try {
       await signup(email, password);
-      navigate("/verify-email");
+      navigate("/role-selection");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
       setError(msg);
