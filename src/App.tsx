@@ -20,6 +20,7 @@ import {
   SettingsPage as BrokerSettingsPage,
   AboutPage as BrokerAboutPage,
   LegalPage as BrokerLegalPage,
+  OTCDexPage as BrokerOTCDexPage,
 } from "@/broker-theme/pages";
 
 // Platform Pages
@@ -52,11 +53,11 @@ import DashboardSelection from "./pages/DashboardSelection";
 
 // Dealer Pages
 import { DealerRequirements, DealerApplication, DealerAwaitingApproval, DealerDashboard } from "./pages/dealer";
-import { DealerTrading, DealerInventory, DealerBrokers, DealerPrimaryMarket, DealerSecondaryMarket, DealerRiskCompliance, DealerSettlement, DealerReports, DealerSettings } from "./pages/dealer/dashboard";
+import { DealerTrading, DealerInventory, DealerBrokers, DealerPrimaryMarket, DealerOTCDex, DealerRiskCompliance, DealerSettlement, DealerReports, DealerSettings } from "./pages/dealer/dashboard";
 
 // Issuing House Pages
 import { IssuingHouseRequirements, IssuingHouseApplication, IssuingHouseAwaitingApproval, IssuingHouseDashboard } from "./pages/issuing-house";
-import { NewOffering, ActiveDeals, Investors, OfferManagement, SubscriptionMonitoring, AllocationAllotment, RegulatoryFilings, PostListing, IssuingHouseReports, IssuingHouseSettings } from "./pages/issuing-house/dashboard";
+import { NewOffering, ActiveDeals, Investors, Underwriters, OfferManagement, SubscriptionMonitoring, AllocationAllotment, RegulatoryFilings, PostListing, IssuingHouseReports, IssuingHouseSettings } from "./pages/issuing-house/dashboard";
 
 // Market Maker Pages
 import { MarketMakerRequirements, MarketMakerApplication, MarketMakerAwaitingApproval, MarketMakerDashboard } from "./pages/market-maker";
@@ -67,7 +68,7 @@ registerMockBrokers(mockBrokerConfigs);
 
 const queryClient = new QueryClient();
 
-// Shared broker app routes (markets, trading, portfolio, settings)
+// Shared broker app routes (markets, trading, portfolio, settings, OTC DEX)
 const BrokerAppRoutes = () => (
   <>
     <Route path="markets" element={<BrokerMarketsPage />} />
@@ -75,6 +76,8 @@ const BrokerAppRoutes = () => (
     <Route path="markets/private/:marketId" element={<BrokerMarketsPage />} />
     <Route path="markets/secondary/:marketId" element={<BrokerMarketsPage />} />
     <Route path="trade/:serviceType/:pair" element={<BrokerTradingPage />} />
+    <Route path="otc-dex" element={<BrokerOTCDexPage />} />
+    <Route path="otc-dex/:offerId" element={<BrokerOTCDexPage />} />
     <Route path="portfolio" element={<BrokerPortfolioPage />} />
     <Route path="settings" element={<BrokerSettingsPage />} />
   </>
@@ -144,7 +147,7 @@ const App = () => (
             <Route path="/dealer/dashboard" element={<DealerAdminLayout />}>
               <Route index element={<DealerDashboard />} />
               <Route path="primary-market" element={<DealerPrimaryMarket />} />
-              <Route path="secondary-market" element={<DealerSecondaryMarket />} />
+              <Route path="otc-dex" element={<DealerOTCDex />} />
               <Route path="trading" element={<DealerTrading />} />
               <Route path="inventory" element={<DealerInventory />} />
               <Route path="risk" element={<DealerRiskCompliance />} />
@@ -170,6 +173,7 @@ const App = () => (
               <Route path="reports" element={<IssuingHouseReports />} />
               <Route path="settings" element={<IssuingHouseSettings />} />
               <Route path="investors" element={<Investors />} />
+              <Route path="underwriters" element={<Underwriters />} />
             </Route>
 
             {/* Market Maker */}

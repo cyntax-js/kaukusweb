@@ -8,13 +8,27 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Progress } from "@/components/ui/progress";
-import { CalendarIcon, FileText, Users, DollarSign, CheckCircle2 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { CalendarIcon, FileText, Users, DollarSign, CheckCircle2, Shield } from "lucide-react";
 import { format } from "date-fns";
+
+const mockUnderwriters = [
+  { id: "uw1", name: "First Bank Capital Markets", type: "Lead" },
+  { id: "uw2", name: "Stanbic IBTC", type: "Co-Lead" },
+  { id: "uw3", name: "Chapel Hill Denham", type: "Syndicate" },
+  { id: "uw4", name: "Vetiva Capital", type: "Syndicate" },
+];
 
 export default function NewOffering() {
   const [step, setStep] = useState(1);
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
+  const [offeringType, setOfferingType] = useState<string>("");
+  const [hasUnderwriter, setHasUnderwriter] = useState(false);
+  const [selectedUnderwriter, setSelectedUnderwriter] = useState<string>("");
+  const [enableSecondaryTrading, setEnableSecondaryTrading] = useState(false);
+
+  const isPrivateMarket = offeringType === "private";
 
   const steps = [
     { id: 1, title: "Basic Info", icon: FileText },
@@ -66,7 +80,7 @@ export default function NewOffering() {
 
             <div className="space-y-2">
               <Label htmlFor="type">Offering Type</Label>
-              <Select>
+              <Select value={offeringType} onValueChange={setOfferingType}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select type" />
                 </SelectTrigger>
@@ -88,6 +102,49 @@ export default function NewOffering() {
               <Label htmlFor="description">Description</Label>
               <Textarea id="description" placeholder="Brief description of the offering" rows={4} />
             </div>
+
+            {/* Underwriter Section */}
+            <div className="space-y-4 pt-4 border-t">
+              <div className="flex items-center justify-between p-4 rounded-lg border border-border bg-secondary/20">
+                <div className="flex items-center gap-3">
+                  <Shield className="w-5 h-5 text-primary" />
+                  <div>
+                    <p className="font-medium">Has Underwriter</p>
+                    <p className="text-sm text-muted-foreground">This offering is backed by an underwriter</p>
+                  </div>
+                </div>
+                <Switch checked={hasUnderwriter} onCheckedChange={setHasUnderwriter} />
+              </div>
+
+              {hasUnderwriter && (
+                <div className="space-y-2">
+                  <Label>Select Underwriter</Label>
+                  <Select value={selectedUnderwriter} onValueChange={setSelectedUnderwriter}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choose an underwriter" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {mockUnderwriters.map((uw) => (
+                        <SelectItem key={uw.id} value={uw.id}>
+                          {uw.name} ({uw.type})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+            </div>
+
+            {/* Secondary Market Trading (only for Private Placement) */}
+            {isPrivateMarket && (
+              <div className="flex items-center justify-between p-4 rounded-lg border border-chart-4/30 bg-chart-4/10">
+                <div>
+                  <p className="font-medium">Enable Secondary Market Trading</p>
+                  <p className="text-sm text-muted-foreground">Allow this private market asset to be traded on the secondary market after issuance</p>
+                </div>
+                <Switch checked={enableSecondaryTrading} onCheckedChange={setEnableSecondaryTrading} />
+              </div>
+            )}
 
             <div className="flex justify-end pt-4">
               <Button onClick={() => setStep(2)}>Continue</Button>
