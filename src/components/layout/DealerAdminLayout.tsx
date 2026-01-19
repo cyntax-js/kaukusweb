@@ -27,11 +27,13 @@ import {
 } from "lucide-react";
 
 const sidebarItems = [
-  { title: "Dashboard", url: "/dealer/dashboard", icon: LayoutDashboard, end: true },
-  { title: "Trading", url: "/dealer/dashboard/trading", icon: TrendingUp },
+  { title: "Overview", url: "/dealer/dashboard", icon: LayoutDashboard, end: true },
+  { title: "Primary Market", url: "/dealer/dashboard/primary-market", icon: Building2 },
+  { title: "Secondary Market", url: "/dealer/dashboard/secondary-market", icon: TrendingUp },
   { title: "Inventory", url: "/dealer/dashboard/inventory", icon: Package },
-  { title: "Brokers", url: "/dealer/dashboard/brokers", icon: Users },
-  { title: "Analytics", url: "/dealer/dashboard/analytics", icon: BarChart3 },
+  { title: "Risk & Compliance", url: "/dealer/dashboard/risk", icon: BarChart3 },
+  { title: "Settlement", url: "/dealer/dashboard/settlement", icon: Users },
+  { title: "Reports", url: "/dealer/dashboard/reports", icon: BarChart3 },
   { title: "Settings", url: "/dealer/dashboard/settings", icon: Settings },
 ];
 
