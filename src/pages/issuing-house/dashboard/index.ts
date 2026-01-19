@@ -9,3 +9,4 @@ export { default as AllocationAllotment } from './AllocationAllotment';
 export { default as RegulatoryFilings } from './RegulatoryFilings';
 export { default as PostListing } from './PostListing';
 export { default as IssuingHouseReports } from './IssuingHouseReports';
+export { default as Underwriters } from './Underwriters';
