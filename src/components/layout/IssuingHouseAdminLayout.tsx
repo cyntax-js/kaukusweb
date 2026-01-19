@@ -25,11 +25,13 @@ import {
   LogOut,
   Landmark,
   PlusCircle,
+  Shield,
 } from "lucide-react";
 
 const sidebarItems = [
   { title: "Overview", url: "/issuing-house/dashboard", icon: LayoutDashboard, end: true },
   { title: "Offer Management", url: "/issuing-house/dashboard/offers", icon: Briefcase },
+  { title: "Underwriters", url: "/issuing-house/dashboard/underwriters", icon: Shield },
   { title: "Subscriptions", url: "/issuing-house/dashboard/subscriptions", icon: Users },
   { title: "Allocation", url: "/issuing-house/dashboard/allocation", icon: PlusCircle },
   { title: "Regulatory Filings", url: "/issuing-house/dashboard/filings", icon: BarChart3 },
