@@ -29,11 +29,12 @@ import {
 
 const sidebarItems = [
   { title: "Overview", url: "/dealer/dashboard", icon: LayoutDashboard, end: true },
+  { title: "OTC DEX", url: "/dealer/dashboard/otc-dex", icon: TrendingUp },
   { title: "Primary Market", url: "/dealer/dashboard/primary-market", icon: Building2 },
-  { title: "Secondary Market", url: "/dealer/dashboard/secondary-market", icon: TrendingUp },
+  { title: "Brokers", url: "/dealer/dashboard/brokers", icon: Users },
   { title: "Inventory", url: "/dealer/dashboard/inventory", icon: Package },
   { title: "Risk & Compliance", url: "/dealer/dashboard/risk", icon: BarChart3 },
-  { title: "Settlement", url: "/dealer/dashboard/settlement", icon: Users },
+  { title: "Settlement", url: "/dealer/dashboard/settlement", icon: BarChart3 },
   { title: "Reports", url: "/dealer/dashboard/reports", icon: BarChart3 },
   { title: "Settings", url: "/dealer/dashboard/settings", icon: Settings },
 ];
