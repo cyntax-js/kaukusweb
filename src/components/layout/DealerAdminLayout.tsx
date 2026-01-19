@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { NavLink } from "@/components/NavLink";
+import { DashboardSwitcher } from "@/components/DashboardSwitcher";
 import {
   Sidebar,
   SidebarContent,
@@ -101,12 +102,15 @@ export default function DealerAdminLayout() {
       <div className="min-h-screen flex w-full bg-background">
         <DealerSidebar />
         <main className="flex-1 flex flex-col">
-          <header className="h-14 border-b border-border flex items-center px-4 bg-card">
-            <SidebarTrigger className="mr-4" />
-            <div className="flex items-center gap-2">
-              <Building2 className="w-4 h-4 text-chart-2" />
-              <span className="text-sm font-medium">Dealer Administration</span>
+          <header className="h-14 border-b border-border flex items-center justify-between px-4 bg-card">
+            <div className="flex items-center">
+              <SidebarTrigger className="mr-4" />
+              <div className="flex items-center gap-2">
+                <Building2 className="w-4 h-4 text-chart-2" />
+                <span className="text-sm font-medium">Dealer Administration</span>
+              </div>
             </div>
+            <DashboardSwitcher currentDashboard="dealer" />
           </header>
           <div className="flex-1 overflow-auto">
             <Outlet />

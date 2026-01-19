@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { NavLink } from "@/components/NavLink";
+import { DashboardSwitcher } from "@/components/DashboardSwitcher";
 import {
   Sidebar,
   SidebarContent,
@@ -22,14 +23,16 @@ import {
   Settings,
   LogOut,
   Zap,
+  Package,
+  Trophy,
 } from "lucide-react";
 
 const sidebarItems = [
   { title: "Overview", url: "/market-maker/dashboard", icon: LayoutDashboard, end: true },
   { title: "Quote Management", url: "/market-maker/dashboard/quoting-engine", icon: Zap },
   { title: "Market Depth", url: "/market-maker/dashboard/market-depth", icon: BarChart3 },
-  { title: "Inventory Control", url: "/market-maker/dashboard/inventory", icon: BarChart3 },
-  { title: "Performance", url: "/market-maker/dashboard/performance", icon: BarChart3 },
+  { title: "Inventory Control", url: "/market-maker/dashboard/inventory", icon: Package },
+  { title: "Performance", url: "/market-maker/dashboard/performance", icon: Trophy },
   { title: "Compliance", url: "/market-maker/dashboard/compliance", icon: Shield },
   { title: "Reports", url: "/market-maker/dashboard/reports", icon: BarChart3 },
   { title: "Settings", url: "/market-maker/dashboard/settings", icon: Settings },
@@ -99,12 +102,15 @@ export default function MarketMakerAdminLayout() {
       <div className="min-h-screen flex w-full bg-background">
         <MarketMakerSidebar />
         <main className="flex-1 flex flex-col">
-          <header className="h-14 border-b border-border flex items-center px-4 bg-card">
-            <SidebarTrigger className="mr-4" />
-            <div className="flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-chart-5" />
-              <span className="text-sm font-medium">Market Maker Administration</span>
+          <header className="h-14 border-b border-border flex items-center justify-between px-4 bg-card">
+            <div className="flex items-center">
+              <SidebarTrigger className="mr-4" />
+              <div className="flex items-center gap-2">
+                <BarChart3 className="w-4 h-4 text-chart-5" />
+                <span className="text-sm font-medium">Market Maker Administration</span>
+              </div>
             </div>
+            <DashboardSwitcher currentDashboard="market_maker" />
           </header>
           <div className="flex-1 overflow-auto">
             <Outlet />
