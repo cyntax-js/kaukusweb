@@ -17,6 +17,7 @@ import {
   AboutPage,
   LegalPage,
   OTCDexPage,
+  OTCDexDetailPage,
 } from '../pages';
 
 /**
@@ -33,7 +34,7 @@ export const PublicRoutes = () => (
 );
 
 /**
- * App pages (markets, trading, portfolio, settings)
+ * App pages (markets, trading, portfolio, settings, otc-dex)
  */
 export const AppRoutes = () => (
   <>
@@ -43,7 +44,7 @@ export const AppRoutes = () => (
     <Route path="markets/secondary/:marketId" element={<MarketsPage />} />
     <Route path="trade/:serviceType/:pair" element={<TradingPage />} />
     <Route path="otc-dex" element={<OTCDexPage />} />
-    <Route path="otc-dex/:offerId" element={<OTCDexPage />} />
+    <Route path="otc-dex/:offerId" element={<OTCDexDetailPage />} />
     <Route path="portfolio" element={<PortfolioPage />} />
     <Route path="settings" element={<SettingsPage />} />
   </>
