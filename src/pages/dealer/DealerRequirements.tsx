@@ -5,7 +5,7 @@ import {
   CheckCircle2,
   Shield,
   FileText,
-  DollarSign,
+  Coins,
   Building2,
   ArrowRight,
   AlertCircle,
@@ -15,25 +15,29 @@ const requirements = [
   {
     icon: Shield,
     title: "Dealer License",
-    description: "Valid dealer/market participant license from a recognized regulatory authority (SEC, FCA, etc.)",
+    description:
+      "Valid dealer/market participant license from a recognized regulatory authority (SEC, FCA, etc.)",
     required: true,
   },
   {
     icon: Building2,
     title: "Institutional Registration",
-    description: "Registered financial institution with valid incorporation documents and regulatory standing.",
+    description:
+      "Registered financial institution with valid incorporation documents and regulatory standing.",
     required: true,
   },
   {
-    icon: DollarSign,
+    icon: Coins,
     title: "Capital Requirements",
-    description: "Minimum $1,000,000 operational capital. Higher tiers available for increased trading limits.",
+    description:
+      "Minimum $1,000,000 operational capital. Higher tiers available for increased trading limits.",
     required: true,
   },
   {
     icon: FileText,
     title: "Compliance Documentation",
-    description: "AML/KYC policies, risk management procedures, and trade reporting capabilities.",
+    description:
+      "AML/KYC policies, risk management procedures, and trade reporting capabilities.",
     required: true,
   },
 ];
@@ -65,8 +69,8 @@ export default function DealerRequirements() {
             Requirements & Specifications
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Before applying as a Dealer, please ensure you meet the following requirements.
-            This helps us process your application faster.
+            Before applying as a Dealer, please ensure you meet the following
+            requirements. This helps us process your application faster.
           </p>
         </div>
 
@@ -91,7 +95,9 @@ export default function DealerRequirements() {
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground">{req.description}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {req.description}
+                  </p>
                 </div>
               </div>
             </Card>
@@ -106,7 +112,10 @@ export default function DealerRequirements() {
           </h2>
           <div className="grid md:grid-cols-2 gap-4">
             {documents.map((doc, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-secondary/50">
+              <div
+                key={i}
+                className="flex items-center gap-3 p-3 rounded-lg bg-secondary/50"
+              >
                 <CheckCircle2 className="w-5 h-5 text-success shrink-0" />
                 <span className="text-sm">{doc}</span>
               </div>
@@ -121,8 +130,9 @@ export default function DealerRequirements() {
             <div>
               <h3 className="font-semibold mb-2">Important Notice</h3>
               <p className="text-sm text-muted-foreground">
-                Dealer application review typically takes 3-5 business days due to enhanced due diligence.
-                You will receive an email notification once your application has been reviewed.
+                Dealer application review typically takes 3-5 business days due
+                to enhanced due diligence. You will receive an email
+                notification once your application has been reviewed.
               </p>
             </div>
           </div>

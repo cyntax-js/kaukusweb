@@ -11,7 +11,13 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { activeOfferings } from "@/mocks/rolesDashboardData";
 import {
@@ -24,7 +30,7 @@ import {
   XCircle,
   ArrowUpRight,
   Calendar,
-  DollarSign,
+  Coins,
   Users,
   TrendingUp,
   Building2,
@@ -43,7 +49,7 @@ interface OfferDetails {
   targetAmount: number;
   raisedAmount: number;
   subscriptionRate: number;
-  status: 'active' | 'upcoming' | 'completed' | 'cancelled';
+  status: "active" | "upcoming" | "completed" | "cancelled";
   startDate: Date;
   endDate: Date;
   investors: number;
@@ -63,99 +69,103 @@ interface OfferDetails {
 
 const enhancedOfferings: OfferDetails[] = [
   {
-    id: 'o1',
-    name: 'TechCorp Nigeria IPO',
-    type: 'Initial Public Offering',
+    id: "o1",
+    name: "TechCorp Nigeria IPO",
+    type: "Initial Public Offering",
     targetAmount: 50000000000,
     raisedAmount: 32500000000,
     subscriptionRate: 65,
-    status: 'active',
-    startDate: new Date('2025-01-01'),
-    endDate: new Date('2025-02-15'),
+    status: "active",
+    startDate: new Date("2025-01-01"),
+    endDate: new Date("2025-02-15"),
     investors: 1250,
     minInvestment: 5000000,
     maxInvestment: 500000000,
     pricePerUnit: 100,
     totalUnits: 500000000,
     soldUnits: 325000000,
-    issuer: 'TechCorp Nigeria Limited',
-    sector: 'Technology',
-    description: 'TechCorp Nigeria is a leading technology company specializing in fintech solutions, digital payments, and enterprise software. This IPO will fund expansion into West African markets and development of new AI-powered products.',
-    underwriter: 'FirstBank Capital Markets',
+    issuer: "TechCorp Nigeria Limited",
+    sector: "Technology",
+    description:
+      "TechCorp Nigeria is a leading technology company specializing in fintech solutions, digital payments, and enterprise software. This IPO will fund expansion into West African markets and development of new AI-powered products.",
+    underwriter: "FirstBank Capital Markets",
     hasSecondaryTrading: true,
-    regulatoryApproval: 'SEC Approved',
-    prospectusUrl: '#',
+    regulatoryApproval: "SEC Approved",
+    prospectusUrl: "#",
   },
   {
-    id: 'o2',
-    name: 'Energy Corp Bond',
-    type: 'Corporate Bond',
+    id: "o2",
+    name: "Energy Corp Bond",
+    type: "Corporate Bond",
     targetAmount: 100000000000,
     raisedAmount: 78000000000,
     subscriptionRate: 78,
-    status: 'active',
-    startDate: new Date('2025-01-05'),
-    endDate: new Date('2025-02-28'),
+    status: "active",
+    startDate: new Date("2025-01-05"),
+    endDate: new Date("2025-02-28"),
     investors: 890,
     minInvestment: 10000000,
     maxInvestment: 1000000000,
     pricePerUnit: 1000,
     totalUnits: 100000000,
     soldUnits: 78000000,
-    issuer: 'Energy Corporation Plc',
-    sector: 'Energy',
-    description: '10-year corporate bond offering 12% annual coupon rate. Proceeds will fund construction of 500MW solar power plant in Northern Nigeria.',
-    underwriter: 'Access Bank Investment Banking',
+    issuer: "Energy Corporation Plc",
+    sector: "Energy",
+    description:
+      "10-year corporate bond offering 12% annual coupon rate. Proceeds will fund construction of 500MW solar power plant in Northern Nigeria.",
+    underwriter: "Access Bank Investment Banking",
     hasSecondaryTrading: true,
-    regulatoryApproval: 'SEC Approved',
-    prospectusUrl: '#',
+    regulatoryApproval: "SEC Approved",
+    prospectusUrl: "#",
   },
   {
-    id: 'o3',
-    name: 'FinTech Solutions Rights Issue',
-    type: 'Rights Issue',
+    id: "o3",
+    name: "FinTech Solutions Rights Issue",
+    type: "Rights Issue",
     targetAmount: 25000000000,
     raisedAmount: 0,
     subscriptionRate: 0,
-    status: 'upcoming',
-    startDate: new Date('2025-02-01'),
-    endDate: new Date('2025-03-15'),
+    status: "upcoming",
+    startDate: new Date("2025-02-01"),
+    endDate: new Date("2025-03-15"),
     investors: 0,
     minInvestment: 2000000,
     maxInvestment: 100000000,
     pricePerUnit: 50,
     totalUnits: 500000000,
     soldUnits: 0,
-    issuer: 'FinTech Solutions Ltd',
-    sector: 'Financial Services',
-    description: 'Rights issue offering existing shareholders the opportunity to purchase additional shares at a discounted price. Funds will support expansion of mobile banking platform.',
+    issuer: "FinTech Solutions Ltd",
+    sector: "Financial Services",
+    description:
+      "Rights issue offering existing shareholders the opportunity to purchase additional shares at a discounted price. Funds will support expansion of mobile banking platform.",
     hasSecondaryTrading: false,
-    regulatoryApproval: 'Pending',
-    prospectusUrl: '#',
+    regulatoryApproval: "Pending",
+    prospectusUrl: "#",
   },
   {
-    id: 'o4',
-    name: 'AgriTech Nigeria Seed Round',
-    type: 'Private Placement',
+    id: "o4",
+    name: "AgriTech Nigeria Seed Round",
+    type: "Private Placement",
     targetAmount: 5000000000,
     raisedAmount: 5000000000,
     subscriptionRate: 100,
-    status: 'completed',
-    startDate: new Date('2024-10-01'),
-    endDate: new Date('2024-12-15'),
+    status: "completed",
+    startDate: new Date("2024-10-01"),
+    endDate: new Date("2024-12-15"),
     investors: 45,
     minInvestment: 50000000,
     maxInvestment: 500000000,
     pricePerUnit: 500,
     totalUnits: 10000000,
     soldUnits: 10000000,
-    issuer: 'AgriTech Nigeria Limited',
-    sector: 'Agriculture',
-    description: 'Private placement for qualified investors. Funds supported development of precision agriculture technology platform now serving 50,000+ farmers.',
-    underwriter: 'Coronation Securities',
+    issuer: "AgriTech Nigeria Limited",
+    sector: "Agriculture",
+    description:
+      "Private placement for qualified investors. Funds supported development of precision agriculture technology platform now serving 50,000+ farmers.",
+    underwriter: "Coronation Securities",
     hasSecondaryTrading: false,
-    regulatoryApproval: 'SEC Approved',
-    prospectusUrl: '#',
+    regulatoryApproval: "SEC Approved",
+    prospectusUrl: "#",
   },
 ];
 
@@ -164,9 +174,11 @@ export default function OfferManagement() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedOffer, setSelectedOffer] = useState<OfferDetails | null>(null);
 
-  const draftOffers = enhancedOfferings.filter(o => o.status === 'upcoming');
-  const activeOffers = enhancedOfferings.filter(o => o.status === 'active');
-  const closedOffers = enhancedOfferings.filter(o => o.status === 'completed' || o.status === 'cancelled');
+  const draftOffers = enhancedOfferings.filter((o) => o.status === "upcoming");
+  const activeOffers = enhancedOfferings.filter((o) => o.status === "active");
+  const closedOffers = enhancedOfferings.filter(
+    (o) => o.status === "completed" || o.status === "cancelled"
+  );
 
   const formatCurrency = (value: number) => {
     if (value >= 1000000000) return `₦${(value / 1000000000).toFixed(1)}B`;
@@ -175,7 +187,7 @@ export default function OfferManagement() {
   };
 
   const OfferCard = ({ offer }: { offer: OfferDetails }) => (
-    <Card 
+    <Card
       className="p-6 hover:border-primary/50 transition-colors cursor-pointer"
       onClick={() => setSelectedOffer(offer)}
     >
@@ -183,11 +195,17 @@ export default function OfferManagement() {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <h3 className="font-semibold">{offer.name}</h3>
-            <Badge variant={
-              offer.status === 'active' ? 'default' :
-              offer.status === 'completed' ? 'secondary' :
-              offer.status === 'upcoming' ? 'outline' : 'destructive'
-            }>
+            <Badge
+              variant={
+                offer.status === "active"
+                  ? "default"
+                  : offer.status === "completed"
+                  ? "secondary"
+                  : offer.status === "upcoming"
+                  ? "outline"
+                  : "destructive"
+              }
+            >
               {offer.status}
             </Badge>
           </div>
@@ -205,7 +223,9 @@ export default function OfferManagement() {
         </div>
         <div>
           <p className="text-xs text-muted-foreground">Raised</p>
-          <p className="font-medium text-success">{formatCurrency(offer.raisedAmount)}</p>
+          <p className="font-medium text-success">
+            {formatCurrency(offer.raisedAmount)}
+          </p>
         </div>
         <div>
           <p className="text-xs text-muted-foreground">Investors</p>
@@ -224,7 +244,8 @@ export default function OfferManagement() {
       <div className="flex items-center justify-between mt-4 pt-4 border-t text-xs text-muted-foreground">
         <div className="flex items-center gap-1">
           <Calendar className="w-3 h-3" />
-          {offer.startDate.toLocaleDateString()} - {offer.endDate.toLocaleDateString()}
+          {offer.startDate.toLocaleDateString()} -{" "}
+          {offer.endDate.toLocaleDateString()}
         </div>
         <span className="text-primary font-medium">View Details →</span>
       </div>
@@ -237,9 +258,13 @@ export default function OfferManagement() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">Offer Management</h1>
-          <p className="text-muted-foreground">Create and manage securities offerings</p>
+          <p className="text-muted-foreground">
+            Create and manage securities offerings
+          </p>
         </div>
-        <Button onClick={() => navigate("/issuing-house/dashboard/new-offering")}>
+        <Button
+          onClick={() => navigate("/issuing-house/dashboard/new-offering")}
+        >
           <PlusCircle className="w-4 h-4 mr-2" />
           Create New Offer
         </Button>
@@ -283,10 +308,14 @@ export default function OfferManagement() {
         <Card className="p-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-chart-4/10 flex items-center justify-center">
-              <DollarSign className="w-5 h-5 text-chart-4" />
+              <Coins className="w-5 h-5 text-chart-4" />
             </div>
             <div>
-              <p className="text-2xl font-bold">{formatCurrency(enhancedOfferings.reduce((sum, o) => sum + o.raisedAmount, 0))}</p>
+              <p className="text-2xl font-bold">
+                {formatCurrency(
+                  enhancedOfferings.reduce((sum, o) => sum + o.raisedAmount, 0)
+                )}
+              </p>
               <p className="text-xs text-muted-foreground">Total Raised</p>
             </div>
           </div>
@@ -313,22 +342,36 @@ export default function OfferManagement() {
       {/* Tabs */}
       <Tabs defaultValue="active" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="upcoming">Upcoming ({draftOffers.length})</TabsTrigger>
-          <TabsTrigger value="active">Active ({activeOffers.length})</TabsTrigger>
-          <TabsTrigger value="closed">Closed ({closedOffers.length})</TabsTrigger>
+          <TabsTrigger value="upcoming">
+            Upcoming ({draftOffers.length})
+          </TabsTrigger>
+          <TabsTrigger value="active">
+            Active ({activeOffers.length})
+          </TabsTrigger>
+          <TabsTrigger value="closed">
+            Closed ({closedOffers.length})
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="upcoming" className="space-y-4">
           {draftOffers.length > 0 ? (
             <div className="grid md:grid-cols-2 gap-4">
-              {draftOffers.map(offer => <OfferCard key={offer.id} offer={offer} />)}
+              {draftOffers.map((offer) => (
+                <OfferCard key={offer.id} offer={offer} />
+              ))}
             </div>
           ) : (
             <Card className="p-12 text-center">
               <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="font-semibold mb-2">No Upcoming Offers</h3>
-              <p className="text-sm text-muted-foreground mb-4">Create a new offer to get started</p>
-              <Button onClick={() => navigate("/issuing-house/dashboard/new-offering")}>
+              <p className="text-sm text-muted-foreground mb-4">
+                Create a new offer to get started
+              </p>
+              <Button
+                onClick={() =>
+                  navigate("/issuing-house/dashboard/new-offering")
+                }
+              >
                 Create New Offer
               </Button>
             </Card>
@@ -337,13 +380,17 @@ export default function OfferManagement() {
 
         <TabsContent value="active" className="space-y-4">
           <div className="grid md:grid-cols-2 gap-4">
-            {activeOffers.map(offer => <OfferCard key={offer.id} offer={offer} />)}
+            {activeOffers.map((offer) => (
+              <OfferCard key={offer.id} offer={offer} />
+            ))}
           </div>
         </TabsContent>
 
         <TabsContent value="closed" className="space-y-4">
           <div className="grid md:grid-cols-2 gap-4">
-            {closedOffers.map(offer => <OfferCard key={offer.id} offer={offer} />)}
+            {closedOffers.map((offer) => (
+              <OfferCard key={offer.id} offer={offer} />
+            ))}
           </div>
         </TabsContent>
       </Tabs>
@@ -355,11 +402,17 @@ export default function OfferManagement() {
             <div className="flex items-center gap-2">
               <SheetTitle>{selectedOffer?.name}</SheetTitle>
               {selectedOffer && (
-                <Badge variant={
-                  selectedOffer.status === 'active' ? 'default' :
-                  selectedOffer.status === 'completed' ? 'secondary' :
-                  selectedOffer.status === 'upcoming' ? 'outline' : 'destructive'
-                }>
+                <Badge
+                  variant={
+                    selectedOffer.status === "active"
+                      ? "default"
+                      : selectedOffer.status === "completed"
+                      ? "secondary"
+                      : selectedOffer.status === "upcoming"
+                      ? "outline"
+                      : "destructive"
+                  }
+                >
                   {selectedOffer.status}
                 </Badge>
               )}
@@ -375,41 +428,65 @@ export default function OfferManagement() {
               <div className="grid grid-cols-2 gap-4">
                 <Card className="p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <DollarSign className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">Target Amount</span>
+                    <Coins className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-sm text-muted-foreground">
+                      Target Amount
+                    </span>
                   </div>
-                  <p className="text-2xl font-bold">{formatCurrency(selectedOffer.targetAmount)}</p>
+                  <p className="text-2xl font-bold">
+                    {formatCurrency(selectedOffer.targetAmount)}
+                  </p>
                 </Card>
                 <Card className="p-4">
                   <div className="flex items-center gap-2 mb-2">
                     <TrendingUp className="w-4 h-4 text-success" />
-                    <span className="text-sm text-muted-foreground">Amount Raised</span>
+                    <span className="text-sm text-muted-foreground">
+                      Amount Raised
+                    </span>
                   </div>
-                  <p className="text-2xl font-bold text-success">{formatCurrency(selectedOffer.raisedAmount)}</p>
+                  <p className="text-2xl font-bold text-success">
+                    {formatCurrency(selectedOffer.raisedAmount)}
+                  </p>
                 </Card>
                 <Card className="p-4">
                   <div className="flex items-center gap-2 mb-2">
                     <Users className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">Investors</span>
+                    <span className="text-sm text-muted-foreground">
+                      Investors
+                    </span>
                   </div>
-                  <p className="text-2xl font-bold">{selectedOffer.investors.toLocaleString()}</p>
+                  <p className="text-2xl font-bold">
+                    {selectedOffer.investors.toLocaleString()}
+                  </p>
                 </Card>
                 <Card className="p-4">
                   <div className="flex items-center gap-2 mb-2">
                     <BarChart3 className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">Subscription Rate</span>
+                    <span className="text-sm text-muted-foreground">
+                      Subscription Rate
+                    </span>
                   </div>
-                  <p className="text-2xl font-bold">{selectedOffer.subscriptionRate}%</p>
+                  <p className="text-2xl font-bold">
+                    {selectedOffer.subscriptionRate}%
+                  </p>
                 </Card>
               </div>
 
               {/* Progress */}
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Subscription Progress</span>
-                  <span className="font-medium">{formatCurrency(selectedOffer.raisedAmount)} of {formatCurrency(selectedOffer.targetAmount)}</span>
+                  <span className="text-muted-foreground">
+                    Subscription Progress
+                  </span>
+                  <span className="font-medium">
+                    {formatCurrency(selectedOffer.raisedAmount)} of{" "}
+                    {formatCurrency(selectedOffer.targetAmount)}
+                  </span>
                 </div>
-                <Progress value={selectedOffer.subscriptionRate} className="h-3" />
+                <Progress
+                  value={selectedOffer.subscriptionRate}
+                  className="h-3"
+                />
               </div>
 
               <Separator />
@@ -417,7 +494,9 @@ export default function OfferManagement() {
               {/* Description */}
               <div>
                 <h4 className="font-semibold mb-2">Description</h4>
-                <p className="text-sm text-muted-foreground">{selectedOffer.description}</p>
+                <p className="text-sm text-muted-foreground">
+                  {selectedOffer.description}
+                </p>
               </div>
 
               <Separator />
@@ -430,31 +509,45 @@ export default function OfferManagement() {
                 </div>
                 <div>
                   <span className="text-muted-foreground">Price per Unit</span>
-                  <p className="font-medium">₦{selectedOffer.pricePerUnit.toLocaleString()}</p>
+                  <p className="font-medium">
+                    ₦{selectedOffer.pricePerUnit.toLocaleString()}
+                  </p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Min Investment</span>
-                  <p className="font-medium">{formatCurrency(selectedOffer.minInvestment)}</p>
+                  <p className="font-medium">
+                    {formatCurrency(selectedOffer.minInvestment)}
+                  </p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Max Investment</span>
-                  <p className="font-medium">{formatCurrency(selectedOffer.maxInvestment)}</p>
+                  <p className="font-medium">
+                    {formatCurrency(selectedOffer.maxInvestment)}
+                  </p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Total Units</span>
-                  <p className="font-medium">{selectedOffer.totalUnits.toLocaleString()}</p>
+                  <p className="font-medium">
+                    {selectedOffer.totalUnits.toLocaleString()}
+                  </p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Units Sold</span>
-                  <p className="font-medium">{selectedOffer.soldUnits.toLocaleString()}</p>
+                  <p className="font-medium">
+                    {selectedOffer.soldUnits.toLocaleString()}
+                  </p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Start Date</span>
-                  <p className="font-medium">{selectedOffer.startDate.toLocaleDateString()}</p>
+                  <p className="font-medium">
+                    {selectedOffer.startDate.toLocaleDateString()}
+                  </p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">End Date</span>
-                  <p className="font-medium">{selectedOffer.endDate.toLocaleDateString()}</p>
+                  <p className="font-medium">
+                    {selectedOffer.endDate.toLocaleDateString()}
+                  </p>
                 </div>
               </div>
 
@@ -466,7 +559,9 @@ export default function OfferManagement() {
                   <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
                     <Building2 className="w-5 h-5 text-muted-foreground" />
                     <div>
-                      <p className="text-xs text-muted-foreground">Underwriter</p>
+                      <p className="text-xs text-muted-foreground">
+                        Underwriter
+                      </p>
                       <p className="font-medium">{selectedOffer.underwriter}</p>
                     </div>
                   </div>
@@ -474,15 +569,25 @@ export default function OfferManagement() {
                 <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
                   <Shield className="w-5 h-5 text-muted-foreground" />
                   <div>
-                    <p className="text-xs text-muted-foreground">Regulatory Status</p>
-                    <p className="font-medium">{selectedOffer.regulatoryApproval}</p>
+                    <p className="text-xs text-muted-foreground">
+                      Regulatory Status
+                    </p>
+                    <p className="font-medium">
+                      {selectedOffer.regulatoryApproval}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
                   <Globe className="w-5 h-5 text-muted-foreground" />
                   <div>
-                    <p className="text-xs text-muted-foreground">Secondary Trading</p>
-                    <p className="font-medium">{selectedOffer.hasSecondaryTrading ? 'Enabled' : 'Disabled'}</p>
+                    <p className="text-xs text-muted-foreground">
+                      Secondary Trading
+                    </p>
+                    <p className="font-medium">
+                      {selectedOffer.hasSecondaryTrading
+                        ? "Enabled"
+                        : "Disabled"}
+                    </p>
                   </div>
                 </div>
               </div>

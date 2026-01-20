@@ -1,51 +1,55 @@
-import { useNavigate } from 'react-router-dom';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { 
-  CheckCircle2, 
-  Shield, 
-  FileText, 
-  DollarSign, 
+import { useNavigate } from "react-router-dom";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  CheckCircle2,
+  Shield,
+  FileText,
+  Coins,
   Building2,
   ArrowRight,
-  AlertCircle
-} from 'lucide-react';
+  AlertCircle,
+} from "lucide-react";
 
 const requirements = [
   {
     icon: Shield,
-    title: 'Regulatory License',
-    description: 'Valid broker/dealer license from a recognized regulatory authority (SEC, FCA, ASIC, CySEC, etc.)',
+    title: "Regulatory License",
+    description:
+      "Valid broker/dealer license from a recognized regulatory authority (SEC, FCA, ASIC, CySEC, etc.)",
     required: true,
   },
   {
     icon: Building2,
-    title: 'Company Registration',
-    description: 'Registered business entity with valid incorporation documents and tax identification.',
+    title: "Company Registration",
+    description:
+      "Registered business entity with valid incorporation documents and tax identification.",
     required: true,
   },
   {
-    icon: DollarSign,
-    title: 'Capital Requirements',
-    description: 'Minimum $50,000 operational capital. Higher tiers available for increased trading limits.',
+    icon: Coins,
+    title: "Capital Requirements",
+    description:
+      "Minimum $50,000 operational capital. Higher tiers available for increased trading limits.",
     required: true,
   },
   {
     icon: FileText,
-    title: 'Compliance Documentation',
-    description: 'AML/KYC policies, risk management procedures, and client fund segregation proof.',
+    title: "Compliance Documentation",
+    description:
+      "AML/KYC policies, risk management procedures, and client fund segregation proof.",
     required: true,
   },
 ];
 
 const documents = [
-  'Certificate of Incorporation',
-  'Regulatory License (certified copy)',
-  'Director/Owner ID documents',
-  'Proof of Address (business)',
-  'Bank Statements (last 3 months)',
-  'AML/KYC Policy Document',
-  'Business Plan (optional)',
+  "Certificate of Incorporation",
+  "Regulatory License (certified copy)",
+  "Director/Owner ID documents",
+  "Proof of Address (business)",
+  "Bank Statements (last 3 months)",
+  "AML/KYC Policy Document",
+  "Business Plan (optional)",
 ];
 
 export default function BrokerRequirements() {
@@ -64,7 +68,7 @@ export default function BrokerRequirements() {
             Requirements & Specifications
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Before applying, please ensure you meet the following requirements. 
+            Before applying, please ensure you meet the following requirements.
             This helps us process your application faster.
           </p>
         </div>
@@ -72,8 +76,8 @@ export default function BrokerRequirements() {
         {/* Requirements Grid */}
         <div className="grid md:grid-cols-2 gap-6 mb-12">
           {requirements.map((req, i) => (
-            <Card 
-              key={i} 
+            <Card
+              key={i}
               className="p-6 hover-lift opacity-0 animate-fade-in"
               style={{ animationDelay: `${i * 0.1}s` }}
             >
@@ -90,7 +94,9 @@ export default function BrokerRequirements() {
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground">{req.description}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {req.description}
+                  </p>
                 </div>
               </div>
             </Card>
@@ -105,7 +111,10 @@ export default function BrokerRequirements() {
           </h2>
           <div className="grid md:grid-cols-2 gap-4">
             {documents.map((doc, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-secondary/50">
+              <div
+                key={i}
+                className="flex items-center gap-3 p-3 rounded-lg bg-secondary/50"
+              >
                 <CheckCircle2 className="w-5 h-5 text-success shrink-0" />
                 <span className="text-sm">{doc}</span>
               </div>
@@ -120,8 +129,9 @@ export default function BrokerRequirements() {
             <div>
               <h3 className="font-semibold mb-2">Important Notice</h3>
               <p className="text-sm text-muted-foreground">
-                Application review typically takes 12-24 hours. You will receive an email notification 
-                once your application has been reviewed. Incomplete applications may take longer to process.
+                Application review typically takes 12-24 hours. You will receive
+                an email notification once your application has been reviewed.
+                Incomplete applications may take longer to process.
               </p>
             </div>
           </div>
@@ -129,9 +139,9 @@ export default function BrokerRequirements() {
 
         {/* CTA */}
         <div className="text-center">
-          <Button 
-            size="lg" 
-            onClick={() => navigate('/broker/application')}
+          <Button
+            size="lg"
+            onClick={() => navigate("/broker/application")}
             className="shadow-glow hover:shadow-glow-lg transition-shadow"
           >
             I Meet the Requirements - Continue

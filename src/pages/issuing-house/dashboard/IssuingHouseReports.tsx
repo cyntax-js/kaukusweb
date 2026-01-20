@@ -14,7 +14,7 @@ import {
   BarChart3,
   Calendar,
   Building2,
-  DollarSign,
+  Coins,
   Users,
   ArrowUpRight,
   FileDown,
@@ -23,14 +23,41 @@ import {
 export default function IssuingHouseReports() {
   // Mock report data
   const capitalReports = [
-    { id: 'cr1', name: 'Q4 2024 Capital Raised Summary', period: 'Q4 2024', totalRaised: 3500000000, offerings: 4 },
-    { id: 'cr2', name: 'Annual Capital Report 2024', period: 'FY 2024', totalRaised: 12800000000, offerings: 15 },
+    {
+      id: "cr1",
+      name: "Q4 2024 Capital Raised Summary",
+      period: "Q4 2024",
+      totalRaised: 3500000000,
+      offerings: 4,
+    },
+    {
+      id: "cr2",
+      name: "Annual Capital Report 2024",
+      period: "FY 2024",
+      totalRaised: 12800000000,
+      offerings: 15,
+    },
   ];
 
   const performanceReports = [
-    { id: 'pr1', offer: 'TechCorp Nigeria IPO', subscriptionRate: 92.5, status: 'active' },
-    { id: 'pr2', offer: 'FirstBank Rights Issue', subscriptionRate: 100, status: 'completed' },
-    { id: 'pr3', offer: 'Energy Corp Bond', subscriptionRate: 70, status: 'active' },
+    {
+      id: "pr1",
+      offer: "TechCorp Nigeria IPO",
+      subscriptionRate: 92.5,
+      status: "active",
+    },
+    {
+      id: "pr2",
+      offer: "FirstBank Rights Issue",
+      subscriptionRate: 100,
+      status: "completed",
+    },
+    {
+      id: "pr3",
+      offer: "Energy Corp Bond",
+      subscriptionRate: 70,
+      status: "active",
+    },
   ];
 
   return (
@@ -39,7 +66,9 @@ export default function IssuingHouseReports() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">Reports</h1>
-          <p className="text-muted-foreground">Generate and export reports for stakeholders and regulators</p>
+          <p className="text-muted-foreground">
+            Generate and export reports for stakeholders and regulators
+          </p>
         </div>
         <Button>
           <FileDown className="w-4 h-4 mr-2" />
@@ -51,8 +80,10 @@ export default function IssuingHouseReports() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-sm text-muted-foreground">Total Raised YTD</span>
-            <DollarSign className="w-5 h-5 text-success" />
+            <span className="text-sm text-muted-foreground">
+              Total Raised YTD
+            </span>
+            <Coins className="w-5 h-5 text-success" />
           </div>
           <p className="text-3xl font-bold">₦5.2B</p>
           <div className="flex items-center mt-2 text-xs text-success">
@@ -63,7 +94,9 @@ export default function IssuingHouseReports() {
 
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-sm text-muted-foreground">Successful Offers</span>
+            <span className="text-sm text-muted-foreground">
+              Successful Offers
+            </span>
             <TrendingUp className="w-5 h-5 text-chart-4" />
           </div>
           <p className="text-3xl font-bold">12</p>
@@ -72,7 +105,9 @@ export default function IssuingHouseReports() {
 
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-sm text-muted-foreground">Total Investors</span>
+            <span className="text-sm text-muted-foreground">
+              Total Investors
+            </span>
             <Users className="w-5 h-5 text-chart-2" />
           </div>
           <p className="text-3xl font-bold">1,240</p>
@@ -84,7 +119,9 @@ export default function IssuingHouseReports() {
 
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-sm text-muted-foreground">Reports Generated</span>
+            <span className="text-sm text-muted-foreground">
+              Reports Generated
+            </span>
             <FileText className="w-5 h-5 text-muted-foreground" />
           </div>
           <p className="text-3xl font-bold">28</p>
@@ -111,16 +148,20 @@ export default function IssuingHouseReports() {
             </div>
 
             <div className="space-y-4">
-              {capitalReports.map(report => (
-                <div key={report.id} className="flex items-center justify-between p-4 rounded-lg border border-border/50 hover:bg-secondary/30 transition-colors">
+              {capitalReports.map((report) => (
+                <div
+                  key={report.id}
+                  className="flex items-center justify-between p-4 rounded-lg border border-border/50 hover:bg-secondary/30 transition-colors"
+                >
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-lg bg-success/10 flex items-center justify-center">
-                      <DollarSign className="w-5 h-5 text-success" />
+                      <Coins className="w-5 h-5 text-success" />
                     </div>
                     <div>
                       <h4 className="font-medium">{report.name}</h4>
                       <p className="text-sm text-muted-foreground">
-                        {report.offerings} offerings • ₦{(report.totalRaised / 1000000000).toFixed(1)}B raised
+                        {report.offerings} offerings • ₦
+                        {(report.totalRaised / 1000000000).toFixed(1)}B raised
                       </p>
                     </div>
                   </div>
@@ -152,7 +193,7 @@ export default function IssuingHouseReports() {
                   </tr>
                 </thead>
                 <tbody>
-                  {performanceReports.map(report => (
+                  {performanceReports.map((report) => (
                     <tr key={report.id} className="border-b border-border/50">
                       <td className="py-4">
                         <div className="flex items-center gap-3">
@@ -163,16 +204,29 @@ export default function IssuingHouseReports() {
                       <td className="py-4">
                         <div className="flex items-center gap-2">
                           <div className="w-24 h-2 bg-secondary rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-primary" 
-                              style={{ width: `${Math.min(report.subscriptionRate, 100)}%` }} 
+                            <div
+                              className="h-full bg-primary"
+                              style={{
+                                width: `${Math.min(
+                                  report.subscriptionRate,
+                                  100
+                                )}%`,
+                              }}
                             />
                           </div>
-                          <span className="text-sm font-medium">{report.subscriptionRate}%</span>
+                          <span className="text-sm font-medium">
+                            {report.subscriptionRate}%
+                          </span>
                         </div>
                       </td>
                       <td className="py-4">
-                        <Badge variant={report.status === 'completed' ? 'secondary' : 'default'}>
+                        <Badge
+                          variant={
+                            report.status === "completed"
+                              ? "secondary"
+                              : "default"
+                          }
+                        >
                           {report.status}
                         </Badge>
                       </td>
@@ -202,7 +256,8 @@ export default function IssuingHouseReports() {
                 </div>
                 <h4 className="font-semibold mb-2">SEC Quarterly Report</h4>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Comprehensive report formatted for Securities and Exchange Commission submission
+                  Comprehensive report formatted for Securities and Exchange
+                  Commission submission
                 </p>
                 <Button className="w-full">
                   <Download className="w-4 h-4 mr-2" />
@@ -214,9 +269,12 @@ export default function IssuingHouseReports() {
                 <div className="w-12 h-12 rounded-lg bg-chart-2/10 flex items-center justify-center mb-4">
                   <BarChart3 className="w-6 h-6 text-chart-2" />
                 </div>
-                <h4 className="font-semibold mb-2">Exchange Compliance Report</h4>
+                <h4 className="font-semibold mb-2">
+                  Exchange Compliance Report
+                </h4>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Listing compliance and post-offer obligations report for stock exchange
+                  Listing compliance and post-offer obligations report for stock
+                  exchange
                 </p>
                 <Button className="w-full">
                   <Download className="w-4 h-4 mr-2" />
@@ -228,9 +286,12 @@ export default function IssuingHouseReports() {
                 <div className="w-12 h-12 rounded-lg bg-success/10 flex items-center justify-center mb-4">
                   <Users className="w-6 h-6 text-success" />
                 </div>
-                <h4 className="font-semibold mb-2">Investor Distribution Report</h4>
+                <h4 className="font-semibold mb-2">
+                  Investor Distribution Report
+                </h4>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Detailed breakdown of investor types, allocations, and geographic distribution
+                  Detailed breakdown of investor types, allocations, and
+                  geographic distribution
                 </p>
                 <Button className="w-full">
                   <Download className="w-4 h-4 mr-2" />
@@ -242,9 +303,12 @@ export default function IssuingHouseReports() {
                 <div className="w-12 h-12 rounded-lg bg-warning/10 flex items-center justify-center mb-4">
                   <TrendingUp className="w-6 h-6 text-warning" />
                 </div>
-                <h4 className="font-semibold mb-2">Capital Market Activity Report</h4>
+                <h4 className="font-semibold mb-2">
+                  Capital Market Activity Report
+                </h4>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Summary of all capital market activities and performance metrics
+                  Summary of all capital market activities and performance
+                  metrics
                 </p>
                 <Button className="w-full">
                   <Download className="w-4 h-4 mr-2" />

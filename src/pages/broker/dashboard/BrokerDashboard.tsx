@@ -9,7 +9,7 @@ import { mockDashboardStats } from "@/mocks/brokerData";
 import {
   Users,
   TrendingUp,
-  DollarSign,
+  Coins,
   BarChart3,
   ArrowRight,
   Rocket,
@@ -44,7 +44,7 @@ const statCards = [
   {
     label: "Monthly Revenue",
     value: `₦${mockDashboardStats.monthlyRevenue.toLocaleString()}`,
-    icon: DollarSign,
+    icon: Coins,
     color: "text-warning",
     change: "+23%",
     up: true,
@@ -76,7 +76,7 @@ const recentActivity = [
     type: "deposit",
     message: "Deposit received: ₦10,000 from John Trader",
     time: "12 min ago",
-    icon: DollarSign,
+    icon: Coins,
   },
   {
     type: "alert",
@@ -336,7 +336,7 @@ export default function BrokerDashboard() {
             className="p-6 hover-lift cursor-pointer"
             onClick={() => navigate("/broker/dashboard/fees")}
           >
-            <DollarSign className="w-8 h-8 text-warning mb-4" />
+            <Coins className="w-8 h-8 text-warning mb-4" />
             <h3 className="font-semibold mb-1">Configure Fees</h3>
             <p className="text-sm text-muted-foreground">
               Set trading fees and commissions

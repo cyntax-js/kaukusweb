@@ -1,11 +1,17 @@
 /**
  * Dealer Settings Page
- * 
+ *
  * Configuration options for trading preferences, notifications, and API access.
  */
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,13 +26,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { 
-  Building2, 
-  Bell, 
-  DollarSign, 
-  Shield, 
-  Save, 
-  User, 
+import {
+  Building2,
+  Bell,
+  Coins,
+  Shield,
+  Save,
+  User,
   Key,
   Copy,
   Eye,
@@ -81,7 +87,8 @@ export default function DealerSettings() {
   const handleRotateKey = () => {
     toast({
       title: "Key Rotation Initiated",
-      description: "Your new API keys will be generated. Please save them securely.",
+      description:
+        "Your new API keys will be generated. Please save them securely.",
       variant: "destructive",
     });
   };
@@ -100,7 +107,9 @@ export default function DealerSettings() {
           <Building2 className="w-6 h-6 text-chart-2" />
           Settings
         </h1>
-        <p className="text-muted-foreground">Manage your dealer account settings</p>
+        <p className="text-muted-foreground">
+          Manage your dealer account settings
+        </p>
       </div>
 
       <Tabs defaultValue="profile" className="space-y-6">
@@ -138,7 +147,11 @@ export default function DealerSettings() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="email">Email Address</Label>
-                  <Input id="email" type="email" defaultValue="contact@alphadealer.com" />
+                  <Input
+                    id="email"
+                    type="email"
+                    defaultValue="contact@alphadealer.com"
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone Number</Label>
@@ -148,7 +161,10 @@ export default function DealerSettings() {
 
               <div className="space-y-2">
                 <Label htmlFor="address">Business Address</Label>
-                <Input id="address" defaultValue="123 Marina Street, Lagos Island, Lagos" />
+                <Input
+                  id="address"
+                  defaultValue="123 Marina Street, Lagos Island, Lagos"
+                />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -184,7 +200,9 @@ export default function DealerSettings() {
                 <TrendingUp className="w-5 h-5" />
                 Trading Preferences
               </CardTitle>
-              <CardDescription>Configure your trading behavior and limits</CardDescription>
+              <CardDescription>
+                Configure your trading behavior and limits
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -192,7 +210,12 @@ export default function DealerSettings() {
                   <Label>Default Order Type</Label>
                   <Select
                     value={tradingSettings.defaultOrderType}
-                    onValueChange={(value) => setTradingSettings({ ...tradingSettings, defaultOrderType: value })}
+                    onValueChange={(value) =>
+                      setTradingSettings({
+                        ...tradingSettings,
+                        defaultOrderType: value,
+                      })
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -201,7 +224,9 @@ export default function DealerSettings() {
                       <SelectItem value="market">Market Order</SelectItem>
                       <SelectItem value="limit">Limit Order</SelectItem>
                       <SelectItem value="stop">Stop Order</SelectItem>
-                      <SelectItem value="stop-limit">Stop-Limit Order</SelectItem>
+                      <SelectItem value="stop-limit">
+                        Stop-Limit Order
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -211,7 +236,12 @@ export default function DealerSettings() {
                     id="maxOrderSize"
                     type="number"
                     value={tradingSettings.maxOrderSize}
-                    onChange={(e) => setTradingSettings({ ...tradingSettings, maxOrderSize: e.target.value })}
+                    onChange={(e) =>
+                      setTradingSettings({
+                        ...tradingSettings,
+                        maxOrderSize: e.target.value,
+                      })
+                    }
                   />
                 </div>
               </div>
@@ -223,7 +253,12 @@ export default function DealerSettings() {
                     id="tradingHoursStart"
                     type="time"
                     value={tradingSettings.tradingHoursStart}
-                    onChange={(e) => setTradingSettings({ ...tradingSettings, tradingHoursStart: e.target.value })}
+                    onChange={(e) =>
+                      setTradingSettings({
+                        ...tradingSettings,
+                        tradingHoursStart: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -232,7 +267,12 @@ export default function DealerSettings() {
                     id="tradingHoursEnd"
                     type="time"
                     value={tradingSettings.tradingHoursEnd}
-                    onChange={(e) => setTradingSettings({ ...tradingSettings, tradingHoursEnd: e.target.value })}
+                    onChange={(e) =>
+                      setTradingSettings({
+                        ...tradingSettings,
+                        tradingHoursEnd: e.target.value,
+                      })
+                    }
                   />
                 </div>
               </div>
@@ -251,7 +291,12 @@ export default function DealerSettings() {
                     </div>
                     <Switch
                       checked={tradingSettings.autoConfirm}
-                      onCheckedChange={(checked) => setTradingSettings({ ...tradingSettings, autoConfirm: checked })}
+                      onCheckedChange={(checked) =>
+                        setTradingSettings({
+                          ...tradingSettings,
+                          autoConfirm: checked,
+                        })
+                      }
                     />
                   </div>
                   <div className="flex items-center justify-between">
@@ -263,7 +308,12 @@ export default function DealerSettings() {
                     </div>
                     <Switch
                       checked={tradingSettings.autoSettlement}
-                      onCheckedChange={(checked) => setTradingSettings({ ...tradingSettings, autoSettlement: checked })}
+                      onCheckedChange={(checked) =>
+                        setTradingSettings({
+                          ...tradingSettings,
+                          autoSettlement: checked,
+                        })
+                      }
                     />
                   </div>
                 </div>
@@ -284,10 +334,12 @@ export default function DealerSettings() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <DollarSign className="w-5 h-5" />
+                <Coins className="w-5 h-5" />
                 Fee Configuration
               </CardTitle>
-              <CardDescription>Configure trading fees and commissions</CardDescription>
+              <CardDescription>
+                Configure trading fees and commissions
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -295,11 +347,21 @@ export default function DealerSettings() {
                   <h4 className="font-medium">Trading Fees</h4>
                   <div className="space-y-2">
                     <Label htmlFor="buyFee">Buy Commission (%)</Label>
-                    <Input id="buyFee" type="number" step="0.01" defaultValue="0.50" />
+                    <Input
+                      id="buyFee"
+                      type="number"
+                      step="0.01"
+                      defaultValue="0.50"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="sellFee">Sell Commission (%)</Label>
-                    <Input id="sellFee" type="number" step="0.01" defaultValue="0.50" />
+                    <Input
+                      id="sellFee"
+                      type="number"
+                      step="0.01"
+                      defaultValue="0.50"
+                    />
                   </div>
                 </div>
 
@@ -307,7 +369,12 @@ export default function DealerSettings() {
                   <h4 className="font-medium">Broker Fees</h4>
                   <div className="space-y-2">
                     <Label htmlFor="brokerSpread">Broker Spread (%)</Label>
-                    <Input id="brokerSpread" type="number" step="0.01" defaultValue="0.10" />
+                    <Input
+                      id="brokerSpread"
+                      type="number"
+                      step="0.01"
+                      defaultValue="0.10"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="minFee">Minimum Fee (₦)</Label>
@@ -324,17 +391,23 @@ export default function DealerSettings() {
                   <Card className="p-4">
                     <p className="text-sm text-muted-foreground">Standard</p>
                     <p className="text-xl font-bold">0.50%</p>
-                    <p className="text-xs text-muted-foreground">Up to ₦10M volume</p>
+                    <p className="text-xs text-muted-foreground">
+                      Up to ₦10M volume
+                    </p>
                   </Card>
                   <Card className="p-4">
                     <p className="text-sm text-muted-foreground">Premium</p>
                     <p className="text-xl font-bold">0.35%</p>
-                    <p className="text-xs text-muted-foreground">₦10M - ₦100M volume</p>
+                    <p className="text-xs text-muted-foreground">
+                      ₦10M - ₦100M volume
+                    </p>
                   </Card>
                   <Card className="p-4">
                     <p className="text-sm text-muted-foreground">Enterprise</p>
                     <p className="text-xl font-bold">0.20%</p>
-                    <p className="text-xs text-muted-foreground">Above ₦100M volume</p>
+                    <p className="text-xs text-muted-foreground">
+                      Above ₦100M volume
+                    </p>
                   </Card>
                 </div>
               </div>
@@ -357,7 +430,9 @@ export default function DealerSettings() {
                 <Bell className="w-5 h-5" />
                 Notification Preferences
               </CardTitle>
-              <CardDescription>Configure how you receive alerts</CardDescription>
+              <CardDescription>
+                Configure how you receive alerts
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
@@ -366,30 +441,50 @@ export default function DealerSettings() {
                   <div className="flex items-center justify-between">
                     <div>
                       <Label>Trade Alerts</Label>
-                      <p className="text-sm text-muted-foreground">Get notified for trade executions</p>
+                      <p className="text-sm text-muted-foreground">
+                        Get notified for trade executions
+                      </p>
                     </div>
-                    <Switch checked={tradeAlerts} onCheckedChange={setTradeAlerts} />
+                    <Switch
+                      checked={tradeAlerts}
+                      onCheckedChange={setTradeAlerts}
+                    />
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
                       <Label>Risk Alerts</Label>
-                      <p className="text-sm text-muted-foreground">Alerts when risk limits are approached</p>
+                      <p className="text-sm text-muted-foreground">
+                        Alerts when risk limits are approached
+                      </p>
                     </div>
-                    <Switch checked={riskAlerts} onCheckedChange={setRiskAlerts} />
+                    <Switch
+                      checked={riskAlerts}
+                      onCheckedChange={setRiskAlerts}
+                    />
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
                       <Label>Settlement Alerts</Label>
-                      <p className="text-sm text-muted-foreground">Notifications for settlement status</p>
+                      <p className="text-sm text-muted-foreground">
+                        Notifications for settlement status
+                      </p>
                     </div>
-                    <Switch checked={settlementAlerts} onCheckedChange={setSettlementAlerts} />
+                    <Switch
+                      checked={settlementAlerts}
+                      onCheckedChange={setSettlementAlerts}
+                    />
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
                       <Label>Daily Digest</Label>
-                      <p className="text-sm text-muted-foreground">Summary of daily activity</p>
+                      <p className="text-sm text-muted-foreground">
+                        Summary of daily activity
+                      </p>
                     </div>
-                    <Switch checked={dailyDigest} onCheckedChange={setDailyDigest} />
+                    <Switch
+                      checked={dailyDigest}
+                      onCheckedChange={setDailyDigest}
+                    />
                   </div>
                 </div>
               </div>
@@ -402,30 +497,49 @@ export default function DealerSettings() {
                   <div className="flex items-center justify-between">
                     <div>
                       <Label>Email Notifications</Label>
-                      <p className="text-sm text-muted-foreground">Receive updates via email</p>
+                      <p className="text-sm text-muted-foreground">
+                        Receive updates via email
+                      </p>
                     </div>
-                    <Switch checked={emailNotifications} onCheckedChange={setEmailNotifications} />
+                    <Switch
+                      checked={emailNotifications}
+                      onCheckedChange={setEmailNotifications}
+                    />
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
                       <Label>Push Notifications</Label>
-                      <p className="text-sm text-muted-foreground">Browser push notifications</p>
+                      <p className="text-sm text-muted-foreground">
+                        Browser push notifications
+                      </p>
                     </div>
-                    <Switch checked={pushNotifications} onCheckedChange={setPushNotifications} />
+                    <Switch
+                      checked={pushNotifications}
+                      onCheckedChange={setPushNotifications}
+                    />
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
                       <Label>SMS Alerts</Label>
-                      <p className="text-sm text-muted-foreground">Critical alerts via SMS</p>
+                      <p className="text-sm text-muted-foreground">
+                        Critical alerts via SMS
+                      </p>
                     </div>
-                    <Switch checked={smsAlerts} onCheckedChange={setSmsAlerts} />
+                    <Switch
+                      checked={smsAlerts}
+                      onCheckedChange={setSmsAlerts}
+                    />
                   </div>
                 </div>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="alertEmail">Alert Email Address</Label>
-                <Input id="alertEmail" type="email" defaultValue="alerts@alphadealer.com" />
+                <Input
+                  id="alertEmail"
+                  type="email"
+                  defaultValue="alerts@alphadealer.com"
+                />
               </div>
 
               <div className="flex justify-end">
@@ -455,9 +569,12 @@ export default function DealerSettings() {
                 <div className="p-4 rounded-lg bg-warning/10 border border-warning/20 flex items-start gap-3">
                   <AlertTriangle className="w-5 h-5 text-warning shrink-0 mt-0.5" />
                   <div className="text-sm">
-                    <p className="font-medium text-warning">Keep your keys secure</p>
+                    <p className="font-medium text-warning">
+                      Keep your keys secure
+                    </p>
                     <p className="text-muted-foreground">
-                      Never share your secret key. If compromised, rotate immediately.
+                      Never share your secret key. If compromised, rotate
+                      immediately.
                     </p>
                   </div>
                 </div>
@@ -479,13 +596,22 @@ export default function DealerSettings() {
                           className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-0"
                           onClick={() => setShowApiKey(!showApiKey)}
                         >
-                          {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          {showApiKey ? (
+                            <EyeOff className="w-4 h-4" />
+                          ) : (
+                            <Eye className="w-4 h-4" />
+                          )}
                         </Button>
                       </div>
                       <Button
                         variant="outline"
                         size="icon"
-                        onClick={() => handleCopyToClipboard(apiCredentials.apiKey, "API Key")}
+                        onClick={() =>
+                          handleCopyToClipboard(
+                            apiCredentials.apiKey,
+                            "API Key"
+                          )
+                        }
                       >
                         <Copy className="w-4 h-4" />
                       </Button>
@@ -508,13 +634,22 @@ export default function DealerSettings() {
                           className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-0"
                           onClick={() => setShowSecretKey(!showSecretKey)}
                         >
-                          {showSecretKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          {showSecretKey ? (
+                            <EyeOff className="w-4 h-4" />
+                          ) : (
+                            <Eye className="w-4 h-4" />
+                          )}
                         </Button>
                       </div>
                       <Button
                         variant="outline"
                         size="icon"
-                        onClick={() => handleCopyToClipboard(apiCredentials.secretKey, "Secret Key")}
+                        onClick={() =>
+                          handleCopyToClipboard(
+                            apiCredentials.secretKey,
+                            "Secret Key"
+                          )
+                        }
                       >
                         <Copy className="w-4 h-4" />
                       </Button>
@@ -553,7 +688,12 @@ export default function DealerSettings() {
                     <Button
                       variant="outline"
                       size="icon"
-                      onClick={() => handleCopyToClipboard(apiCredentials.webhookUrl, "Webhook URL")}
+                      onClick={() =>
+                        handleCopyToClipboard(
+                          apiCredentials.webhookUrl,
+                          "Webhook URL"
+                        )
+                      }
                     >
                       <Copy className="w-4 h-4" />
                     </Button>
@@ -603,7 +743,8 @@ export default function DealerSettings() {
                   <Label>IP Whitelist</Label>
                   <Input placeholder="Enter IP addresses (comma-separated)" />
                   <p className="text-xs text-muted-foreground">
-                    Leave empty to allow all IPs (not recommended for production)
+                    Leave empty to allow all IPs (not recommended for
+                    production)
                   </p>
                 </div>
 
@@ -666,8 +807,15 @@ export default function DealerSettings() {
                 <h4 className="font-medium">Two-Factor Authentication</h4>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm">Status: <Badge className="bg-success/10 text-success ml-1">Enabled</Badge></p>
-                    <p className="text-sm text-muted-foreground mt-1">Using authenticator app</p>
+                    <p className="text-sm">
+                      Status:{" "}
+                      <Badge className="bg-success/10 text-success ml-1">
+                        Enabled
+                      </Badge>
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Using authenticator app
+                    </p>
                   </div>
                   <Button variant="outline">Configure</Button>
                 </div>

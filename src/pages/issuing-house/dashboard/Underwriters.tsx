@@ -4,16 +4,42 @@
  */
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Users,
   Search,
@@ -23,7 +49,7 @@ import {
   Clock,
   UserPlus,
   Briefcase,
-  DollarSign,
+  Coins,
   Star,
   Phone,
   Mail,
@@ -34,8 +60,8 @@ interface Underwriter {
   id: string;
   name: string;
   code: string;
-  type: 'investment_bank' | 'commercial_bank' | 'broker_dealer';
-  status: 'active' | 'pending' | 'suspended';
+  type: "investment_bank" | "commercial_bank" | "broker_dealer";
+  status: "active" | "pending" | "suspended";
   totalUnderwritten: number;
   activeDeals: number;
   successRate: number;
@@ -50,75 +76,100 @@ interface Underwriter {
 }
 
 const mockUnderwriters: Underwriter[] = [
-  { 
-    id: 'uw1', 
-    name: 'First Capital Alliance', 
-    code: 'FCA', 
-    type: 'investment_bank',
-    status: 'active', 
-    totalUnderwritten: 25000000000, 
+  {
+    id: "uw1",
+    name: "First Capital Alliance",
+    code: "FCA",
+    type: "investment_bank",
+    status: "active",
+    totalUnderwritten: 25000000000,
     activeDeals: 3,
     successRate: 98.5,
     rating: 4.8,
-    contact: { email: 'deals@fca.com', phone: '+234 1 234 5678', website: 'www.fca.com' },
-    specializations: ['IPO', 'Bond Issuance', 'Rights Issue'],
-    lastDeal: new Date(Date.now() - 604800000)
+    contact: {
+      email: "deals@fca.com",
+      phone: "+234 1 234 5678",
+      website: "www.fca.com",
+    },
+    specializations: ["IPO", "Bond Issuance", "Rights Issue"],
+    lastDeal: new Date(Date.now() - 604800000),
   },
-  { 
-    id: 'uw2', 
-    name: 'Continental Securities', 
-    code: 'CONTSEC', 
-    type: 'broker_dealer',
-    status: 'active', 
-    totalUnderwritten: 18500000000, 
+  {
+    id: "uw2",
+    name: "Continental Securities",
+    code: "CONTSEC",
+    type: "broker_dealer",
+    status: "active",
+    totalUnderwritten: 18500000000,
     activeDeals: 2,
     successRate: 95.2,
     rating: 4.5,
-    contact: { email: 'underwriting@contsec.com', phone: '+234 1 345 6789', website: 'www.contsec.com' },
-    specializations: ['Private Placement', 'IPO'],
-    lastDeal: new Date(Date.now() - 1209600000)
+    contact: {
+      email: "underwriting@contsec.com",
+      phone: "+234 1 345 6789",
+      website: "www.contsec.com",
+    },
+    specializations: ["Private Placement", "IPO"],
+    lastDeal: new Date(Date.now() - 1209600000),
   },
-  { 
-    id: 'uw3', 
-    name: 'Heritage Bank Capital', 
-    code: 'HBC', 
-    type: 'commercial_bank',
-    status: 'active', 
-    totalUnderwritten: 32000000000, 
+  {
+    id: "uw3",
+    name: "Heritage Bank Capital",
+    code: "HBC",
+    type: "commercial_bank",
+    status: "active",
+    totalUnderwritten: 32000000000,
     activeDeals: 4,
     successRate: 99.1,
     rating: 4.9,
-    contact: { email: 'capital@heritage.com', phone: '+234 1 456 7890', website: 'www.heritagebank.com' },
-    specializations: ['Bond Issuance', 'Commercial Paper', 'Rights Issue'],
-    lastDeal: new Date(Date.now() - 259200000)
+    contact: {
+      email: "capital@heritage.com",
+      phone: "+234 1 456 7890",
+      website: "www.heritagebank.com",
+    },
+    specializations: ["Bond Issuance", "Commercial Paper", "Rights Issue"],
+    lastDeal: new Date(Date.now() - 259200000),
   },
-  { 
-    id: 'uw4', 
-    name: 'Prime Securities Ltd', 
-    code: 'PRIME', 
-    type: 'broker_dealer',
-    status: 'pending', 
-    totalUnderwritten: 8500000000, 
+  {
+    id: "uw4",
+    name: "Prime Securities Ltd",
+    code: "PRIME",
+    type: "broker_dealer",
+    status: "pending",
+    totalUnderwritten: 8500000000,
     activeDeals: 0,
     successRate: 92.3,
     rating: 4.2,
-    contact: { email: 'info@primesec.com', phone: '+234 1 567 8901', website: 'www.primesec.com' },
-    specializations: ['Private Placement', 'SME Listings'],
-    lastDeal: new Date(Date.now() - 2592000000)
+    contact: {
+      email: "info@primesec.com",
+      phone: "+234 1 567 8901",
+      website: "www.primesec.com",
+    },
+    specializations: ["Private Placement", "SME Listings"],
+    lastDeal: new Date(Date.now() - 2592000000),
   },
-  { 
-    id: 'uw5', 
-    name: 'Zenith Capital Markets', 
-    code: 'ZCM', 
-    type: 'commercial_bank',
-    status: 'active', 
-    totalUnderwritten: 45000000000, 
+  {
+    id: "uw5",
+    name: "Zenith Capital Markets",
+    code: "ZCM",
+    type: "commercial_bank",
+    status: "active",
+    totalUnderwritten: 45000000000,
     activeDeals: 5,
     successRate: 97.8,
     rating: 4.7,
-    contact: { email: 'underwriting@zenithcm.com', phone: '+234 1 678 9012', website: 'www.zenithcm.com' },
-    specializations: ['IPO', 'Bond Issuance', 'Rights Issue', 'Private Placement'],
-    lastDeal: new Date()
+    contact: {
+      email: "underwriting@zenithcm.com",
+      phone: "+234 1 678 9012",
+      website: "www.zenithcm.com",
+    },
+    specializations: [
+      "IPO",
+      "Bond Issuance",
+      "Rights Issue",
+      "Private Placement",
+    ],
+    lastDeal: new Date(),
   },
 ];
 
@@ -126,44 +177,69 @@ const formatCurrency = (value: number) => {
   if (value >= 1000000000) {
     return `₦${(value / 1000000000).toFixed(1)}B`;
   }
-  return new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(value);
+  return new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    minimumFractionDigits: 0,
+  }).format(value);
 };
 
 const formatDate = (date: Date) => {
-  return new Intl.DateTimeFormat('en-NG', { dateStyle: 'medium' }).format(date);
+  return new Intl.DateTimeFormat("en-NG", { dateStyle: "medium" }).format(date);
 };
 
 export default function Underwriters() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedUnderwriter, setSelectedUnderwriter] = useState<Underwriter | null>(null);
+  const [selectedUnderwriter, setSelectedUnderwriter] =
+    useState<Underwriter | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
   const filteredUnderwriters = mockUnderwriters.filter(
-    (uw) => uw.name.toLowerCase().includes(searchTerm.toLowerCase()) || uw.code.toLowerCase().includes(searchTerm.toLowerCase())
+    (uw) =>
+      uw.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      uw.code.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const activeUnderwriters = mockUnderwriters.filter((uw) => uw.status === 'active').length;
-  const totalUnderwritten = mockUnderwriters.reduce((sum, uw) => sum + uw.totalUnderwritten, 0);
-  const totalActiveDeals = mockUnderwriters.reduce((sum, uw) => sum + uw.activeDeals, 0);
+  const activeUnderwriters = mockUnderwriters.filter(
+    (uw) => uw.status === "active"
+  ).length;
+  const totalUnderwritten = mockUnderwriters.reduce(
+    (sum, uw) => sum + uw.totalUnderwritten,
+    0
+  );
+  const totalActiveDeals = mockUnderwriters.reduce(
+    (sum, uw) => sum + uw.activeDeals,
+    0
+  );
 
-  const getStatusBadge = (status: Underwriter['status']) => {
+  const getStatusBadge = (status: Underwriter["status"]) => {
     switch (status) {
-      case 'active':
-        return <Badge className="bg-chart-2/20 text-chart-2 border-chart-2/30"><CheckCircle2 className="w-3 h-3 mr-1" />Active</Badge>;
-      case 'pending':
-        return <Badge className="bg-warning/20 text-warning border-warning/30"><Clock className="w-3 h-3 mr-1" />Pending</Badge>;
-      case 'suspended':
+      case "active":
+        return (
+          <Badge className="bg-chart-2/20 text-chart-2 border-chart-2/30">
+            <CheckCircle2 className="w-3 h-3 mr-1" />
+            Active
+          </Badge>
+        );
+      case "pending":
+        return (
+          <Badge className="bg-warning/20 text-warning border-warning/30">
+            <Clock className="w-3 h-3 mr-1" />
+            Pending
+          </Badge>
+        );
+      case "suspended":
         return <Badge variant="secondary">Suspended</Badge>;
     }
   };
 
-  const getTypeBadge = (type: Underwriter['type']) => {
+  const getTypeBadge = (type: Underwriter["type"]) => {
     switch (type) {
-      case 'investment_bank':
+      case "investment_bank":
         return <Badge variant="outline">Investment Bank</Badge>;
-      case 'commercial_bank':
+      case "commercial_bank":
         return <Badge variant="outline">Commercial Bank</Badge>;
-      case 'broker_dealer':
+      case "broker_dealer":
         return <Badge variant="outline">Broker-Dealer</Badge>;
     }
   };
@@ -172,9 +248,13 @@ export default function Underwriters() {
     return (
       <div className="flex items-center gap-1">
         {[1, 2, 3, 4, 5].map((star) => (
-          <Star 
-            key={star} 
-            className={`w-4 h-4 ${star <= Math.floor(rating) ? 'text-warning fill-warning' : 'text-muted-foreground'}`} 
+          <Star
+            key={star}
+            className={`w-4 h-4 ${
+              star <= Math.floor(rating)
+                ? "text-warning fill-warning"
+                : "text-muted-foreground"
+            }`}
           />
         ))}
         <span className="text-sm ml-1">{rating.toFixed(1)}</span>
@@ -187,7 +267,9 @@ export default function Underwriters() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Underwriters</h1>
-          <p className="text-muted-foreground">Manage underwriters for your securities offerings</p>
+          <p className="text-muted-foreground">
+            Manage underwriters for your securities offerings
+          </p>
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
@@ -217,9 +299,15 @@ export default function Underwriters() {
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="investment_bank">Investment Bank</SelectItem>
-                      <SelectItem value="commercial_bank">Commercial Bank</SelectItem>
-                      <SelectItem value="broker_dealer">Broker-Dealer</SelectItem>
+                      <SelectItem value="investment_bank">
+                        Investment Bank
+                      </SelectItem>
+                      <SelectItem value="commercial_bank">
+                        Commercial Bank
+                      </SelectItem>
+                      <SelectItem value="broker_dealer">
+                        Broker-Dealer
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -240,11 +328,19 @@ export default function Underwriters() {
               </div>
               <div className="space-y-2">
                 <Label>Specializations</Label>
-                <Textarea placeholder="IPO, Bond Issuance, Rights Issue..." rows={2} />
+                <Textarea
+                  placeholder="IPO, Bond Issuance, Rights Issue..."
+                  rows={2}
+                />
               </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>Cancel</Button>
+              <Button
+                variant="outline"
+                onClick={() => setIsAddDialogOpen(false)}
+              >
+                Cancel
+              </Button>
               <Button>Add Underwriter</Button>
             </DialogFooter>
           </DialogContent>
@@ -260,7 +356,9 @@ export default function Underwriters() {
                 <Users className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Total Underwriters</p>
+                <p className="text-sm text-muted-foreground">
+                  Total Underwriters
+                </p>
                 <p className="text-xl font-bold">{mockUnderwriters.length}</p>
               </div>
             </div>
@@ -285,11 +383,15 @@ export default function Underwriters() {
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-chart-4/10 flex items-center justify-center">
-                <DollarSign className="w-5 h-5 text-chart-4" />
+                <Coins className="w-5 h-5 text-chart-4" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Total Underwritten</p>
-                <p className="text-xl font-bold">{formatCurrency(totalUnderwritten)}</p>
+                <p className="text-sm text-muted-foreground">
+                  Total Underwritten
+                </p>
+                <p className="text-xl font-bold">
+                  {formatCurrency(totalUnderwritten)}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -316,7 +418,9 @@ export default function Underwriters() {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>Registered Underwriters</CardTitle>
-              <CardDescription>Vetted underwriters available for your offerings</CardDescription>
+              <CardDescription>
+                Vetted underwriters available for your offerings
+              </CardDescription>
             </div>
             <div className="relative w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -355,18 +459,32 @@ export default function Underwriters() {
                       </Avatar>
                       <div>
                         <span className="font-medium">{underwriter.name}</span>
-                        <p className="text-xs text-muted-foreground">{underwriter.code}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {underwriter.code}
+                        </p>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>{getTypeBadge(underwriter.type)}</TableCell>
                   <TableCell>{getStatusBadge(underwriter.status)}</TableCell>
-                  <TableCell className="text-right font-medium">{formatCurrency(underwriter.totalUnderwritten)}</TableCell>
-                  <TableCell className="text-right">{underwriter.activeDeals}</TableCell>
+                  <TableCell className="text-right font-medium">
+                    {formatCurrency(underwriter.totalUnderwritten)}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {underwriter.activeDeals}
+                  </TableCell>
                   <TableCell>{renderStars(underwriter.rating)}</TableCell>
-                  <TableCell className="text-muted-foreground text-sm">{formatDate(underwriter.lastDeal)}</TableCell>
+                  <TableCell className="text-muted-foreground text-sm">
+                    {formatDate(underwriter.lastDeal)}
+                  </TableCell>
                   <TableCell>
-                    <Button variant="ghost" size="sm" onClick={() => setSelectedUnderwriter(underwriter)}>View</Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setSelectedUnderwriter(underwriter)}
+                    >
+                      View
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -376,7 +494,10 @@ export default function Underwriters() {
       </Card>
 
       {/* Underwriter Detail Dialog */}
-      <Dialog open={!!selectedUnderwriter} onOpenChange={() => setSelectedUnderwriter(null)}>
+      <Dialog
+        open={!!selectedUnderwriter}
+        onOpenChange={() => setSelectedUnderwriter(null)}
+      >
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle>Underwriter Details</DialogTitle>
@@ -390,7 +511,9 @@ export default function Underwriters() {
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-lg">{selectedUnderwriter.name}</h3>
+                  <h3 className="font-semibold text-lg">
+                    {selectedUnderwriter.name}
+                  </h3>
                   <div className="flex items-center gap-2 mt-1">
                     {getTypeBadge(selectedUnderwriter.type)}
                     {getStatusBadge(selectedUnderwriter.status)}
@@ -400,16 +523,24 @@ export default function Underwriters() {
 
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div className="p-3 rounded-lg bg-secondary/30">
-                  <p className="text-muted-foreground mb-1">Total Underwritten</p>
-                  <p className="font-semibold">{formatCurrency(selectedUnderwriter.totalUnderwritten)}</p>
+                  <p className="text-muted-foreground mb-1">
+                    Total Underwritten
+                  </p>
+                  <p className="font-semibold">
+                    {formatCurrency(selectedUnderwriter.totalUnderwritten)}
+                  </p>
                 </div>
                 <div className="p-3 rounded-lg bg-secondary/30">
                   <p className="text-muted-foreground mb-1">Success Rate</p>
-                  <p className="font-semibold">{selectedUnderwriter.successRate}%</p>
+                  <p className="font-semibold">
+                    {selectedUnderwriter.successRate}%
+                  </p>
                 </div>
                 <div className="p-3 rounded-lg bg-secondary/30">
                   <p className="text-muted-foreground mb-1">Active Deals</p>
-                  <p className="font-semibold">{selectedUnderwriter.activeDeals}</p>
+                  <p className="font-semibold">
+                    {selectedUnderwriter.activeDeals}
+                  </p>
                 </div>
                 <div className="p-3 rounded-lg bg-secondary/30">
                   <p className="text-muted-foreground mb-1">Rating</p>
@@ -421,7 +552,9 @@ export default function Underwriters() {
                 <h4 className="font-medium mb-3">Specializations</h4>
                 <div className="flex flex-wrap gap-2">
                   {selectedUnderwriter.specializations.map((spec) => (
-                    <Badge key={spec} variant="secondary">{spec}</Badge>
+                    <Badge key={spec} variant="secondary">
+                      {spec}
+                    </Badge>
                   ))}
                 </div>
               </div>
@@ -445,7 +578,13 @@ export default function Underwriters() {
               </div>
 
               <div className="flex gap-2 pt-4">
-                <Button variant="outline" className="flex-1" onClick={() => setSelectedUnderwriter(null)}>Close</Button>
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => setSelectedUnderwriter(null)}
+                >
+                  Close
+                </Button>
                 <Button className="flex-1">Select for Offering</Button>
               </div>
             </div>

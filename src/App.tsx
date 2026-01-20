@@ -3,7 +3,14 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { MainLayout, AuthLayout, BrokerAdminLayout, DealerAdminLayout, IssuingHouseAdminLayout, MarketMakerAdminLayout } from "@/components/layout";
+import {
+  MainLayout,
+  AuthLayout,
+  BrokerAdminLayout,
+  DealerAdminLayout,
+  IssuingHouseAdminLayout,
+  MarketMakerAdminLayout,
+} from "@/components/layout";
 import { GuestRoute, ProtectedRoute } from "@/components/AuthWrappers";
 
 // Broker Theme System
@@ -37,7 +44,11 @@ import RoleSelection from "./pages/RoleSelection";
 import NotFound from "./pages/NotFound";
 
 // Broker Onboarding & Dashboard
-import { BrokerRequirements, BrokerApplication, AwaitingApproval } from "./pages/broker";
+import {
+  BrokerRequirements,
+  BrokerApplication,
+  AwaitingApproval,
+} from "./pages/broker";
 import {
   BrokerDashboard,
   BrokerUsers,
@@ -53,23 +64,70 @@ import {
 import DashboardSelection from "./pages/DashboardSelection";
 
 // Dealer Pages
-import { DealerRequirements, DealerApplication, DealerAwaitingApproval, DealerDashboard } from "./pages/dealer";
-import { DealerTrading, DealerInventory, DealerBrokers, DealerPrimaryMarket, DealerOTCDex, DealerRiskCompliance, DealerSettlement, DealerReports, DealerSettings } from "./pages/dealer/dashboard";
+import {
+  DealerRequirements,
+  DealerApplication,
+  DealerAwaitingApproval,
+  DealerDashboard,
+} from "./pages/dealer";
+import {
+  DealerTrading,
+  DealerInventory,
+  DealerBrokers,
+  DealerPrimaryMarket,
+  DealerOTCDex,
+  DealerRiskCompliance,
+  DealerSettlement,
+  DealerReports,
+  DealerSettings,
+} from "./pages/dealer/dashboard";
 
 // Issuing House Pages
-import { IssuingHouseRequirements, IssuingHouseApplication, IssuingHouseAwaitingApproval, IssuingHouseDashboard } from "./pages/issuing-house";
-import { NewOffering, ActiveDeals, Investors, Underwriters, OfferManagement, SubscriptionMonitoring, AllocationAllotment, RegulatoryFilings, PostListing, IssuingHouseReports, IssuingHouseSettings } from "./pages/issuing-house/dashboard";
+import {
+  IssuingHouseRequirements,
+  IssuingHouseApplication,
+  IssuingHouseAwaitingApproval,
+  IssuingHouseDashboard,
+} from "./pages/issuing-house";
+import {
+  NewOffering,
+  ActiveDeals,
+  Investors,
+  Underwriters,
+  OfferManagement,
+  SubscriptionMonitoring,
+  AllocationAllotment,
+  RegulatoryFilings,
+  PostListing,
+  IssuingHouseReports,
+  IssuingHouseSettings,
+} from "./pages/issuing-house/dashboard";
 
 // Market Maker Pages
-import { MarketMakerRequirements, MarketMakerApplication, MarketMakerAwaitingApproval, MarketMakerDashboard } from "./pages/market-maker";
-import { QuotingEngine, RiskManagement, QuoteManagement, MarketDepth, InventoryControl, PerformanceMetrics, CompliancePenalties, MarketMakerReports, MarketMakerSettings } from "./pages/market-maker/dashboard";
+import {
+  MarketMakerRequirements,
+  MarketMakerApplication,
+  MarketMakerAwaitingApproval,
+  MarketMakerDashboard,
+} from "./pages/market-maker";
+import {
+  QuotingEngine,
+  RiskManagement,
+  QuoteManagement,
+  MarketDepth,
+  InventoryControl,
+  PerformanceMetrics,
+  CompliancePenalties,
+  MarketMakerReports,
+  MarketMakerSettings,
+} from "./pages/market-maker/dashboard";
 
 // Register mock brokers for development
 registerMockBrokers(mockBrokerConfigs);
 
 const queryClient = new QueryClient();
 
-// Shared broker app routes (markets, trading, portfolio, settings, OTC DEX)
+// Shared broker app routes (markets, trading, portfolio, settings, OTC DESK)
 const BrokerAppRoutes = () => (
   <>
     <Route path="markets" element={<BrokerMarketsPage />} />
@@ -77,8 +135,8 @@ const BrokerAppRoutes = () => (
     <Route path="markets/private/:marketId" element={<BrokerMarketsPage />} />
     <Route path="markets/secondary/:marketId" element={<BrokerMarketsPage />} />
     <Route path="trade/:serviceType/:pair" element={<BrokerTradingPage />} />
-    <Route path="otc-dex" element={<BrokerOTCDexPage />} />
-    <Route path="otc-dex/:offerId" element={<BrokerOTCDexDetailPage />} />
+    <Route path="otc-desk" element={<BrokerOTCDexPage />} />
+    <Route path="otc-desk/:offerId" element={<BrokerOTCDexDetailPage />} />
     <Route path="portfolio" element={<BrokerPortfolioPage />} />
     <Route path="settings" element={<BrokerSettingsPage />} />
   </>
@@ -122,12 +180,21 @@ const App = () => (
 
           <Route element={<ProtectedRoute />}>
             <Route path="/role-selection" element={<RoleSelection />} />
-            <Route path="/dashboard-selection" element={<DashboardSelection />} />
+            <Route
+              path="/dashboard-selection"
+              element={<DashboardSelection />}
+            />
 
             {/* Broker Onboarding */}
-            <Route path="/broker/requirements" element={<BrokerRequirements />} />
+            <Route
+              path="/broker/requirements"
+              element={<BrokerRequirements />}
+            />
             <Route path="/broker/application" element={<BrokerApplication />} />
-            <Route path="/broker/awaiting-approval" element={<AwaitingApproval />} />
+            <Route
+              path="/broker/awaiting-approval"
+              element={<AwaitingApproval />}
+            />
 
             {/* Broker Dashboard */}
             <Route path="/broker/dashboard" element={<BrokerAdminLayout />}>
@@ -142,13 +209,19 @@ const App = () => (
             </Route>
 
             {/* Dealer */}
-            <Route path="/dealer/requirements" element={<DealerRequirements />} />
+            <Route
+              path="/dealer/requirements"
+              element={<DealerRequirements />}
+            />
             <Route path="/dealer/application" element={<DealerApplication />} />
-            <Route path="/dealer/awaiting-approval" element={<DealerAwaitingApproval />} />
+            <Route
+              path="/dealer/awaiting-approval"
+              element={<DealerAwaitingApproval />}
+            />
             <Route path="/dealer/dashboard" element={<DealerAdminLayout />}>
               <Route index element={<DealerDashboard />} />
               <Route path="primary-market" element={<DealerPrimaryMarket />} />
-              <Route path="otc-dex" element={<DealerOTCDex />} />
+              <Route path="otc-desk" element={<DealerOTCDex />} />
               <Route path="trading" element={<DealerTrading />} />
               <Route path="inventory" element={<DealerInventory />} />
               <Route path="risk" element={<DealerRiskCompliance />} />
@@ -159,15 +232,30 @@ const App = () => (
             </Route>
 
             {/* Issuing House */}
-            <Route path="/issuing-house/requirements" element={<IssuingHouseRequirements />} />
-            <Route path="/issuing-house/application" element={<IssuingHouseApplication />} />
-            <Route path="/issuing-house/awaiting-approval" element={<IssuingHouseAwaitingApproval />} />
-            <Route path="/issuing-house/dashboard" element={<IssuingHouseAdminLayout />}>
+            <Route
+              path="/issuing-house/requirements"
+              element={<IssuingHouseRequirements />}
+            />
+            <Route
+              path="/issuing-house/application"
+              element={<IssuingHouseApplication />}
+            />
+            <Route
+              path="/issuing-house/awaiting-approval"
+              element={<IssuingHouseAwaitingApproval />}
+            />
+            <Route
+              path="/issuing-house/dashboard"
+              element={<IssuingHouseAdminLayout />}
+            >
               <Route index element={<IssuingHouseDashboard />} />
               <Route path="offers" element={<OfferManagement />} />
               <Route path="new-offering" element={<NewOffering />} />
               <Route path="active-deals" element={<ActiveDeals />} />
-              <Route path="subscriptions" element={<SubscriptionMonitoring />} />
+              <Route
+                path="subscriptions"
+                element={<SubscriptionMonitoring />}
+              />
               <Route path="allocation" element={<AllocationAllotment />} />
               <Route path="filings" element={<RegulatoryFilings />} />
               <Route path="post-listing" element={<PostListing />} />
@@ -178,10 +266,22 @@ const App = () => (
             </Route>
 
             {/* Market Maker */}
-            <Route path="/market-maker/requirements" element={<MarketMakerRequirements />} />
-            <Route path="/market-maker/application" element={<MarketMakerApplication />} />
-            <Route path="/market-maker/awaiting-approval" element={<MarketMakerAwaitingApproval />} />
-            <Route path="/market-maker/dashboard" element={<MarketMakerAdminLayout />}>
+            <Route
+              path="/market-maker/requirements"
+              element={<MarketMakerRequirements />}
+            />
+            <Route
+              path="/market-maker/application"
+              element={<MarketMakerApplication />}
+            />
+            <Route
+              path="/market-maker/awaiting-approval"
+              element={<MarketMakerAwaitingApproval />}
+            />
+            <Route
+              path="/market-maker/dashboard"
+              element={<MarketMakerAdminLayout />}
+            >
               <Route index element={<MarketMakerDashboard />} />
               <Route path="quoting-engine" element={<QuoteManagement />} />
               <Route path="quoting-engine-config" element={<QuotingEngine />} />

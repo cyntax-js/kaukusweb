@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,7 +13,16 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { BarChart3, Bell, DollarSign, Shield, Save, User, Zap, AlertTriangle } from "lucide-react";
+import {
+  BarChart3,
+  Bell,
+  Coins,
+  Shield,
+  Save,
+  User,
+  Zap,
+  AlertTriangle,
+} from "lucide-react";
 
 export default function MarketMakerSettings() {
   const [emailNotifications, setEmailNotifications] = useState(true);
@@ -19,7 +34,9 @@ export default function MarketMakerSettings() {
     <div className="p-6 space-y-6">
       <div>
         <h1 className="text-2xl font-bold">Settings</h1>
-        <p className="text-muted-foreground">Manage your market maker account settings</p>
+        <p className="text-muted-foreground">
+          Manage your market maker account settings
+        </p>
       </div>
 
       <Tabs defaultValue="profile" className="space-y-6">
@@ -39,13 +56,18 @@ export default function MarketMakerSettings() {
                 <User className="w-5 h-5" />
                 Company Profile
               </CardTitle>
-              <CardDescription>Update your market maker information</CardDescription>
+              <CardDescription>
+                Update your market maker information
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="companyName">Company Name</Label>
-                  <Input id="companyName" defaultValue="Quantum Market Makers Ltd" />
+                  <Input
+                    id="companyName"
+                    defaultValue="Quantum Market Makers Ltd"
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="mmCode">Market Maker Code</Label>
@@ -56,7 +78,11 @@ export default function MarketMakerSettings() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="email">Email Address</Label>
-                  <Input id="email" type="email" defaultValue="trading@quantummm.com" />
+                  <Input
+                    id="email"
+                    type="email"
+                    defaultValue="trading@quantummm.com"
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone Number</Label>
@@ -66,7 +92,10 @@ export default function MarketMakerSettings() {
 
               <div className="space-y-2">
                 <Label htmlFor="address">Business Address</Label>
-                <Input id="address" defaultValue="45 Broad Street, Lagos Island, Lagos" />
+                <Input
+                  id="address"
+                  defaultValue="45 Broad Street, Lagos Island, Lagos"
+                />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -99,10 +128,12 @@ export default function MarketMakerSettings() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <DollarSign className="w-5 h-5" />
+                <Coins className="w-5 h-5" />
                 Fee Configuration
               </CardTitle>
-              <CardDescription>Configure trading fees and rebates</CardDescription>
+              <CardDescription>
+                Configure trading fees and rebates
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -110,11 +141,21 @@ export default function MarketMakerSettings() {
                   <h4 className="font-medium">Maker Fees</h4>
                   <div className="space-y-2">
                     <Label htmlFor="makerRebate">Maker Rebate (%)</Label>
-                    <Input id="makerRebate" type="number" step="0.001" defaultValue="0.025" />
+                    <Input
+                      id="makerRebate"
+                      type="number"
+                      step="0.001"
+                      defaultValue="0.025"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="takerFee">Taker Fee (%)</Label>
-                    <Input id="takerFee" type="number" step="0.001" defaultValue="0.050" />
+                    <Input
+                      id="takerFee"
+                      type="number"
+                      step="0.001"
+                      defaultValue="0.050"
+                    />
                   </div>
                 </div>
 
@@ -122,11 +163,21 @@ export default function MarketMakerSettings() {
                   <h4 className="font-medium">Exchange Fees</h4>
                   <div className="space-y-2">
                     <Label htmlFor="exchangeFee">Exchange Fee (%)</Label>
-                    <Input id="exchangeFee" type="number" step="0.001" defaultValue="0.010" />
+                    <Input
+                      id="exchangeFee"
+                      type="number"
+                      step="0.001"
+                      defaultValue="0.010"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="clearingFee">Clearing Fee (%)</Label>
-                    <Input id="clearingFee" type="number" step="0.001" defaultValue="0.005" />
+                    <Input
+                      id="clearingFee"
+                      type="number"
+                      step="0.001"
+                      defaultValue="0.005"
+                    />
                   </div>
                 </div>
               </div>
@@ -149,7 +200,9 @@ export default function MarketMakerSettings() {
                 <Zap className="w-5 h-5" />
                 Engine Configuration
               </CardTitle>
-              <CardDescription>Configure quoting engine parameters</CardDescription>
+              <CardDescription>
+                Configure quoting engine parameters
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -165,7 +218,11 @@ export default function MarketMakerSettings() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="maxQuoteSize">Max Quote Size</Label>
-                    <Input id="maxQuoteSize" type="number" defaultValue="100000" />
+                    <Input
+                      id="maxQuoteSize"
+                      type="number"
+                      defaultValue="100000"
+                    />
                   </div>
                 </div>
 
@@ -173,15 +230,30 @@ export default function MarketMakerSettings() {
                   <h4 className="font-medium">Spread Settings</h4>
                   <div className="space-y-2">
                     <Label htmlFor="minSpread">Min Spread (%)</Label>
-                    <Input id="minSpread" type="number" step="0.01" defaultValue="0.05" />
+                    <Input
+                      id="minSpread"
+                      type="number"
+                      step="0.01"
+                      defaultValue="0.05"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="maxSpread">Max Spread (%)</Label>
-                    <Input id="maxSpread" type="number" step="0.01" defaultValue="0.50" />
+                    <Input
+                      id="maxSpread"
+                      type="number"
+                      step="0.01"
+                      defaultValue="0.50"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="targetSpread">Target Spread (%)</Label>
-                    <Input id="targetSpread" type="number" step="0.01" defaultValue="0.12" />
+                    <Input
+                      id="targetSpread"
+                      type="number"
+                      step="0.01"
+                      defaultValue="0.12"
+                    />
                   </div>
                 </div>
               </div>
@@ -196,14 +268,24 @@ export default function MarketMakerSettings() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="maxPosition">Max Position Size (₦)</Label>
-                    <Input id="maxPosition" type="number" defaultValue="500000000" />
+                    <Input
+                      id="maxPosition"
+                      type="number"
+                      defaultValue="500000000"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="dailyLoss">Daily Loss Limit (₦)</Label>
-                    <Input id="dailyLoss" type="number" defaultValue="50000000" />
+                    <Input
+                      id="dailyLoss"
+                      type="number"
+                      defaultValue="50000000"
+                    />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="concentration">Concentration Limit (%)</Label>
+                    <Label htmlFor="concentration">
+                      Concentration Limit (%)
+                    </Label>
                     <Input id="concentration" type="number" defaultValue="30" />
                   </div>
                 </div>
@@ -227,16 +309,23 @@ export default function MarketMakerSettings() {
                 <Bell className="w-5 h-5" />
                 Notification Preferences
               </CardTitle>
-              <CardDescription>Configure how you receive alerts</CardDescription>
+              <CardDescription>
+                Configure how you receive alerts
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="font-medium">Email Notifications</p>
-                    <p className="text-sm text-muted-foreground">Receive updates via email</p>
+                    <p className="text-sm text-muted-foreground">
+                      Receive updates via email
+                    </p>
                   </div>
-                  <Switch checked={emailNotifications} onCheckedChange={setEmailNotifications} />
+                  <Switch
+                    checked={emailNotifications}
+                    onCheckedChange={setEmailNotifications}
+                  />
                 </div>
 
                 <Separator />
@@ -244,9 +333,14 @@ export default function MarketMakerSettings() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="font-medium">Risk Alerts</p>
-                    <p className="text-sm text-muted-foreground">Alerts when risk limits are approached</p>
+                    <p className="text-sm text-muted-foreground">
+                      Alerts when risk limits are approached
+                    </p>
                   </div>
-                  <Switch checked={riskAlerts} onCheckedChange={setRiskAlerts} />
+                  <Switch
+                    checked={riskAlerts}
+                    onCheckedChange={setRiskAlerts}
+                  />
                 </div>
 
                 <Separator />
@@ -254,9 +348,14 @@ export default function MarketMakerSettings() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="font-medium">Engine Alerts</p>
-                    <p className="text-sm text-muted-foreground">Notifications for engine status changes</p>
+                    <p className="text-sm text-muted-foreground">
+                      Notifications for engine status changes
+                    </p>
                   </div>
-                  <Switch checked={engineAlerts} onCheckedChange={setEngineAlerts} />
+                  <Switch
+                    checked={engineAlerts}
+                    onCheckedChange={setEngineAlerts}
+                  />
                 </div>
 
                 <Separator />
@@ -264,9 +363,14 @@ export default function MarketMakerSettings() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="font-medium">Performance Reports</p>
-                    <p className="text-sm text-muted-foreground">Daily performance summaries</p>
+                    <p className="text-sm text-muted-foreground">
+                      Daily performance summaries
+                    </p>
                   </div>
-                  <Switch checked={performanceReports} onCheckedChange={setPerformanceReports} />
+                  <Switch
+                    checked={performanceReports}
+                    onCheckedChange={setPerformanceReports}
+                  />
                 </div>
               </div>
 
@@ -315,8 +419,15 @@ export default function MarketMakerSettings() {
                 <h4 className="font-medium">Two-Factor Authentication</h4>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm">Status: <Badge className="bg-chart-2/20 text-chart-2 ml-1">Enabled</Badge></p>
-                    <p className="text-sm text-muted-foreground mt-1">Using authenticator app</p>
+                    <p className="text-sm">
+                      Status:{" "}
+                      <Badge className="bg-chart-2/20 text-chart-2 ml-1">
+                        Enabled
+                      </Badge>
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Using authenticator app
+                    </p>
                   </div>
                   <Button variant="outline">Configure</Button>
                 </div>
@@ -326,7 +437,9 @@ export default function MarketMakerSettings() {
 
               <div className="space-y-4">
                 <h4 className="font-medium">API Access</h4>
-                <p className="text-sm text-muted-foreground">Manage API keys for algorithmic trading</p>
+                <p className="text-sm text-muted-foreground">
+                  Manage API keys for algorithmic trading
+                </p>
                 <Button variant="outline">Manage API Keys</Button>
               </div>
 

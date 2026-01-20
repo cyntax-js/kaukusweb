@@ -19,7 +19,7 @@ import {
 import {
   LayoutDashboard,
   Users,
-  DollarSign,
+  Coins,
   Layers,
   BarChart3,
   Settings,
@@ -33,7 +33,7 @@ import {
 const sidebarItems = [
   { title: "Dashboard", url: "/broker/dashboard", icon: LayoutDashboard },
   { title: "Users", url: "/broker/dashboard/users", icon: Users },
-  { title: "Fees", url: "/broker/dashboard/fees", icon: DollarSign },
+  { title: "Fees", url: "/broker/dashboard/fees", icon: Coins },
   { title: "Services", url: "/broker/dashboard/services", icon: Layers },
   { title: "Analytics", url: "/broker/dashboard/analytics", icon: BarChart3 },
   { title: "Theme Gallery", url: "/broker/dashboard/themes", icon: Palette },

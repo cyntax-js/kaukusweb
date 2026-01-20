@@ -12,7 +12,7 @@ import {
 import {
   Users,
   TrendingUp,
-  DollarSign,
+  Coins,
   BarChart3,
   ArrowRight,
   Package,
@@ -37,7 +37,7 @@ const statCards = [
   {
     label: "Trading Volume",
     value: `₦${(dealerDashboardStats.tradingVolume / 1000000000).toFixed(1)}B`,
-    icon: DollarSign,
+    icon: Coins,
     color: "text-success",
     change: "+12%",
     up: true,
@@ -62,7 +62,10 @@ const statCards = [
 
 const quickStats = [
   { label: "Avg. Spread", value: `${dealerDashboardStats.avgSpread}%` },
-  { label: "Daily Transactions", value: dealerDashboardStats.dailyTransactions.toString() },
+  {
+    label: "Daily Transactions",
+    value: dealerDashboardStats.dailyTransactions.toString(),
+  },
   { label: "Inventory Value", value: "₦2.4B" },
   { label: "P&L Today", value: "+₦15.2M" },
 ];
@@ -93,15 +96,21 @@ export default function DealerDashboard() {
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <Rocket className="w-6 h-6 text-chart-2" />
-                <span className="text-sm font-medium text-chart-2">Getting Started</span>
+                <span className="text-sm font-medium text-chart-2">
+                  Getting Started
+                </span>
               </div>
               <h1 className="text-2xl md:text-3xl font-bold mb-2">
                 Welcome to Your Dealer Dashboard
               </h1>
               <p className="text-muted-foreground max-w-xl mb-6">
-                You're approved! Start trading and providing liquidity to the marketplace.
+                You're approved! Start trading and providing liquidity to the
+                marketplace.
               </p>
-              <Button size="lg" onClick={() => navigate("/dealer/dashboard/trading")}>
+              <Button
+                size="lg"
+                onClick={() => navigate("/dealer/dashboard/trading")}
+              >
                 Start Trading
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
@@ -117,7 +126,9 @@ export default function DealerDashboard() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">Dealer Dashboard</h1>
-            <p className="text-muted-foreground">Manage your trading operations</p>
+            <p className="text-muted-foreground">
+              Manage your trading operations
+            </p>
           </div>
           <Badge className="bg-success/10 text-success">Active</Badge>
         </div>
@@ -132,13 +143,23 @@ export default function DealerDashboard() {
             style={{ animationDelay: `${i * 0.1}s` }}
           >
             <div className="flex items-center justify-between mb-4">
-              <span className="text-sm text-muted-foreground">{stat.label}</span>
+              <span className="text-sm text-muted-foreground">
+                {stat.label}
+              </span>
               <stat.icon className={`w-5 h-5 ${stat.color}`} />
             </div>
             <div className="flex items-end justify-between">
               <div className="text-2xl font-bold">{stat.value}</div>
-              <div className={`flex items-center text-xs font-medium ${stat.up ? "text-success" : "text-destructive"}`}>
-                {stat.up ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+              <div
+                className={`flex items-center text-xs font-medium ${
+                  stat.up ? "text-success" : "text-destructive"
+                }`}
+              >
+                {stat.up ? (
+                  <ArrowUpRight className="w-3 h-3" />
+                ) : (
+                  <ArrowDownRight className="w-3 h-3" />
+                )}
                 {stat.change}
               </div>
             </div>
@@ -150,10 +171,15 @@ export default function DealerDashboard() {
       <Card className="p-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {quickStats.map((stat, i) => (
-            <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-secondary/30">
+            <div
+              key={i}
+              className="flex items-center gap-3 p-3 rounded-lg bg-secondary/30"
+            >
               <Zap className="w-4 h-4 text-muted-foreground" />
               <div>
-                <div className="text-xs text-muted-foreground">{stat.label}</div>
+                <div className="text-xs text-muted-foreground">
+                  {stat.label}
+                </div>
                 <div className="font-semibold">{stat.value}</div>
               </div>
             </div>
@@ -169,15 +195,26 @@ export default function DealerDashboard() {
               <Activity className="w-4 h-4 text-chart-2" />
               Recent Trades
             </h3>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/dealer/dashboard/trading")}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate("/dealer/dashboard/trading")}
+            >
               View All
             </Button>
           </div>
           <div className="space-y-3">
             {dealerRecentTrades.map((trade) => (
-              <div key={trade.id} className="flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/30 transition-colors">
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${trade.side === 'buy' ? 'bg-success/10' : 'bg-destructive/10'}`}>
-                  {trade.side === 'buy' ? (
+              <div
+                key={trade.id}
+                className="flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/30 transition-colors"
+              >
+                <div
+                  className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                    trade.side === "buy" ? "bg-success/10" : "bg-destructive/10"
+                  }`}
+                >
+                  {trade.side === "buy" ? (
                     <ArrowUpRight className={`w-4 h-4 text-success`} />
                   ) : (
                     <ArrowDownRight className={`w-4 h-4 text-destructive`} />
@@ -186,15 +223,32 @@ export default function DealerDashboard() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="font-medium">{trade.symbol}</span>
-                    <Badge variant="outline" className="text-xs">{trade.side.toUpperCase()}</Badge>
+                    <Badge variant="outline" className="text-xs">
+                      {trade.side.toUpperCase()}
+                    </Badge>
                   </div>
-                  <div className="text-xs text-muted-foreground">{trade.broker}</div>
+                  <div className="text-xs text-muted-foreground">
+                    {trade.broker}
+                  </div>
                 </div>
                 <div className="text-right">
-                  <div className="font-medium">₦{(trade.price * trade.quantity).toLocaleString()}</div>
-                  <div className="text-xs text-muted-foreground">{trade.quantity.toLocaleString()} @ ₦{trade.price}</div>
+                  <div className="font-medium">
+                    ₦{(trade.price * trade.quantity).toLocaleString()}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {trade.quantity.toLocaleString()} @ ₦{trade.price}
+                  </div>
                 </div>
-                <Badge variant={trade.status === 'filled' ? 'default' : trade.status === 'partial' ? 'secondary' : 'outline'} className="text-xs">
+                <Badge
+                  variant={
+                    trade.status === "filled"
+                      ? "default"
+                      : trade.status === "partial"
+                      ? "secondary"
+                      : "outline"
+                  }
+                  className="text-xs"
+                >
                   {trade.status}
                 </Badge>
               </div>
@@ -204,20 +258,35 @@ export default function DealerDashboard() {
 
         {/* Quick Actions */}
         <div className="space-y-4">
-          <Card className="p-6 hover-lift cursor-pointer" onClick={() => navigate("/dealer/dashboard/trading")}>
+          <Card
+            className="p-6 hover-lift cursor-pointer"
+            onClick={() => navigate("/dealer/dashboard/trading")}
+          >
             <TrendingUp className="w-8 h-8 text-chart-2 mb-4" />
             <h3 className="font-semibold mb-1">Trading Operations</h3>
-            <p className="text-sm text-muted-foreground">Execute and manage trades</p>
+            <p className="text-sm text-muted-foreground">
+              Execute and manage trades
+            </p>
           </Card>
-          <Card className="p-6 hover-lift cursor-pointer" onClick={() => navigate("/dealer/dashboard/inventory")}>
+          <Card
+            className="p-6 hover-lift cursor-pointer"
+            onClick={() => navigate("/dealer/dashboard/inventory")}
+          >
             <Package className="w-8 h-8 text-warning mb-4" />
             <h3 className="font-semibold mb-1">Inventory</h3>
-            <p className="text-sm text-muted-foreground">View positions and holdings</p>
+            <p className="text-sm text-muted-foreground">
+              View positions and holdings
+            </p>
           </Card>
-          <Card className="p-6 hover-lift cursor-pointer" onClick={() => navigate("/dealer/dashboard/brokers")}>
+          <Card
+            className="p-6 hover-lift cursor-pointer"
+            onClick={() => navigate("/dealer/dashboard/brokers")}
+          >
             <Users className="w-8 h-8 text-success mb-4" />
             <h3 className="font-semibold mb-1">Broker Network</h3>
-            <p className="text-sm text-muted-foreground">Manage broker connections</p>
+            <p className="text-sm text-muted-foreground">
+              Manage broker connections
+            </p>
           </Card>
         </div>
       </div>
@@ -229,7 +298,11 @@ export default function DealerDashboard() {
             <Package className="w-4 h-4 text-chart-2" />
             Inventory Overview
           </h3>
-          <Button variant="ghost" size="sm" onClick={() => navigate("/dealer/dashboard/inventory")}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate("/dealer/dashboard/inventory")}
+          >
             View Full Inventory
           </Button>
         </div>
@@ -251,8 +324,13 @@ export default function DealerDashboard() {
                   <td className="py-3">{item.quantity.toLocaleString()}</td>
                   <td className="py-3">₦{item.avgCost.toFixed(2)}</td>
                   <td className="py-3">₦{item.currentPrice.toFixed(2)}</td>
-                  <td className={`py-3 text-right font-medium ${item.pnl >= 0 ? 'text-success' : 'text-destructive'}`}>
-                    {item.pnl >= 0 ? '+' : ''}₦{item.pnl.toLocaleString()} ({item.pnlPercent.toFixed(2)}%)
+                  <td
+                    className={`py-3 text-right font-medium ${
+                      item.pnl >= 0 ? "text-success" : "text-destructive"
+                    }`}
+                  >
+                    {item.pnl >= 0 ? "+" : ""}₦{item.pnl.toLocaleString()} (
+                    {item.pnlPercent.toFixed(2)}%)
                   </td>
                 </tr>
               ))}

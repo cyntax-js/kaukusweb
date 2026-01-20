@@ -12,7 +12,7 @@ import {
 } from "@/mocks/rolesDashboardData";
 import {
   Users,
-  DollarSign,
+  Coins,
   FileText,
   TrendingUp,
   ArrowRight,
@@ -37,8 +37,10 @@ const statCards = [
   },
   {
     label: "Total Raised",
-    value: `₦${(issuingHouseDashboardStats.totalRaised / 1000000000).toFixed(1)}B`,
-    icon: DollarSign,
+    value: `₦${(issuingHouseDashboardStats.totalRaised / 1000000000).toFixed(
+      1
+    )}B`,
+    icon: Coins,
     color: "text-success",
     change: "+₦800M",
     up: true,
@@ -62,8 +64,14 @@ const statCards = [
 ];
 
 const quickStats = [
-  { label: "Avg. Subscription", value: `${issuingHouseDashboardStats.avgSubscriptionRate}%` },
-  { label: "Completed Deals", value: issuingHouseDashboardStats.completedDeals.toString() },
+  {
+    label: "Avg. Subscription",
+    value: `${issuingHouseDashboardStats.avgSubscriptionRate}%`,
+  },
+  {
+    label: "Completed Deals",
+    value: issuingHouseDashboardStats.completedDeals.toString(),
+  },
   { label: "This Month", value: "₦1.2B" },
   { label: "Success Rate", value: "94%" },
 ];
@@ -94,15 +102,23 @@ export default function IssuingHouseDashboard() {
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <Rocket className="w-6 h-6 text-chart-4" />
-                <span className="text-sm font-medium text-chart-4">Getting Started</span>
+                <span className="text-sm font-medium text-chart-4">
+                  Getting Started
+                </span>
               </div>
               <h1 className="text-2xl md:text-3xl font-bold mb-2">
                 Welcome to Your Issuing House Dashboard
               </h1>
               <p className="text-muted-foreground max-w-xl mb-6">
-                You're approved! Start creating offerings and managing securities issuance.
+                You're approved! Start creating offerings and managing
+                securities issuance.
               </p>
-              <Button size="lg" onClick={() => navigate("/issuing-house/dashboard/new-offering")}>
+              <Button
+                size="lg"
+                onClick={() =>
+                  navigate("/issuing-house/dashboard/new-offering")
+                }
+              >
                 Create New Offering
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
@@ -118,7 +134,9 @@ export default function IssuingHouseDashboard() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">Issuing House Dashboard</h1>
-            <p className="text-muted-foreground">Manage your securities issuance</p>
+            <p className="text-muted-foreground">
+              Manage your securities issuance
+            </p>
           </div>
           <Badge className="bg-success/10 text-success">Active</Badge>
         </div>
@@ -133,13 +151,23 @@ export default function IssuingHouseDashboard() {
             style={{ animationDelay: `${i * 0.1}s` }}
           >
             <div className="flex items-center justify-between mb-4">
-              <span className="text-sm text-muted-foreground">{stat.label}</span>
+              <span className="text-sm text-muted-foreground">
+                {stat.label}
+              </span>
               <stat.icon className={`w-5 h-5 ${stat.color}`} />
             </div>
             <div className="flex items-end justify-between">
               <div className="text-2xl font-bold">{stat.value}</div>
-              <div className={`flex items-center text-xs font-medium ${stat.up ? "text-success" : "text-destructive"}`}>
-                {stat.up ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+              <div
+                className={`flex items-center text-xs font-medium ${
+                  stat.up ? "text-success" : "text-destructive"
+                }`}
+              >
+                {stat.up ? (
+                  <ArrowUpRight className="w-3 h-3" />
+                ) : (
+                  <ArrowDownRight className="w-3 h-3" />
+                )}
                 {stat.change}
               </div>
             </div>
@@ -151,10 +179,15 @@ export default function IssuingHouseDashboard() {
       <Card className="p-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {quickStats.map((stat, i) => (
-            <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-secondary/30">
+            <div
+              key={i}
+              className="flex items-center gap-3 p-3 rounded-lg bg-secondary/30"
+            >
               <Zap className="w-4 h-4 text-muted-foreground" />
               <div>
-                <div className="text-xs text-muted-foreground">{stat.label}</div>
+                <div className="text-xs text-muted-foreground">
+                  {stat.label}
+                </div>
                 <div className="font-semibold">{stat.value}</div>
               </div>
             </div>
@@ -170,56 +203,100 @@ export default function IssuingHouseDashboard() {
               <Activity className="w-4 h-4 text-chart-4" />
               Active Offerings
             </h3>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/issuing-house/dashboard/deals")}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate("/issuing-house/dashboard/deals")}
+            >
               View All
             </Button>
           </div>
           <div className="space-y-4">
-            {activeOfferings.filter(o => o.status === 'active' || o.status === 'upcoming').map((offering) => (
-              <div key={offering.id} className="p-4 rounded-lg border border-border/50 hover:bg-secondary/30 transition-colors">
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">{offering.name}</span>
-                      <Badge variant={offering.status === 'active' ? 'default' : 'secondary'} className="text-xs">
-                        {offering.status}
-                      </Badge>
+            {activeOfferings
+              .filter((o) => o.status === "active" || o.status === "upcoming")
+              .map((offering) => (
+                <div
+                  key={offering.id}
+                  className="p-4 rounded-lg border border-border/50 hover:bg-secondary/30 transition-colors"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{offering.name}</span>
+                        <Badge
+                          variant={
+                            offering.status === "active"
+                              ? "default"
+                              : "secondary"
+                          }
+                          className="text-xs"
+                        >
+                          {offering.status}
+                        </Badge>
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {offering.type} • {offering.investors} investors
+                      </div>
                     </div>
-                    <div className="text-xs text-muted-foreground">{offering.type} • {offering.investors} investors</div>
+                    <div className="text-right">
+                      <div className="font-medium">
+                        ₦{(offering.raisedAmount / 1000000000).toFixed(2)}B
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        of ₦{(offering.targetAmount / 1000000000).toFixed(1)}B
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <div className="font-medium">₦{(offering.raisedAmount / 1000000000).toFixed(2)}B</div>
-                    <div className="text-xs text-muted-foreground">of ₦{(offering.targetAmount / 1000000000).toFixed(1)}B</div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-xs">
+                      <span className="text-muted-foreground">
+                        Subscription Progress
+                      </span>
+                      <span className="font-medium">
+                        {offering.subscriptionRate}%
+                      </span>
+                    </div>
+                    <Progress
+                      value={offering.subscriptionRate}
+                      className="h-2"
+                    />
                   </div>
                 </div>
-                <div className="space-y-1">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">Subscription Progress</span>
-                    <span className="font-medium">{offering.subscriptionRate}%</span>
-                  </div>
-                  <Progress value={offering.subscriptionRate} className="h-2" />
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
         </Card>
 
         {/* Quick Actions */}
         <div className="space-y-4">
-          <Card className="p-6 hover-lift cursor-pointer" onClick={() => navigate("/issuing-house/dashboard/new-offering")}>
+          <Card
+            className="p-6 hover-lift cursor-pointer"
+            onClick={() => navigate("/issuing-house/dashboard/new-offering")}
+          >
             <PlusCircle className="w-8 h-8 text-chart-4 mb-4" />
             <h3 className="font-semibold mb-1">New Offering</h3>
-            <p className="text-sm text-muted-foreground">Create a new securities offering</p>
+            <p className="text-sm text-muted-foreground">
+              Create a new securities offering
+            </p>
           </Card>
-          <Card className="p-6 hover-lift cursor-pointer" onClick={() => navigate("/issuing-house/dashboard/deals")}>
+          <Card
+            className="p-6 hover-lift cursor-pointer"
+            onClick={() => navigate("/issuing-house/dashboard/deals")}
+          >
             <Briefcase className="w-8 h-8 text-warning mb-4" />
             <h3 className="font-semibold mb-1">Active Deals</h3>
-            <p className="text-sm text-muted-foreground">Manage ongoing offerings</p>
+            <p className="text-sm text-muted-foreground">
+              Manage ongoing offerings
+            </p>
           </Card>
-          <Card className="p-6 hover-lift cursor-pointer" onClick={() => navigate("/issuing-house/dashboard/investors")}>
+          <Card
+            className="p-6 hover-lift cursor-pointer"
+            onClick={() => navigate("/issuing-house/dashboard/investors")}
+          >
             <Users className="w-8 h-8 text-success mb-4" />
             <h3 className="font-semibold mb-1">Investor Relations</h3>
-            <p className="text-sm text-muted-foreground">Communicate with investors</p>
+            <p className="text-sm text-muted-foreground">
+              Communicate with investors
+            </p>
           </Card>
         </div>
       </div>
@@ -231,7 +308,11 @@ export default function IssuingHouseDashboard() {
             <Users className="w-4 h-4 text-chart-4" />
             Top Investors
           </h3>
-          <Button variant="ghost" size="sm" onClick={() => navigate("/issuing-house/dashboard/investors")}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate("/issuing-house/dashboard/investors")}
+          >
             View All Investors
           </Button>
         </div>
@@ -251,12 +332,18 @@ export default function IssuingHouseDashboard() {
                 <tr key={investor.id} className="border-b border-border/50">
                   <td className="py-3">
                     <div className="font-medium">{investor.name}</div>
-                    <div className="text-xs text-muted-foreground">{investor.email}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {investor.email}
+                    </div>
                   </td>
                   <td className="py-3">
-                    <Badge variant="outline" className="text-xs capitalize">{investor.type}</Badge>
+                    <Badge variant="outline" className="text-xs capitalize">
+                      {investor.type}
+                    </Badge>
                   </td>
-                  <td className="py-3 font-medium">₦{(investor.totalInvested / 1000000).toFixed(0)}M</td>
+                  <td className="py-3 font-medium">
+                    ₦{(investor.totalInvested / 1000000).toFixed(0)}M
+                  </td>
                   <td className="py-3">{investor.offerings}</td>
                   <td className="py-3 text-right text-sm text-muted-foreground">
                     {investor.lastActivity.toLocaleDateString()}

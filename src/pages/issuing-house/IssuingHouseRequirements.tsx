@@ -5,7 +5,7 @@ import {
   CheckCircle2,
   Shield,
   FileText,
-  DollarSign,
+  Coins,
   Landmark,
   ArrowRight,
   AlertCircle,
@@ -15,25 +15,29 @@ const requirements = [
   {
     icon: Shield,
     title: "Issuing House License",
-    description: "Valid issuing house license from SEC or equivalent regulatory authority for securities issuance.",
+    description:
+      "Valid issuing house license from SEC or equivalent regulatory authority for securities issuance.",
     required: true,
   },
   {
     icon: Landmark,
     title: "Investment Bank Registration",
-    description: "Registered as an investment bank or financial advisory firm with underwriting capabilities.",
+    description:
+      "Registered as an investment bank or financial advisory firm with underwriting capabilities.",
     required: true,
   },
   {
-    icon: DollarSign,
+    icon: Coins,
     title: "Capital Requirements",
-    description: "Minimum $5,000,000 operational capital for underwriting commitments.",
+    description:
+      "Minimum $5,000,000 operational capital for underwriting commitments.",
     required: true,
   },
   {
     icon: FileText,
     title: "Track Record",
-    description: "Demonstrated experience in securities issuance, IPOs, or private placements.",
+    description:
+      "Demonstrated experience in securities issuance, IPOs, or private placements.",
     required: true,
   },
 ];
@@ -65,7 +69,8 @@ export default function IssuingHouseRequirements() {
             Requirements & Specifications
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Register your issuing house to access securities issuance, IPO management, and investor relations tools.
+            Register your issuing house to access securities issuance, IPO
+            management, and investor relations tools.
           </p>
         </div>
 
@@ -90,7 +95,9 @@ export default function IssuingHouseRequirements() {
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground">{req.description}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {req.description}
+                  </p>
                 </div>
               </div>
             </Card>
@@ -105,7 +112,10 @@ export default function IssuingHouseRequirements() {
           </h2>
           <div className="grid md:grid-cols-2 gap-4">
             {documents.map((doc, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-secondary/50">
+              <div
+                key={i}
+                className="flex items-center gap-3 p-3 rounded-lg bg-secondary/50"
+              >
                 <CheckCircle2 className="w-5 h-5 text-success shrink-0" />
                 <span className="text-sm">{doc}</span>
               </div>
@@ -120,8 +130,9 @@ export default function IssuingHouseRequirements() {
             <div>
               <h3 className="font-semibold mb-2">Important Notice</h3>
               <p className="text-sm text-muted-foreground">
-                Issuing House registration requires enhanced verification and typically takes 5-7 business days.
-                Our team may request additional documentation during the review process.
+                Issuing House registration requires enhanced verification and
+                typically takes 5-7 business days. Our team may request
+                additional documentation during the review process.
               </p>
             </div>
           </div>
