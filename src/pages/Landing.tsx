@@ -325,7 +325,7 @@ function BrokerDealers() {
           </h3>
           <div className="flex flex-col">
             {forBrokers.map((data) => (
-              <div className="flex items-center mb-4">
+              <div className="flex items-center mb-4" key={data.txt}>
                 <img src={checkIcon} alt="" className="mr-3 w-5 h-5" />
                 <p className="text-[#535862] text-md font-normal">{data.txt}</p>
               </div>
@@ -371,7 +371,7 @@ function BrokerDealers() {
           </h3>
           <div className="flex flex-col">
             {forDealers.map((data) => (
-              <div className="flex items-center mb-4">
+              <div className="flex items-center mb-4" key={data.txt}>
                 <img src={checkIcon} alt="" className="mr-3 w-5 h-5" />
                 <p className="text-[#535862] text-md font-normal">{data.txt}</p>
               </div>
@@ -417,8 +417,11 @@ const complianceCards = [
 function Compliance() {
   return (
     <div className=" grid grid-cols-4 gap-3">
-      {complianceCards.map((data) => (
-        <Card className="flex flex-col p-6 h-[300px] justify-between rounded-[20px] border-none shadow-none bg-[#FAFAFA]">
+      {complianceCards.map((data, index) => (
+        <Card
+          className="flex flex-col p-6 h-[300px] justify-between rounded-[20px] border-none shadow-none bg-[#FAFAFA]"
+          key={index}
+        >
           <h1 className="text-1xl md:text-2xl uppercase text-[#000]">
             {data.title}
           </h1>
@@ -635,7 +638,10 @@ export default function Landing() {
               <h1 className="text-xl">Major Indices</h1>
               <div className="mt-5 flex flex-col gap-2">
                 {majorIndices.map((data) => (
-                  <div className="flex items-center justify-between border-b border-border pb-2">
+                  <div
+                    className="flex items-center justify-between border-b border-border pb-2"
+                    key={data.name}
+                  >
                     <div className="flex items-center gap-3">
                       <div
                         className={cn(

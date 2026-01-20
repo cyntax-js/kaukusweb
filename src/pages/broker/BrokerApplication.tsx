@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -59,7 +59,12 @@ export default function BrokerApplication() {
     currentStep,
     setCurrentStep,
     resetApplication,
+    checkApprovalStatus,
   } = useBrokerStore();
+
+  useEffect(() => {
+    checkApprovalStatus();
+  }, [checkApprovalStatus]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 

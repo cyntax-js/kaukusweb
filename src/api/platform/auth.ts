@@ -54,8 +54,6 @@ export interface UserResponse {
   services: [];
 }
 
-const apiURL = import.meta.env.VITE_API_URL;
-
 // ============================================================
 // API FUNCTIONS
 // ============================================================
@@ -219,7 +217,7 @@ export async function getUser(): Promise<UserResponse> {
  */
 export async function logout(): Promise<void> {
   try {
-    await apiClient.delete(`${apiURL}/auth/identity/sessions`);
+    await apiClient.delete(`/auth/identity/sessions`);
   } catch (err) {
     console.warn("Server logout failed:", err);
   }
