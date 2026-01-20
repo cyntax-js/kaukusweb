@@ -181,7 +181,7 @@ const App = () => (
             </Route>
           </Route>
 
-          <Route>
+          <Route element={<ProtectedRoute />}>
             <Route path="/role-selection" element={<RoleSelection />} />
             <Route
               path="/dashboard-selection"
