@@ -49,6 +49,7 @@ import {
   Bar,
 } from "recharts";
 import { cn } from "@/lib/utils";
+import { AppHeader } from "@/broker-theme/components";
 
 // Types
 interface NegotiationRound {
@@ -320,7 +321,9 @@ const OTCDexDetail: React.FC = () => {
   const availabilityPercent = (mockOfferData.availableQuantity / mockOfferData.quantity) * 100;
 
   return (
-    <div className="flex-1 bg-gray-50/80">
+    <div className="flex flex-col min-h-screen bg-gray-50/80">
+      <AppHeader />
+      
       {/* Breadcrumb */}
       <div className="border-b border-gray-200 bg-white">
         <div className="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8">
