@@ -1,11 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuthStore } from "@/stores/authStore";
+import { platformApi, type KycType } from "@/api/platform";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import { useTranslation } from "react-i18next";
+
+const dashboardRoutes: Record<KycType, string> = {
+  broker: "/broker/dashboard",
+  dealer: "/dealer/dashboard",
+  issuer: "/issuing-house/dashboard",
+  market_makers: "/market-maker/dashboard",
+};
 
 export default function Login() {
   const navigate = useNavigate();
@@ -14,6 +22,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isCheckingKyc, setIsCheckingKyc] = useState(false);
   const { t } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -27,7 +36,47 @@ export default function Login() {
     const success = await login(email, password);
 
     if (success) {
-      navigate("/");
+      // Check KYC status before navigating
+      setIsCheckingKyc(true);
+      try {
+        const kycResponse = await platformApi.broker.getKycStatus();
+
+        if (kycResponse.data && kycResponse.data.length > 0) {
+          const item = kycResponse.data[0];
+
+          if (item.kyc_status === "pending") {
+            // KYC still pending - go to awaiting approval
+            navigate("/awaiting-approval");
+          } else if (item.kyc_status === "approved" && item.kyc_types) {
+            if (item.kyc_types.length === 1) {
+              // Single approved license - go directly to that dashboard
+              const license = item.kyc_types[0];
+              navigate(dashboardRoutes[license] || "/");
+            } else if (item.kyc_types.length > 1) {
+              // Multiple approved licenses - go to dashboard selection
+              navigate("/dashboard-selection-kyc");
+            } else {
+              // No licenses - go to role selection
+              navigate("/role-selection");
+            }
+          } else if (item.kyc_status === "rejected") {
+            // Rejected - show error or go to role selection
+            navigate("/role-selection");
+          } else {
+            // No KYC data - go to role selection for new application
+            navigate("/role-selection");
+          }
+        } else {
+          // No KYC data - go to role selection for new application
+          navigate("/role-selection");
+        }
+      } catch (error) {
+        // Error checking KYC - default to role selection
+        console.error("Error checking KYC status:", error);
+        navigate("/role-selection");
+      } finally {
+        setIsCheckingKyc(false);
+      }
     } else {
       setError(t("auth.invalidCredentials"));
     }
@@ -53,6 +102,7 @@ export default function Login() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            disabled={isLoading || isCheckingKyc}
           />
         </div>
         <div className="space-y-2">
@@ -66,6 +116,7 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               required
               className="pr-10"
+              disabled={isLoading || isCheckingKyc}
             />
             <Button
               type="button"
@@ -83,11 +134,15 @@ export default function Login() {
             </Button>
           </div>
         </div>
-        <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? (
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={isLoading || isCheckingKyc}
+        >
+          {isLoading || isCheckingKyc ? (
             <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />{" "}
-              {t("auth.signingIn")}
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              {isCheckingKyc ? "Checking status..." : t("auth.signingIn")}
             </>
           ) : (
             t("common.signIn")

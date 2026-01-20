@@ -5,10 +5,6 @@
  *
  * APIs for broker onboarding, applications, and dashboard.
  * Used by: Broker application flow, broker dashboard.
- *
- * To integrate real API:
- *   1. Replace mock responses with fetch calls
- *   2. Add proper validation and error handling
  */
 
 import { mockResponse, generateId, DELAYS } from "../client";
@@ -20,12 +16,71 @@ import { apiFetch, apiClient } from "@/lib/utils";
 
 export type BrokerStatus = "pending" | "approved" | "rejected" | "active";
 
+export type KycType = "broker" | "dealer" | "issuer" | "market_makers";
+
 export interface BrokerDocument {
   id: string;
   name: string;
   type: "license" | "registration" | "kyc" | "financial" | "other";
   fileName: string;
   uploadedAt: Date;
+}
+
+export interface CompanyInfo {
+  name: string;
+  registration_number: string;
+  country: string;
+  address: string;
+  website?: string;
+  contact_email: string;
+  contact_phone: string;
+  operational_capital: string;
+}
+
+export interface CompanyResponse {
+  company: {
+    id: string;
+    name: string;
+    website: string;
+    status: BrokerStatus;
+  };
+  message: string;
+}
+
+export interface KycDocument {
+  name: string;
+  fileUrls: string[];
+}
+
+export interface KycSubmission {
+  license_id: string;
+  regulatory_body: string;
+  documents: KycDocument[];
+}
+
+export interface SubmitKycPayload {
+  company_id: string;
+  legal_name: string;
+  incorporation_date: string;
+  business_type: string;
+  document_type: string;
+  kyc_documents: Partial<Record<KycType, KycSubmission>>;
+}
+
+export interface KycSubmissionResponse {
+  created_kyc_types: KycType[];
+  message: string;
+}
+
+export interface KycStatusItem {
+  company_id: string;
+  company_name: string;
+  kyc_status: "pending" | "approved" | "rejected";
+  kyc_types?: KycType[];
+}
+
+export interface KycStatusResponse {
+  data: KycStatusItem[];
 }
 
 export interface BrokerApplication {
@@ -78,18 +133,6 @@ export interface BrokerUser {
   lastActive: Date;
 }
 
-export interface SubmitDocumentsPayload {
-  company_id: string;
-  legal_name: string;
-  incorporation_date: string;
-  business_type: string;
-  document_type: string;
-  documents: {
-    name: string;
-    fileUrls: string[];
-  }[];
-}
-
 const apiURL = import.meta.env.VITE_API_URL;
 
 // ============================================================
@@ -97,73 +140,132 @@ const apiURL = import.meta.env.VITE_API_URL;
 // ============================================================
 
 /**
- * Submit a broker application
+ * Submit company information (Step 1)
  */
-export async function submitApplication(
-  request: Partial<BrokerApplication>,
-): Promise<Broker> {
-  const application: BrokerApplication = {
-    id: generateId("broker_app"),
-    userId: generateId("user"),
-    name: request.name || "",
-    companyId: "817ce15d-aba8-472f-867f-97ca1c30e14f",
-    registrationNumber: request.registrationNumber || "",
-    country: request.country || "",
-    address: request.address || "",
-    regulatoryLicense: request.regulatoryLicense || "",
-    licenseNumber: request.licenseNumber || "",
-    capitalRequirement: request.capitalRequirement || "",
-    contactEmail: request.contactEmail || "",
-    contactPhone: request.contactPhone || "",
-    website: request.website,
-    documents: request.documents || [],
-    status: "pending",
-    submittedAt: new Date(),
-  };
-
+export async function submitCompanyInfo(
+  companyInfo: CompanyInfo,
+): Promise<CompanyResponse> {
   const response = await apiFetch(`${apiURL}/broker/company`, {
     method: "POST",
-    body: JSON.stringify(application),
+    body: JSON.stringify(companyInfo),
   });
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.message);
+    throw new Error(data.message || "Failed to create company");
   }
 
-  return {
-    ...data,
-  };
+  return data;
 }
 
-export async function submitCompanyDocuments(
-  payload: SubmitDocumentsPayload,
-): Promise<void> {
+/**
+ * Submit KYC documents for multiple license types (Step 2)
+ */
+export async function submitCompanyKyc(
+  payload: SubmitKycPayload,
+): Promise<KycSubmissionResponse> {
   const response = await apiFetch(`${apiURL}/broker/company-kyc`, {
     method: "POST",
     body: JSON.stringify(payload),
   });
 
+  const data = await response.json();
+
   if (!response.ok) {
-    const data = await response.json();
-    throw new Error(data.message || "Failed to submit documents");
+    throw new Error(data.message || "Failed to submit KYC");
+  }
+
+  return data;
+}
+
+/**
+ * Get KYC approval status
+ */
+export async function getKycStatus(): Promise<KycStatusResponse> {
+  try {
+    const response = await apiClient.get("/broker/company-kyc/get-kyc-status");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching KYC status:", error);
+    throw new Error("Failed to fetch KYC status");
   }
 }
 
 /**
- * Get application status
+ * Legacy: Submit a broker application (kept for backwards compatibility)
+ */
+export async function submitApplication(
+  request: Partial<BrokerApplication>,
+): Promise<Broker> {
+  const companyInfo: CompanyInfo = {
+    name: request.name || "",
+    registration_number: request.registrationNumber || "",
+    country: request.country || "",
+    address: request.address || "",
+    website: request.website,
+    contact_email: request.contactEmail || "",
+    contact_phone: request.contactPhone || "",
+    operational_capital: request.capitalRequirement || "",
+  };
+
+  return submitCompanyInfo(companyInfo);
+}
+
+/**
+ * Legacy: Submit company documents (kept for backwards compatibility)
+ */
+export async function submitCompanyDocuments(payload: {
+  company_id: string;
+  legal_name: string;
+  incorporation_date: string;
+  business_type: string;
+  document_type: string;
+  documents: { name: string; fileUrls: string[] }[];
+}): Promise<void> {
+  const kycPayload: SubmitKycPayload = {
+    company_id: payload.company_id,
+    legal_name: payload.legal_name,
+    incorporation_date: payload.incorporation_date,
+    business_type: payload.business_type,
+    document_type: payload.document_type,
+    kyc_documents: {
+      broker: {
+        license_id: "",
+        regulatory_body: "",
+        documents: payload.documents,
+      },
+    },
+  };
+
+  await submitCompanyKyc(kycPayload);
+}
+
+/**
+ * Get application status (legacy - uses new API)
  */
 export async function getApplicationStatus(): Promise<{
   status: BrokerStatus;
+  approvedKycTypes?: KycType[];
 }> {
   try {
-    const response = await apiClient.get("/broker/company-kyc/get-kyc-status");
-    const data = response.data.data;
-    const companyData = data[0];
+    const response = await getKycStatus();
+
+    if (!response.data || response.data.length === 0) {
+      return { status: "pending" };
+    }
+
+    const item = response.data[0];
+    const status =
+      item.kyc_status === "approved"
+        ? "approved"
+        : item.kyc_status === "rejected"
+          ? "rejected"
+          : "pending";
 
     return {
-      status: companyData.kyc_status || "pending",
+      status,
+      approvedKycTypes: item.kyc_types,
     };
   } catch (error) {
     console.error("Error fetching application status:", error);
@@ -175,7 +277,6 @@ export async function getApplicationStatus(): Promise<{
  * Get broker dashboard stats
  */
 export async function getDashboardStats(): Promise<DashboardStats> {
-  // TODO: Replace with real API call
   return mockResponse(
     {
       totalUsers: 1247,
@@ -193,7 +294,6 @@ export async function getDashboardStats(): Promise<DashboardStats> {
  * Get broker's user list
  */
 export async function getUsers(): Promise<BrokerUser[]> {
-  // TODO: Replace with real API call
   return mockResponse(
     [
       {
@@ -238,6 +338,5 @@ export async function updateUserStatus(
   userId: string,
   status: BrokerUser["status"],
 ): Promise<void> {
-  // TODO: Replace with real API call
   return mockResponse(undefined, DELAYS.MEDIUM);
 }
