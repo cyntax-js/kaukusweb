@@ -21,6 +21,7 @@ import {
   AboutPage as BrokerAboutPage,
   LegalPage as BrokerLegalPage,
   OTCDexPage as BrokerOTCDexPage,
+  OTCDexDetailPage as BrokerOTCDexDetailPage,
 } from "@/broker-theme/pages";
 
 // Platform Pages
@@ -77,7 +78,7 @@ const BrokerAppRoutes = () => (
     <Route path="markets/secondary/:marketId" element={<BrokerMarketsPage />} />
     <Route path="trade/:serviceType/:pair" element={<BrokerTradingPage />} />
     <Route path="otc-dex" element={<BrokerOTCDexPage />} />
-    <Route path="otc-dex/:offerId" element={<BrokerOTCDexPage />} />
+    <Route path="otc-dex/:offerId" element={<BrokerOTCDexDetailPage />} />
     <Route path="portfolio" element={<BrokerPortfolioPage />} />
     <Route path="settings" element={<BrokerSettingsPage />} />
   </>
@@ -183,6 +184,7 @@ const App = () => (
             <Route path="/market-maker/dashboard" element={<MarketMakerAdminLayout />}>
               <Route index element={<MarketMakerDashboard />} />
               <Route path="quoting-engine" element={<QuoteManagement />} />
+              <Route path="quoting-engine-config" element={<QuotingEngine />} />
               <Route path="market-depth" element={<MarketDepth />} />
               <Route path="inventory" element={<InventoryControl />} />
               <Route path="performance" element={<PerformanceMetrics />} />
