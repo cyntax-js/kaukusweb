@@ -44,7 +44,6 @@ interface BrokerStore {
   application: Partial<BrokerApplication>;
   status: BrokerStatus | null;
   isSubmitting: boolean;
-  approvalProgress: number;
   currentStep: BrokerStep;
 
   // Actions
@@ -71,7 +70,6 @@ export const useBrokerStore = create<BrokerStore>()(
       currentStep: "company",
       status: null,
       isSubmitting: false,
-      approvalProgress: 0,
 
       /**
        * Update a single field in the application
@@ -153,7 +151,6 @@ export const useBrokerStore = create<BrokerStore>()(
             } as Partial<BrokerApplication>,
             status: "pending",
             isSubmitting: false,
-            approvalProgress: 0,
           });
         } catch (error) {
           set({ isSubmitting: false });
@@ -165,26 +162,10 @@ export const useBrokerStore = create<BrokerStore>()(
        * Check and update approval status
        * Called by interval to simulate progress
        */
-      checkApprovalStatus: () => {
-        set((state) => {
-          const newProgress = Math.min(
-            state.approvalProgress + Math.random() * 15,
-            100,
-          );
-
-          if (newProgress >= 100) {
-            return {
-              approvalProgress: 100,
-              status: "approved",
-              application: {
-                ...state.application,
-                status: "approved",
-                approvedAt: new Date(),
-              },
-            };
-          }
-
-          return { approvalProgress: newProgress };
+      checkApprovalStatus: async () => {
+        const status = await platformApi.broker.getApplicationStatus();
+        set({
+          status: status.status,
         });
       },
 
@@ -197,7 +178,6 @@ export const useBrokerStore = create<BrokerStore>()(
           currentStep: "company",
           status: null,
           isSubmitting: false,
-          approvalProgress: 0,
         });
       },
     }),

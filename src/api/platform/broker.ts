@@ -12,7 +12,7 @@
  */
 
 import { mockResponse, generateId, DELAYS } from "../client";
-import { apiFetch } from "@/lib/utils";
+import { apiFetch, apiClient } from "@/lib/utils";
 
 // ============================================================
 // TYPES
@@ -154,11 +154,20 @@ export async function submitCompanyDocuments(
 /**
  * Get application status
  */
-export async function getApplicationStatus(
-  applicationId: string,
-): Promise<{ status: BrokerStatus; progress: number }> {
-  // TODO: Replace with real API call
-  return mockResponse({ status: "pending", progress: 45 }, DELAYS.MEDIUM);
+export async function getApplicationStatus(): Promise<{
+  status: BrokerStatus;
+}> {
+  try {
+    const response = await apiClient.get("/broker/company-kyc/get-kyc-status");
+    const data = await response.data;
+    console.log(data);
+    return {
+      status: data.status,
+    };
+  } catch (error) {
+    console.error("Error fetching application status:", error);
+    throw new Error("Failed to fetch application status");
+  }
 }
 
 /**

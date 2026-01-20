@@ -17,27 +17,14 @@ const reviewSteps = [
   { id: "received", label: "Application Received", icon: FileSearch },
   { id: "documents", label: "Document Verification", icon: Shield },
   { id: "compliance", label: "Compliance Check", icon: Shield },
-  { id: "approved", label: "Approved", icon: CheckCircle2 },
+  { id: "approval", label: "Approval", icon: CheckCircle2 },
 ];
 
 export default function AwaitingApproval() {
   const navigate = useNavigate();
-  const { status, approvalProgress, application } = useBrokerStore();
-  const [currentReviewStep, setCurrentReviewStep] = useState(0);
+  const { status, application, checkApprovalStatus } = useBrokerStore();
 
-  useEffect(() => {
-    // Update review step based on progress
-    if (approvalProgress < 25) {
-      setCurrentReviewStep(0);
-    } else if (approvalProgress < 50) {
-      setCurrentReviewStep(1);
-    } else if (approvalProgress < 75) {
-      setCurrentReviewStep(2);
-    } else {
-      setCurrentReviewStep(3);
-    }
-  }, [approvalProgress]);
-
+  checkApprovalStatus();
   const isApproved = status === "approved";
 
   return (
@@ -75,39 +62,26 @@ export default function AwaitingApproval() {
           </div>
 
           {/* Progress Bar */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium">Review Progress</span>
-              <span className="text-sm text-muted-foreground">
-                {Math.round(approvalProgress)}%
-              </span>
-            </div>
-            <Progress value={approvalProgress} className="h-2" />
-          </div>
 
           {/* Review Steps */}
           <div className="space-y-4 mb-8">
-            {reviewSteps.map((step, i) => (
+            {reviewSteps.map((step) => (
               <div
                 key={step.id}
-                className={`flex items-center gap-4 p-4 rounded-lg transition-all ${
-                  i < currentReviewStep
-                    ? "bg-success/10"
-                    : i === currentReviewStep
-                      ? "bg-primary/10 border border-primary/20"
-                      : "bg-secondary/50"
+                className={`flex items-center gap-4 p-4 rounded-lg transition-all border ${
+                  isApproved
+                    ? "bg-success/10 border-success/20"
+                    : "bg-primary/10 border-primary/20"
                 }`}
               >
                 <div
                   className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                    i < currentReviewStep
+                    isApproved
                       ? "bg-success text-success-foreground"
-                      : i === currentReviewStep
-                        ? "gradient-primary text-primary-foreground animate-pulse"
-                        : "bg-secondary text-muted-foreground"
+                      : "gradient-primary text-primary-foreground"
                   }`}
                 >
-                  {i < currentReviewStep ? (
+                  {isApproved ? (
                     <CheckCircle2 className="w-5 h-5" />
                   ) : (
                     <step.icon className="w-5 h-5" />
@@ -116,19 +90,17 @@ export default function AwaitingApproval() {
                 <div className="flex-1">
                   <span
                     className={`font-medium ${
-                      i <= currentReviewStep
-                        ? "text-foreground"
-                        : "text-muted-foreground"
+                      isApproved ? "text-foreground" : "text-muted-foreground"
                     }`}
                   >
                     {step.label}
                   </span>
-                  {i === currentReviewStep && !isApproved && (
+                  {!isApproved && (
                     <p className="text-xs text-muted-foreground">
                       In progress...
                     </p>
                   )}
-                  {i < currentReviewStep && (
+                  {isApproved && (
                     <p className="text-xs text-success">Completed</p>
                   )}
                 </div>

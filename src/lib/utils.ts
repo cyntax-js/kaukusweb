@@ -1,6 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+import axios from "axios";
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -43,7 +45,9 @@ export const apiFetch = async (url: string, options: RequestInit = {}) => {
     headers,
   });
 
-  /*
+  return response;
+};
+/*
   if (response.status === 401) {
     localStorage.removeItem("auth_token");
     if (window.location.pathname !== "/login") {
@@ -52,8 +56,38 @@ export const apiFetch = async (url: string, options: RequestInit = {}) => {
   }
   */
 
-  return response;
-};
+export const apiClient = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || "",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  withCredentials: true,
+});
+
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("auth_token");
+    if (token) {
+      // for JWT
+      config.headers.Authorization = `Bearer ${token}`;
+      // for CSRF
+      config.headers[CSRF_HEADER_NAME] = token;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
+
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      // dispatch the event. can be used to log the user out
+      window.dispatchEvent(new Event("auth:unauthorized"));
+    }
+    return Promise.reject(error);
+  },
+);
 
 export const apiFetchCookie = async (
   url: string,
