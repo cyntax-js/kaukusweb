@@ -24,9 +24,9 @@ export const GuestRoute = () => {
   if (isAuthenticated) {
     if (status === "approved") {
       return <Navigate to="/broker/dashboard" replace />;
+    } else if (status === "pending") {
+      return <Navigate to="/broker/awaiting-approval" replace />;
     }
-
-    return <Navigate to="/broker/awaiting-approval" replace />;
   }
 
   return <Outlet />;
