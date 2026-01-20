@@ -80,6 +80,7 @@ export default function Login() {
     } else {
       setError(t("auth.invalidCredentials"));
     }
+    await login(email, password);
   };
 
   return (
