@@ -33,6 +33,7 @@ export default function AwaitingApproval() {
     logout();
   };
 
+  checkApprovalStatus();
   const isApproved = status === "approved";
 
   return (

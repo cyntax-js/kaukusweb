@@ -25,6 +25,7 @@ import {
   Loader2,
   AlertCircle,
 } from "lucide-react";
+import { useAuthStore } from "@/stores/authStore";
 
 type Step = "company" | "regulatory" | "documents" | "review";
 
