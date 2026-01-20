@@ -25,7 +25,6 @@ import {
   Loader2,
   AlertCircle,
 } from "lucide-react";
-import { useAuthStore } from "@/stores/authStore";
 
 type Step = "company" | "regulatory" | "documents" | "review";
 
@@ -61,8 +60,6 @@ export default function BrokerApplication() {
     setCurrentStep,
     resetApplication,
   } = useBrokerStore();
-
-  const { getUser } = useAuthStore();
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -183,8 +180,6 @@ export default function BrokerApplication() {
       setIsUploadingToCDN(false);
     }
   };
-
-  getUser();
 
   return (
     <div className="min-h-screen bg-background py-12 px-4">

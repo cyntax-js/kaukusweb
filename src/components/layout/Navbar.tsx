@@ -21,14 +21,9 @@ const navLinks = [
 export function Navbar() {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { isAuthenticated, getSelectedRole, logout, _hasHydrated } =
-    useAuthStore();
+  const { isAuthenticated, getSelectedRole, _hasHydrated } = useAuthStore();
 
   const selectedRole: UserRole = getSelectedRole();
-
-  const handleLogout = () => {
-    logout();
-  };
 
   if (!_hasHydrated) {
     return null;
@@ -80,10 +75,6 @@ export function Navbar() {
                 <Button size="lg">Dealer Dashboard</Button>
               </Link>
             )}
-
-            <Button variant="outline" size="lg" onClick={handleLogout}>
-              Logout
-            </Button>
           </div>
         ) : (
           <div className="flex gap-3">
@@ -159,15 +150,6 @@ export function Navbar() {
                     </Button>
                   </Link>
                 )}
-
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full"
-                  onClick={handleLogout}
-                >
-                  Logout
-                </Button>
               </div>
             ) : (
               <div className="pt-4 space-y-2">

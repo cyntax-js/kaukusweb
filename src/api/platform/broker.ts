@@ -159,10 +159,11 @@ export async function getApplicationStatus(): Promise<{
 }> {
   try {
     const response = await apiClient.get("/broker/company-kyc/get-kyc-status");
-    const data = await response.data;
-    console.log(data);
+    const data = response.data.data;
+    const companyData = data[0];
+
     return {
-      status: data.status,
+      status: companyData.kyc_status || "pending",
     };
   } catch (error) {
     console.error("Error fetching application status:", error);

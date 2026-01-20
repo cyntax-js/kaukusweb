@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Fan, Feather, Dice5 } from "lucide-react";
+import { useAuthStore, UserRole } from "@/stores/authStore";
 
 import HeroBg from "@/assets/about-background-pattern.png";
 import BadgeGroup from "@/assets/badge-group.png";
@@ -184,6 +184,9 @@ const complianceDetails = [
 ];
 
 export default function Services() {
+  const { getSelectedRole } = useAuthStore();
+  const selectedRole: UserRole = getSelectedRole();
+
   return (
     <div className="xl:pt-20">
       {/* Hero */}
@@ -208,25 +211,25 @@ export default function Services() {
             className="h-10 mx-auto my-12 animate-fade-in"
           />
           <div className="flex-1 lg:flex-[0_0_auto] flex flex-col-reverse lg:flex-row flex-wrap justify-center gap-3 animate-fade-in">
-            <Link to="/signup">
-              {" "}
-              <Button
-                size="lg"
-                variant="outline"
-                className="bg-transparent w-full md:w-auto"
-              >
-                Apply as Dealer
-              </Button>
-            </Link>
-
-            <Link to="/services">
-              <Button
-                variant="default"
-                className="px-3 py-3 h-fit w-full md:w-auto"
-              >
-                Continue as Broker
-              </Button>
-            </Link>
+            {selectedRole === "broker" ? (
+              <Link to="/broker/dashboard">
+                <Button
+                  variant="default"
+                  className="px-3 xl:px-36 py-3 xl:py-4 h-fit w-full"
+                >
+                  Continue as Broker
+                </Button>
+              </Link>
+            ) : (
+              <Link to="/broker/requirements">
+                <Button
+                  variant="default"
+                  className="px-3 xl:px-36 py-3 xl:py-4 h-fit w-full"
+                >
+                  Apply as Broker
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </section>
@@ -293,14 +296,25 @@ export default function Services() {
                 Apply as Dealer
               </Button>
             </Link>
-            <Link to="/services">
-              <Button
-                variant="default"
-                className="px-3 py-3 h-fit w-full md:w-auto"
-              >
-                Continue as Broker
-              </Button>
-            </Link>
+            {selectedRole === "broker" ? (
+              <Link to="/broker/dashboard">
+                <Button
+                  variant="default"
+                  className="px-3 py-3 h-fit w-full md:w-auto"
+                >
+                  Continue as Broker
+                </Button>
+              </Link>
+            ) : (
+              <Link to="/broker/requirements">
+                <Button
+                  variant="default"
+                  className="px-3 py-3 h-fit w-full md:w-auto"
+                >
+                  Apply as Broker
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
 
@@ -438,14 +452,29 @@ export default function Services() {
             Start with the Role that Fits Your Institution
           </h2>
           <div className="flex-1 lg:flex-[0_0_auto] flex flex-wrap justify-center gap-3">
-            <Link to="/services" className="block w-full md:w-auto">
-              <Button
-                variant="default"
-                className="px-3 py-3 h-fit w-full md:w-auto bg-white text-black"
+            {selectedRole === "broker" ? (
+              <Link to="/broker/dashboard" className="block w-full md:w-auto">
+                <Button
+                  variant="default"
+                  className="px-3 py-3 h-fit w-full md:w-auto bg-white text-black"
+                >
+                  Continue as Broker
+                </Button>
+              </Link>
+            ) : (
+              <Link
+                to="/broker/requirements"
+                className="block w-full md:w-auto"
               >
-                Continue as Broker
-              </Button>
-            </Link>
+                <Button
+                  variant="default"
+                  className="px-3 py-3 h-fit w-full md:w-auto bg-white text-black hover:text-white border-solid border hover:border-solid hover:border-white hover:border transition-colors"
+                >
+                  Apply as Broker
+                </Button>
+              </Link>
+            )}
+
             <Link to="/signup" className="block w-full md:w-auto">
               {" "}
               <Button
