@@ -21,6 +21,11 @@ export function Navbar() {
     { href: "/services", label: t("nav.services") },
   ];
 
+  const handleLogout = () => {
+    logout();
+    setIsMobileMenuOpen(false);
+  };
+
   if (!_hasHydrated) {
     return null;
   }

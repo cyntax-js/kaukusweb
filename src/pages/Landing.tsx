@@ -439,10 +439,29 @@ export default function Landing() {
                 asChild
                 className="shadow-glow hover:shadow-glow-lg transition-shadow px-4 py-6"
               >
+<<<<<<< HEAD
                 <Link to="/services">
                   {t("common.continueAsBroker")}
                   <ArrowRight className="w-4 h-4 ml-1" />
                 </Link>
+=======
+                {selectedRole === "broker" ? (
+                  <Link to="/broker/dashboard">
+                    Continue as Broker
+                    <ArrowRight className="w-4 h-4 ml-1" />
+                  </Link>
+                ) : selectedRole === "dealer" ? (
+                  <Link to="/dealer/dashboard">
+                    Continue as Dealer
+                    <ArrowRight className="w-4 h-4 ml-1" />
+                  </Link>
+                ) : (
+                  <Link to="/broker/requirements">
+                    Apply as Broker
+                    <ArrowRight className="w-4 h-4 ml-1" />
+                  </Link>
+                )}
+>>>>>>> 410c782 (update: homepage)
               </Button>
               <Button
                 size="lg"
@@ -450,7 +469,17 @@ export default function Landing() {
                 asChild
                 className="py-6 hover:bg-black bg-[#fff]"
               >
+<<<<<<< HEAD
                 <Link to="/signup">{t("common.applyAsDealer")}</Link>
+=======
+                {selectedRole === "broker" ? (
+                  <Link to="/signup">Apply as Dealer</Link>
+                ) : selectedRole === "dealer" ? (
+                  <Link to="/broker/requirements">Apply as Broker</Link>
+                ) : (
+                  <Link to="/dealer/requirements">Apply as Dealer</Link>
+                )}
+>>>>>>> 410c782 (update: homepage)
               </Button>
             </div>
           </div>
@@ -611,10 +640,29 @@ export default function Landing() {
               asChild
               className="shadow-glow hover:shadow-glow-lg transition-shadow px-4"
             >
+<<<<<<< HEAD
               <Link to="/services">
                 {t("common.continueAsBroker")}
                 <ArrowRight className="w-4 h-4 ml-1" />
               </Link>
+=======
+              {selectedRole === "broker" ? (
+                <Link to="/broker/dashboard">
+                  Continue as Broker
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </Link>
+              ) : selectedRole === "dealer" ? (
+                <Link to="/dealer/dashboard">
+                  Continue as Dealer
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </Link>
+              ) : (
+                <Link to="/broker/requirements">
+                  Apply as Broker
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </Link>
+              )}
+>>>>>>> 410c782 (update: homepage)
             </Button>
           </div>
           <AudienceCards />
