@@ -42,6 +42,9 @@ import Signup from "./pages/Signup";
 import OTP from "./pages/OTP";
 import RoleSelection from "./pages/RoleSelection";
 import NotFound from "./pages/NotFound";
+import OnboardingPage from "./pages/OnboardingPage";
+import AwaitingApprovalPage from "./pages/AwaitingApproval";
+import DashboardSelectionKyc from "./pages/DashboardSelectionKyc";
 
 // Broker Onboarding & Dashboard
 import {
@@ -185,7 +188,12 @@ const App = () => (
               element={<DashboardSelection />}
             />
 
-            {/* Broker Onboarding */}
+            {/* Unified Onboarding Flow */}
+            <Route path="/onboarding" element={<OnboardingPage />} />
+            <Route path="/awaiting-approval" element={<AwaitingApprovalPage />} />
+            <Route path="/dashboard-selection-kyc" element={<DashboardSelectionKyc />} />
+
+            {/* Broker Onboarding (legacy) */}
             <Route
               path="/broker/requirements"
               element={<BrokerRequirements />}
