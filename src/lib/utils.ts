@@ -61,7 +61,7 @@ export const apiClient = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true,
+  // withCredentials: true,
 });
 
 apiClient.interceptors.request.use(
@@ -75,7 +75,7 @@ apiClient.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error),
+  (error) => Promise.reject(error)
 );
 
 apiClient.interceptors.response.use(
@@ -86,12 +86,12 @@ apiClient.interceptors.response.use(
       window.dispatchEvent(new Event("auth:unauthorized"));
     }
     return Promise.reject(error);
-  },
+  }
 );
 
 export const apiFetchCookie = async (
   url: string,
-  options: RequestInit = {},
+  options: RequestInit = {}
 ) => {
   const headers = new Headers(options.headers || {});
 

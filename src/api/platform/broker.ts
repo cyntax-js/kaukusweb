@@ -149,7 +149,9 @@ export async function submitCompanyInfo(
     const response = await apiClient.post("/broker/company", companyInfo);
     return response.data;
   } catch (error: any) {
-    throw new Error(error.response?.data?.message || "Failed to create company");
+    throw new Error(
+      error.response?.data?.message || "Failed to create company",
+    );
   }
 }
 
@@ -176,7 +178,9 @@ export async function getKycStatus(): Promise<KycStatusResponse> {
     return response.data;
   } catch (error: any) {
     console.error("Error fetching KYC status:", error);
-    throw new Error(error.response?.data?.message || "Failed to fetch KYC status");
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch KYC status",
+    );
   }
 }
 
