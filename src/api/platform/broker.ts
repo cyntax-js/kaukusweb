@@ -149,7 +149,9 @@ export async function submitCompanyInfo(
     const response = await apiClient.post("/broker/company", companyInfo);
     return response.data;
   } catch (error: any) {
-    throw new Error(error.response?.data?.message || "Failed to create company");
+    throw new Error(
+      error.response?.data?.message || "Failed to create company"
+    );
   }
 }
 
@@ -176,7 +178,9 @@ export async function getKycStatus(): Promise<KycStatusResponse> {
     return response.data;
   } catch (error: any) {
     console.error("Error fetching KYC status:", error);
-    throw new Error(error.response?.data?.message || "Failed to fetch KYC status");
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch KYC status"
+    );
   }
 }
 
@@ -238,15 +242,19 @@ export async function getApplicationStatus(): Promise<{
 }> {
   try {
     const response = await getKycStatus();
-    
+
     if (!response.data || response.data.length === 0) {
       return { status: "pending" };
     }
 
     const item = response.data[0];
-    const status = item.kyc_status === "approved" ? "approved" : 
-                   item.kyc_status === "rejected" ? "rejected" : "pending";
-    
+    const status =
+      item.kyc_status === "approved"
+        ? "approved"
+        : item.kyc_status === "rejected"
+        ? "rejected"
+        : "pending";
+
     return {
       status,
       approvedKycTypes: item.kyc_types,

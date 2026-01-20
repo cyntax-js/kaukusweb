@@ -181,7 +181,7 @@ const App = () => (
             </Route>
           </Route>
 
-          <Route element={<ProtectedRoute />}>
+          <Route>
             <Route path="/role-selection" element={<RoleSelection />} />
             <Route
               path="/dashboard-selection"
@@ -190,8 +190,14 @@ const App = () => (
 
             {/* Unified Onboarding Flow */}
             <Route path="/onboarding" element={<OnboardingPage />} />
-            <Route path="/awaiting-approval" element={<AwaitingApprovalPage />} />
-            <Route path="/dashboard-selection-kyc" element={<DashboardSelectionKyc />} />
+            <Route
+              path="/awaiting-approval"
+              element={<AwaitingApprovalPage />}
+            />
+            <Route
+              path="/dashboard-selection-kyc"
+              element={<DashboardSelectionKyc />}
+            />
 
             {/* Broker Onboarding (legacy) */}
             <Route
