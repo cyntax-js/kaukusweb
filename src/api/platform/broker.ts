@@ -7,8 +7,8 @@
  * Used by: Broker application flow, broker dashboard.
  */
 
-import { mockResponse, generateId, DELAYS } from "../client";
-import { apiFetch, apiClient } from "@/lib/utils";
+import { mockResponse, DELAYS } from "../client";
+import { apiClient } from "@/lib/utils";
 
 // ============================================================
 // TYPES
@@ -133,7 +133,7 @@ export interface BrokerUser {
   lastActive: Date;
 }
 
-const apiURL = import.meta.env.VITE_API_URL;
+// apiClient is already configured with base URL
 
 // ============================================================
 // API FUNCTIONS
@@ -145,18 +145,12 @@ const apiURL = import.meta.env.VITE_API_URL;
 export async function submitCompanyInfo(
   companyInfo: CompanyInfo
 ): Promise<CompanyResponse> {
-  const response = await apiFetch(`${apiURL}/broker/company`, {
-    method: "POST",
-    body: JSON.stringify(companyInfo),
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || "Failed to create company");
+  try {
+    const response = await apiClient.post("/broker/company", companyInfo);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || "Failed to create company");
   }
-
-  return data;
 }
 
 /**
@@ -165,18 +159,12 @@ export async function submitCompanyInfo(
 export async function submitCompanyKyc(
   payload: SubmitKycPayload
 ): Promise<KycSubmissionResponse> {
-  const response = await apiFetch(`${apiURL}/broker/company-kyc`, {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || "Failed to submit KYC");
+  try {
+    const response = await apiClient.post("/broker/company-kyc", payload);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || "Failed to submit KYC");
   }
-
-  return data;
 }
 
 /**
@@ -186,9 +174,9 @@ export async function getKycStatus(): Promise<KycStatusResponse> {
   try {
     const response = await apiClient.get("/broker/company-kyc/get-kyc-status");
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching KYC status:", error);
-    throw new Error("Failed to fetch KYC status");
+    throw new Error(error.response?.data?.message || "Failed to fetch KYC status");
   }
 }
 
