@@ -13,7 +13,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { activeOfferings } from "@/mocks/rolesDashboardData";
 import { toast } from "sonner";
 import {
@@ -22,7 +29,7 @@ import {
   FileText,
   CheckCircle2,
   Clock,
-  DollarSign,
+  Coins,
   TrendingUp,
   ArrowRight,
   Banknote,
@@ -38,7 +45,7 @@ interface Offering {
   targetAmount: number;
   raisedAmount: number;
   subscriptionRate: number;
-  status: 'active' | 'upcoming' | 'completed' | 'cancelled';
+  status: "active" | "upcoming" | "completed" | "cancelled";
   startDate: Date;
   endDate: Date;
   minInvestment: number;
@@ -50,96 +57,123 @@ interface Offering {
 
 const enhancedOfferings: Offering[] = [
   {
-    id: 'o1',
-    name: 'TechCorp Nigeria IPO',
-    type: 'IPO',
+    id: "o1",
+    name: "TechCorp Nigeria IPO",
+    type: "IPO",
     targetAmount: 50000000000,
     raisedAmount: 32500000000,
     subscriptionRate: 65,
-    status: 'active',
-    startDate: new Date('2025-01-01'),
-    endDate: new Date('2025-02-15'),
+    status: "active",
+    startDate: new Date("2025-01-01"),
+    endDate: new Date("2025-02-15"),
     minInvestment: 5000000,
     pricePerUnit: 100,
     availableUnits: 175000000,
-    issuer: 'TechCorp Nigeria Limited',
-    sector: 'Technology',
+    issuer: "TechCorp Nigeria Limited",
+    sector: "Technology",
   },
   {
-    id: 'o2',
-    name: 'Energy Corp Bond',
-    type: 'Bond',
+    id: "o2",
+    name: "Energy Corp Bond",
+    type: "Bond",
     targetAmount: 100000000000,
     raisedAmount: 78000000000,
     subscriptionRate: 78,
-    status: 'active',
-    startDate: new Date('2025-01-05'),
-    endDate: new Date('2025-02-28'),
+    status: "active",
+    startDate: new Date("2025-01-05"),
+    endDate: new Date("2025-02-28"),
     minInvestment: 10000000,
     pricePerUnit: 1000,
     availableUnits: 22000000,
-    issuer: 'Energy Corporation Plc',
-    sector: 'Energy',
+    issuer: "Energy Corporation Plc",
+    sector: "Energy",
   },
   {
-    id: 'o3',
-    name: 'FinTech Solutions Rights Issue',
-    type: 'Rights Issue',
+    id: "o3",
+    name: "FinTech Solutions Rights Issue",
+    type: "Rights Issue",
     targetAmount: 25000000000,
     raisedAmount: 0,
     subscriptionRate: 0,
-    status: 'upcoming',
-    startDate: new Date('2025-02-01'),
-    endDate: new Date('2025-03-15'),
+    status: "upcoming",
+    startDate: new Date("2025-02-01"),
+    endDate: new Date("2025-03-15"),
     minInvestment: 2000000,
     pricePerUnit: 50,
     availableUnits: 500000000,
-    issuer: 'FinTech Solutions Ltd',
-    sector: 'Financial Services',
+    issuer: "FinTech Solutions Ltd",
+    sector: "Financial Services",
   },
 ];
 
 export default function DealerPrimaryMarket() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedOffering, setSelectedOffering] = useState<Offering | null>(null);
+  const [selectedOffering, setSelectedOffering] = useState<Offering | null>(
+    null
+  );
   const [subscriptionAmount, setSubscriptionAmount] = useState("");
   const [isSubscribing, setIsSubscribing] = useState(false);
 
   const mySubscriptions = [
-    { id: 's1', offer: 'TechCorp Nigeria IPO', subscribed: 50000000, allotted: 45000000, status: 'allotted' },
-    { id: 's2', offer: 'Energy Corp Bond', subscribed: 100000000, allotted: null, status: 'pending' },
+    {
+      id: "s1",
+      offer: "TechCorp Nigeria IPO",
+      subscribed: 50000000,
+      allotted: 45000000,
+      status: "allotted",
+    },
+    {
+      id: "s2",
+      offer: "Energy Corp Bond",
+      subscribed: 100000000,
+      allotted: null,
+      status: "pending",
+    },
   ];
 
   const allottedSecurities = [
-    { id: 'a1', security: 'TechCorp Nigeria', units: 450000, pricePerUnit: 100, totalValue: 45000000, date: new Date('2025-01-15') },
+    {
+      id: "a1",
+      security: "TechCorp Nigeria",
+      units: 450000,
+      pricePerUnit: 100,
+      totalValue: 45000000,
+      date: new Date("2025-01-15"),
+    },
   ];
 
   const handleSubscribe = async () => {
     if (!selectedOffering || !subscriptionAmount) return;
-    
+
     const amount = parseFloat(subscriptionAmount);
     if (amount < selectedOffering.minInvestment) {
       toast.error("Amount below minimum", {
-        description: `Minimum investment is ₦${(selectedOffering.minInvestment / 1000000).toFixed(0)}M`
+        description: `Minimum investment is ₦${(
+          selectedOffering.minInvestment / 1000000
+        ).toFixed(0)}M`,
       });
       return;
     }
 
     setIsSubscribing(true);
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     setIsSubscribing(false);
-    
+
     toast.success("Subscription submitted!", {
-      description: `Your subscription of ₦${(amount / 1000000).toFixed(0)}M for ${selectedOffering.name} has been submitted.`
+      description: `Your subscription of ₦${(amount / 1000000).toFixed(
+        0
+      )}M for ${selectedOffering.name} has been submitted.`,
     });
-    
+
     setSelectedOffering(null);
     setSubscriptionAmount("");
   };
 
   const calculateUnits = () => {
     if (!selectedOffering || !subscriptionAmount) return 0;
-    return Math.floor(parseFloat(subscriptionAmount) / selectedOffering.pricePerUnit);
+    return Math.floor(
+      parseFloat(subscriptionAmount) / selectedOffering.pricePerUnit
+    );
   };
 
   return (
@@ -147,22 +181,30 @@ export default function DealerPrimaryMarket() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold">Primary Market</h1>
-        <p className="text-muted-foreground">Subscribe to new offerings and manage allotments</p>
+        <p className="text-muted-foreground">
+          Subscribe to new offerings and manage allotments
+        </p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-sm text-muted-foreground">Available Offers</span>
+            <span className="text-sm text-muted-foreground">
+              Available Offers
+            </span>
             <FileText className="w-5 h-5 text-chart-2" />
           </div>
-          <p className="text-3xl font-bold">{enhancedOfferings.filter(o => o.status === 'active').length}</p>
+          <p className="text-3xl font-bold">
+            {enhancedOfferings.filter((o) => o.status === "active").length}
+          </p>
         </Card>
 
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-sm text-muted-foreground">My Subscriptions</span>
+            <span className="text-sm text-muted-foreground">
+              My Subscriptions
+            </span>
             <Clock className="w-5 h-5 text-warning" />
           </div>
           <p className="text-3xl font-bold">{mySubscriptions.length}</p>
@@ -170,7 +212,9 @@ export default function DealerPrimaryMarket() {
 
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-sm text-muted-foreground">Allotted Securities</span>
+            <span className="text-sm text-muted-foreground">
+              Allotted Securities
+            </span>
             <CheckCircle2 className="w-5 h-5 text-success" />
           </div>
           <p className="text-3xl font-bold">{allottedSecurities.length}</p>
@@ -178,8 +222,10 @@ export default function DealerPrimaryMarket() {
 
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-sm text-muted-foreground">Total Invested</span>
-            <DollarSign className="w-5 h-5 text-chart-4" />
+            <span className="text-sm text-muted-foreground">
+              Total Invested
+            </span>
+            <Coins className="w-5 h-5 text-chart-4" />
           </div>
           <p className="text-3xl font-bold">₦150M</p>
         </Card>
@@ -211,14 +257,21 @@ export default function DealerPrimaryMarket() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-4">
-            {enhancedOfferings.map(offer => (
-              <Card key={offer.id} className="p-6 hover:border-chart-2/50 transition-colors">
+            {enhancedOfferings.map((offer) => (
+              <Card
+                key={offer.id}
+                className="p-6 hover:border-chart-2/50 transition-colors"
+              >
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <h3 className="font-semibold">{offer.name}</h3>
-                    <p className="text-sm text-muted-foreground">{offer.issuer}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {offer.issuer}
+                    </p>
                   </div>
-                  <Badge variant={offer.status === 'active' ? 'default' : 'outline'}>
+                  <Badge
+                    variant={offer.status === "active" ? "default" : "outline"}
+                  >
                     {offer.status}
                   </Badge>
                 </div>
@@ -226,15 +279,21 @@ export default function DealerPrimaryMarket() {
                 <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
                   <div>
                     <p className="text-muted-foreground">Target</p>
-                    <p className="font-medium">₦{(offer.targetAmount / 1000000000).toFixed(1)}B</p>
+                    <p className="font-medium">
+                      ₦{(offer.targetAmount / 1000000000).toFixed(1)}B
+                    </p>
                   </div>
                   <div>
                     <p className="text-muted-foreground">Min Investment</p>
-                    <p className="font-medium">₦{(offer.minInvestment / 1000000).toFixed(0)}M</p>
+                    <p className="font-medium">
+                      ₦{(offer.minInvestment / 1000000).toFixed(0)}M
+                    </p>
                   </div>
                   <div>
                     <p className="text-muted-foreground">Price/Unit</p>
-                    <p className="font-medium">₦{offer.pricePerUnit.toLocaleString()}</p>
+                    <p className="font-medium">
+                      ₦{offer.pricePerUnit.toLocaleString()}
+                    </p>
                   </div>
                   <div>
                     <p className="text-muted-foreground">Type</p>
@@ -244,7 +303,9 @@ export default function DealerPrimaryMarket() {
 
                 <div className="space-y-2 mb-4">
                   <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">Subscription Progress</span>
+                    <span className="text-muted-foreground">
+                      Subscription Progress
+                    </span>
                     <span>{offer.subscriptionRate}%</span>
                   </div>
                   <Progress value={offer.subscriptionRate} className="h-2" />
@@ -252,15 +313,18 @@ export default function DealerPrimaryMarket() {
 
                 <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
                   <Calendar className="w-3 h-3" />
-                  <span>{offer.startDate.toLocaleDateString()} - {offer.endDate.toLocaleDateString()}</span>
+                  <span>
+                    {offer.startDate.toLocaleDateString()} -{" "}
+                    {offer.endDate.toLocaleDateString()}
+                  </span>
                 </div>
 
-                <Button 
-                  className="w-full" 
-                  disabled={offer.status !== 'active'}
+                <Button
+                  className="w-full"
+                  disabled={offer.status !== "active"}
                   onClick={() => setSelectedOffering(offer)}
                 >
-                  {offer.status === 'active' ? 'Subscribe Now' : 'Coming Soon'}
+                  {offer.status === "active" ? "Subscribe Now" : "Coming Soon"}
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </Card>
@@ -274,8 +338,11 @@ export default function DealerPrimaryMarket() {
             <h3 className="font-semibold mb-6">My Subscriptions</h3>
 
             <div className="space-y-4">
-              {mySubscriptions.map(sub => (
-                <div key={sub.id} className="p-4 rounded-lg border border-border/50">
+              {mySubscriptions.map((sub) => (
+                <div
+                  key={sub.id}
+                  className="p-4 rounded-lg border border-border/50"
+                >
                   <div className="flex items-center justify-between mb-3">
                     <div>
                       <h4 className="font-medium">{sub.offer}</h4>
@@ -283,7 +350,11 @@ export default function DealerPrimaryMarket() {
                         Subscribed: ₦{(sub.subscribed / 1000000).toFixed(0)}M
                       </p>
                     </div>
-                    <Badge variant={sub.status === 'allotted' ? 'default' : 'secondary'}>
+                    <Badge
+                      variant={
+                        sub.status === "allotted" ? "default" : "secondary"
+                      }
+                    >
                       {sub.status}
                     </Badge>
                   </div>
@@ -292,7 +363,9 @@ export default function DealerPrimaryMarket() {
                     <div className="p-3 rounded bg-success/10 text-sm">
                       <div className="flex items-center gap-2 text-success">
                         <CheckCircle2 className="w-4 h-4" />
-                        <span>Allotted: ₦{(sub.allotted / 1000000).toFixed(0)}M</span>
+                        <span>
+                          Allotted: ₦{(sub.allotted / 1000000).toFixed(0)}M
+                        </span>
                       </div>
                     </div>
                   )}
@@ -319,13 +392,21 @@ export default function DealerPrimaryMarket() {
                   </tr>
                 </thead>
                 <tbody>
-                  {allottedSecurities.map(security => (
+                  {allottedSecurities.map((security) => (
                     <tr key={security.id} className="border-b border-border/50">
                       <td className="py-4 font-medium">{security.security}</td>
-                      <td className="py-4">{security.units.toLocaleString()}</td>
-                      <td className="py-4">₦{security.pricePerUnit.toFixed(2)}</td>
-                      <td className="py-4 font-medium">₦{(security.totalValue / 1000000).toFixed(0)}M</td>
-                      <td className="py-4 text-muted-foreground">{security.date.toLocaleDateString()}</td>
+                      <td className="py-4">
+                        {security.units.toLocaleString()}
+                      </td>
+                      <td className="py-4">
+                        ₦{security.pricePerUnit.toFixed(2)}
+                      </td>
+                      <td className="py-4 font-medium">
+                        ₦{(security.totalValue / 1000000).toFixed(0)}M
+                      </td>
+                      <td className="py-4 text-muted-foreground">
+                        {security.date.toLocaleDateString()}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -336,7 +417,10 @@ export default function DealerPrimaryMarket() {
       </Tabs>
 
       {/* Subscription Drawer */}
-      <Sheet open={!!selectedOffering} onOpenChange={() => setSelectedOffering(null)}>
+      <Sheet
+        open={!!selectedOffering}
+        onOpenChange={() => setSelectedOffering(null)}
+      >
         <SheetContent className="sm:max-w-lg">
           <SheetHeader>
             <SheetTitle>Subscribe to Offering</SheetTitle>
@@ -355,7 +439,9 @@ export default function DealerPrimaryMarket() {
                   </div>
                   <div>
                     <h4 className="font-semibold">{selectedOffering.name}</h4>
-                    <p className="text-sm text-muted-foreground">{selectedOffering.issuer}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {selectedOffering.issuer}
+                    </p>
                   </div>
                 </div>
                 <Separator />
@@ -370,11 +456,17 @@ export default function DealerPrimaryMarket() {
                   </div>
                   <div>
                     <span className="text-muted-foreground">Price/Unit</span>
-                    <p className="font-medium">₦{selectedOffering.pricePerUnit.toLocaleString()}</p>
+                    <p className="font-medium">
+                      ₦{selectedOffering.pricePerUnit.toLocaleString()}
+                    </p>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">Available Units</span>
-                    <p className="font-medium">{selectedOffering.availableUnits.toLocaleString()}</p>
+                    <span className="text-muted-foreground">
+                      Available Units
+                    </span>
+                    <p className="font-medium">
+                      {selectedOffering.availableUnits.toLocaleString()}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -395,7 +487,8 @@ export default function DealerPrimaryMarket() {
                     />
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    Minimum: ₦{(selectedOffering.minInvestment / 1000000).toFixed(0)}M
+                    Minimum: ₦
+                    {(selectedOffering.minInvestment / 1000000).toFixed(0)}M
                   </p>
                 </div>
 
@@ -408,16 +501,26 @@ export default function DealerPrimaryMarket() {
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Amount</span>
-                        <span className="font-medium">₦{parseFloat(subscriptionAmount).toLocaleString()}</span>
+                        <span className="font-medium">
+                          ₦{parseFloat(subscriptionAmount).toLocaleString()}
+                        </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Price/Unit</span>
-                        <span className="font-medium">₦{selectedOffering.pricePerUnit.toLocaleString()}</span>
+                        <span className="text-muted-foreground">
+                          Price/Unit
+                        </span>
+                        <span className="font-medium">
+                          ₦{selectedOffering.pricePerUnit.toLocaleString()}
+                        </span>
                       </div>
                       <Separator />
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Estimated Units</span>
-                        <span className="font-semibold text-primary">{calculateUnits().toLocaleString()}</span>
+                        <span className="text-muted-foreground">
+                          Estimated Units
+                        </span>
+                        <span className="font-semibold text-primary">
+                          {calculateUnits().toLocaleString()}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -425,7 +528,8 @@ export default function DealerPrimaryMarket() {
 
                 <div className="p-3 rounded-lg bg-warning/10 text-sm">
                   <p className="text-warning">
-                    <strong>Note:</strong> Final allotment is subject to oversubscription rules and regulatory approval.
+                    <strong>Note:</strong> Final allotment is subject to
+                    oversubscription rules and regulatory approval.
                   </p>
                 </div>
               </div>
@@ -436,8 +540,8 @@ export default function DealerPrimaryMarket() {
             <Button variant="outline" onClick={() => setSelectedOffering(null)}>
               Cancel
             </Button>
-            <Button 
-              onClick={handleSubscribe} 
+            <Button
+              onClick={handleSubscribe}
               disabled={!subscriptionAmount || isSubscribing}
             >
               {isSubscribing ? (

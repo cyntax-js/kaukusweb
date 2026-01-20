@@ -5,7 +5,7 @@ import {
   CheckCircle2,
   Shield,
   FileText,
-  DollarSign,
+  Coins,
   BarChart3,
   ArrowRight,
   AlertCircle,
@@ -15,25 +15,29 @@ const requirements = [
   {
     icon: Shield,
     title: "Market Maker License",
-    description: "Valid market maker or liquidity provider license from a recognized exchange or regulatory body.",
+    description:
+      "Valid market maker or liquidity provider license from a recognized exchange or regulatory body.",
     required: true,
   },
   {
     icon: BarChart3,
     title: "Trading Infrastructure",
-    description: "Proven algorithmic trading capabilities with low-latency execution systems.",
+    description:
+      "Proven algorithmic trading capabilities with low-latency execution systems.",
     required: true,
   },
   {
-    icon: DollarSign,
+    icon: Coins,
     title: "Capital Requirements",
-    description: "Minimum $10,000,000 committed capital for market making activities.",
+    description:
+      "Minimum $10,000,000 committed capital for market making activities.",
     required: true,
   },
   {
     icon: FileText,
     title: "Risk Management",
-    description: "Comprehensive risk management framework with real-time monitoring capabilities.",
+    description:
+      "Comprehensive risk management framework with real-time monitoring capabilities.",
     required: true,
   },
 ];
@@ -65,7 +69,8 @@ export default function MarketMakerRequirements() {
             Requirements & Specifications
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Become a market maker to provide liquidity, manage spreads, and earn from automated quoting.
+            Become a market maker to provide liquidity, manage spreads, and earn
+            from automated quoting.
           </p>
         </div>
 
@@ -90,7 +95,9 @@ export default function MarketMakerRequirements() {
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground">{req.description}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {req.description}
+                  </p>
                 </div>
               </div>
             </Card>
@@ -105,7 +112,10 @@ export default function MarketMakerRequirements() {
           </h2>
           <div className="grid md:grid-cols-2 gap-4">
             {documents.map((doc, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-secondary/50">
+              <div
+                key={i}
+                className="flex items-center gap-3 p-3 rounded-lg bg-secondary/50"
+              >
                 <CheckCircle2 className="w-5 h-5 text-success shrink-0" />
                 <span className="text-sm">{doc}</span>
               </div>
@@ -120,8 +130,9 @@ export default function MarketMakerRequirements() {
             <div>
               <h3 className="font-semibold mb-2">Important Notice</h3>
               <p className="text-sm text-muted-foreground">
-                Market Maker registration includes technical assessment and typically takes 7-10 business days.
-                You may be required to demonstrate your trading infrastructure during review.
+                Market Maker registration includes technical assessment and
+                typically takes 7-10 business days. You may be required to
+                demonstrate your trading infrastructure during review.
               </p>
             </div>
           </div>

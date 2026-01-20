@@ -13,7 +13,7 @@ import {
 import {
   BarChart3,
   Activity,
-  DollarSign,
+  Coins,
   Zap,
   ArrowRight,
   TrendingUp,
@@ -36,7 +36,7 @@ const statCards = [
   {
     label: "Daily Volume",
     value: `₦${(marketMakerDashboardStats.dailyVolume / 1000000).toFixed(0)}M`,
-    icon: DollarSign,
+    icon: Coins,
     color: "text-success",
     change: "+22%",
     up: true,
@@ -60,8 +60,14 @@ const statCards = [
 ];
 
 const quickStats = [
-  { label: "Total Quotes", value: `${(marketMakerDashboardStats.totalQuotes / 1000000).toFixed(1)}M` },
-  { label: "P&L Today", value: `+₦${(marketMakerDashboardStats.pnlToday / 1000000).toFixed(1)}M` },
+  {
+    label: "Total Quotes",
+    value: `${(marketMakerDashboardStats.totalQuotes / 1000000).toFixed(1)}M`,
+  },
+  {
+    label: "P&L Today",
+    value: `+₦${(marketMakerDashboardStats.pnlToday / 1000000).toFixed(1)}M`,
+  },
   { label: "Utilization", value: `${riskMetrics.utilizationPercent}%` },
   { label: "Sharpe Ratio", value: riskMetrics.sharpeRatio.toFixed(1) },
 ];
@@ -92,15 +98,21 @@ export default function MarketMakerDashboard() {
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <Rocket className="w-6 h-6 text-chart-5" />
-                <span className="text-sm font-medium text-chart-5">Getting Started</span>
+                <span className="text-sm font-medium text-chart-5">
+                  Getting Started
+                </span>
               </div>
               <h1 className="text-2xl md:text-3xl font-bold mb-2">
                 Welcome to Your Market Maker Dashboard
               </h1>
               <p className="text-muted-foreground max-w-xl mb-6">
-                You're approved! Configure your quoting engine and start providing liquidity.
+                You're approved! Configure your quoting engine and start
+                providing liquidity.
               </p>
-              <Button size="lg" onClick={() => navigate("/market-maker/dashboard/quoting")}>
+              <Button
+                size="lg"
+                onClick={() => navigate("/market-maker/dashboard/quoting")}
+              >
                 Configure Quoting Engine
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
@@ -116,7 +128,9 @@ export default function MarketMakerDashboard() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">Market Maker Dashboard</h1>
-            <p className="text-muted-foreground">Manage your liquidity provision</p>
+            <p className="text-muted-foreground">
+              Manage your liquidity provision
+            </p>
           </div>
           <Badge className="bg-success/10 text-success">Active</Badge>
         </div>
@@ -131,13 +145,23 @@ export default function MarketMakerDashboard() {
             style={{ animationDelay: `${i * 0.1}s` }}
           >
             <div className="flex items-center justify-between mb-4">
-              <span className="text-sm text-muted-foreground">{stat.label}</span>
+              <span className="text-sm text-muted-foreground">
+                {stat.label}
+              </span>
               <stat.icon className={`w-5 h-5 ${stat.color}`} />
             </div>
             <div className="flex items-end justify-between">
               <div className="text-2xl font-bold">{stat.value}</div>
-              <div className={`flex items-center text-xs font-medium ${stat.up ? "text-success" : "text-destructive"}`}>
-                {stat.up ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+              <div
+                className={`flex items-center text-xs font-medium ${
+                  stat.up ? "text-success" : "text-destructive"
+                }`}
+              >
+                {stat.up ? (
+                  <ArrowUpRight className="w-3 h-3" />
+                ) : (
+                  <ArrowDownRight className="w-3 h-3" />
+                )}
                 {stat.change}
               </div>
             </div>
@@ -149,10 +173,15 @@ export default function MarketMakerDashboard() {
       <Card className="p-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {quickStats.map((stat, i) => (
-            <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-secondary/30">
+            <div
+              key={i}
+              className="flex items-center gap-3 p-3 rounded-lg bg-secondary/30"
+            >
               <Zap className="w-4 h-4 text-muted-foreground" />
               <div>
-                <div className="text-xs text-muted-foreground">{stat.label}</div>
+                <div className="text-xs text-muted-foreground">
+                  {stat.label}
+                </div>
                 <div className="font-semibold">{stat.value}</div>
               </div>
             </div>
@@ -168,7 +197,11 @@ export default function MarketMakerDashboard() {
               <Activity className="w-4 h-4 text-chart-5" />
               Active Market Pairs
             </h3>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/market-maker/dashboard/pairs")}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate("/market-maker/dashboard/pairs")}
+            >
               View All
             </Button>
           </div>
@@ -190,16 +223,27 @@ export default function MarketMakerDashboard() {
                     <td className="py-3">
                       <div className="flex items-center gap-2">
                         <span className="font-medium">{pair.symbol}</span>
-                        <Badge variant={pair.status === 'active' ? 'default' : 'secondary'} className="text-xs">
+                        <Badge
+                          variant={
+                            pair.status === "active" ? "default" : "secondary"
+                          }
+                          className="text-xs"
+                        >
                           {pair.status}
                         </Badge>
                       </div>
                     </td>
-                    <td className="py-3 text-success">₦{pair.bidPrice.toFixed(2)}</td>
-                    <td className="py-3 text-destructive">₦{pair.askPrice.toFixed(2)}</td>
+                    <td className="py-3 text-success">
+                      ₦{pair.bidPrice.toFixed(2)}
+                    </td>
+                    <td className="py-3 text-destructive">
+                      ₦{pair.askPrice.toFixed(2)}
+                    </td>
                     <td className="py-3">{pair.spread.toFixed(2)}%</td>
                     <td className="py-3">{pair.fillRate.toFixed(1)}%</td>
-                    <td className="py-3 text-right font-medium">₦{(pair.volume24h / 1000000).toFixed(0)}M</td>
+                    <td className="py-3 text-right font-medium">
+                      ₦{(pair.volume24h / 1000000).toFixed(0)}M
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -209,20 +253,35 @@ export default function MarketMakerDashboard() {
 
         {/* Quick Actions */}
         <div className="space-y-4">
-          <Card className="p-6 hover-lift cursor-pointer" onClick={() => navigate("/market-maker/dashboard/quoting")}>
+          <Card
+            className="p-6 hover-lift cursor-pointer"
+            onClick={() => navigate("/market-maker/dashboard/quoting")}
+          >
             <Zap className="w-8 h-8 text-chart-5 mb-4" />
             <h3 className="font-semibold mb-1">Quoting Engine</h3>
-            <p className="text-sm text-muted-foreground">Configure automated quoting</p>
+            <p className="text-sm text-muted-foreground">
+              Configure automated quoting
+            </p>
           </Card>
-          <Card className="p-6 hover-lift cursor-pointer" onClick={() => navigate("/market-maker/dashboard/performance")}>
+          <Card
+            className="p-6 hover-lift cursor-pointer"
+            onClick={() => navigate("/market-maker/dashboard/performance")}
+          >
             <TrendingUp className="w-8 h-8 text-success mb-4" />
             <h3 className="font-semibold mb-1">Performance</h3>
-            <p className="text-sm text-muted-foreground">View real-time metrics</p>
+            <p className="text-sm text-muted-foreground">
+              View real-time metrics
+            </p>
           </Card>
-          <Card className="p-6 hover-lift cursor-pointer" onClick={() => navigate("/market-maker/dashboard/risk")}>
+          <Card
+            className="p-6 hover-lift cursor-pointer"
+            onClick={() => navigate("/market-maker/dashboard/risk")}
+          >
             <Shield className="w-8 h-8 text-warning mb-4" />
             <h3 className="font-semibold mb-1">Risk Settings</h3>
-            <p className="text-sm text-muted-foreground">Configure risk parameters</p>
+            <p className="text-sm text-muted-foreground">
+              Configure risk parameters
+            </p>
           </Card>
         </div>
       </div>
@@ -234,7 +293,11 @@ export default function MarketMakerDashboard() {
             <Shield className="w-4 h-4 text-chart-5" />
             Risk Overview
           </h3>
-          <Button variant="ghost" size="sm" onClick={() => navigate("/market-maker/dashboard/risk")}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate("/market-maker/dashboard/risk")}
+          >
             <Settings className="w-4 h-4 mr-2" />
             Configure
           </Button>
@@ -243,24 +306,33 @@ export default function MarketMakerDashboard() {
           <div>
             <div className="flex justify-between text-sm mb-2">
               <span className="text-muted-foreground">Capital Utilization</span>
-              <span className="font-medium">{riskMetrics.utilizationPercent}%</span>
+              <span className="font-medium">
+                {riskMetrics.utilizationPercent}%
+              </span>
             </div>
             <Progress value={riskMetrics.utilizationPercent} className="h-2" />
             <div className="text-xs text-muted-foreground mt-1">
-              ₦{(riskMetrics.currentExposure / 1000000).toFixed(0)}M / ₦{(riskMetrics.maxPositionSize / 1000000).toFixed(0)}M
+              ₦{(riskMetrics.currentExposure / 1000000).toFixed(0)}M / ₦
+              {(riskMetrics.maxPositionSize / 1000000).toFixed(0)}M
             </div>
           </div>
           <div className="p-4 rounded-lg bg-secondary/30">
             <div className="text-xs text-muted-foreground">Daily P&L</div>
-            <div className="text-xl font-bold text-success">+₦{(riskMetrics.dailyPnL / 1000000).toFixed(1)}M</div>
+            <div className="text-xl font-bold text-success">
+              +₦{(riskMetrics.dailyPnL / 1000000).toFixed(1)}M
+            </div>
           </div>
           <div className="p-4 rounded-lg bg-secondary/30">
             <div className="text-xs text-muted-foreground">Monthly P&L</div>
-            <div className="text-xl font-bold text-success">+₦{(riskMetrics.monthlyPnL / 1000000).toFixed(0)}M</div>
+            <div className="text-xl font-bold text-success">
+              +₦{(riskMetrics.monthlyPnL / 1000000).toFixed(0)}M
+            </div>
           </div>
           <div className="p-4 rounded-lg bg-secondary/30">
             <div className="text-xs text-muted-foreground">Max Drawdown</div>
-            <div className="text-xl font-bold text-destructive">{riskMetrics.maxDrawdown}%</div>
+            <div className="text-xl font-bold text-destructive">
+              {riskMetrics.maxDrawdown}%
+            </div>
           </div>
         </div>
       </Card>

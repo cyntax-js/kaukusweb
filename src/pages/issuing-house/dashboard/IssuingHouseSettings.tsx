@@ -1,11 +1,17 @@
 /**
  * Issuing House Settings Page
- * 
+ *
  * Configuration options for offering preferences, notifications, and API access.
  */
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,14 +27,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { 
-  Landmark, 
-  Bell, 
-  DollarSign, 
-  Shield, 
-  Save, 
-  User, 
-  FileText, 
+import {
+  Landmark,
+  Bell,
+  Coins,
+  Shield,
+  Save,
+  User,
+  FileText,
   Key,
   Copy,
   Eye,
@@ -82,7 +88,8 @@ export default function IssuingHouseSettings() {
   const handleRotateKey = () => {
     toast({
       title: "Key Rotation Initiated",
-      description: "Your new API keys will be generated. Please save them securely.",
+      description:
+        "Your new API keys will be generated. Please save them securely.",
       variant: "destructive",
     });
   };
@@ -101,7 +108,9 @@ export default function IssuingHouseSettings() {
           <Landmark className="w-6 h-6 text-chart-4" />
           Settings
         </h1>
-        <p className="text-muted-foreground">Manage your issuing house account settings</p>
+        <p className="text-muted-foreground">
+          Manage your issuing house account settings
+        </p>
       </div>
 
       <Tabs defaultValue="profile" className="space-y-6">
@@ -123,13 +132,18 @@ export default function IssuingHouseSettings() {
                 <User className="w-5 h-5" />
                 Company Profile
               </CardTitle>
-              <CardDescription>Update your issuing house information</CardDescription>
+              <CardDescription>
+                Update your issuing house information
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="companyName">Company Name</Label>
-                  <Input id="companyName" defaultValue="Capital Trust Issuing House" />
+                  <Input
+                    id="companyName"
+                    defaultValue="Capital Trust Issuing House"
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="ihCode">Issuing House Code</Label>
@@ -140,7 +154,11 @@ export default function IssuingHouseSettings() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="email">Email Address</Label>
-                  <Input id="email" type="email" defaultValue="offerings@capitaltrust.com" />
+                  <Input
+                    id="email"
+                    type="email"
+                    defaultValue="offerings@capitaltrust.com"
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone Number</Label>
@@ -155,7 +173,11 @@ export default function IssuingHouseSettings() {
 
               <div className="space-y-2">
                 <Label htmlFor="description">Company Description</Label>
-                <Textarea id="description" rows={3} defaultValue="Leading issuing house specializing in IPOs, rights issues, and private placements across West Africa." />
+                <Textarea
+                  id="description"
+                  rows={3}
+                  defaultValue="Leading issuing house specializing in IPOs, rights issues, and private placements across West Africa."
+                />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -191,7 +213,9 @@ export default function IssuingHouseSettings() {
                 <Settings2 className="w-5 h-5" />
                 Offering Preferences
               </CardTitle>
-              <CardDescription>Configure default settings for new offerings</CardDescription>
+              <CardDescription>
+                Configure default settings for new offerings
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -199,26 +223,40 @@ export default function IssuingHouseSettings() {
                   <Label>Default Allocation Method</Label>
                   <Select
                     value={offeringSettings.defaultAllocationMethod}
-                    onValueChange={(value) => setOfferingSettings({ ...offeringSettings, defaultAllocationMethod: value })}
+                    onValueChange={(value) =>
+                      setOfferingSettings({
+                        ...offeringSettings,
+                        defaultAllocationMethod: value,
+                      })
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="pro-rata">Pro-Rata</SelectItem>
-                      <SelectItem value="first-come">First Come First Served</SelectItem>
+                      <SelectItem value="first-come">
+                        First Come First Served
+                      </SelectItem>
                       <SelectItem value="lottery">Lottery</SelectItem>
                       <SelectItem value="hybrid">Hybrid</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="minSubscription">Minimum Subscription (₦)</Label>
+                  <Label htmlFor="minSubscription">
+                    Minimum Subscription (₦)
+                  </Label>
                   <Input
                     id="minSubscription"
                     type="number"
                     value={offeringSettings.minSubscription}
-                    onChange={(e) => setOfferingSettings({ ...offeringSettings, minSubscription: e.target.value })}
+                    onChange={(e) =>
+                      setOfferingSettings({
+                        ...offeringSettings,
+                        minSubscription: e.target.value,
+                      })
+                    }
                   />
                 </div>
               </div>
@@ -237,7 +275,12 @@ export default function IssuingHouseSettings() {
                     </div>
                     <Switch
                       checked={offeringSettings.autoCloseOversubscribed}
-                      onCheckedChange={(checked) => setOfferingSettings({ ...offeringSettings, autoCloseOversubscribed: checked })}
+                      onCheckedChange={(checked) =>
+                        setOfferingSettings({
+                          ...offeringSettings,
+                          autoCloseOversubscribed: checked,
+                        })
+                      }
                     />
                   </div>
                   <div className="flex items-center justify-between">
@@ -249,7 +292,12 @@ export default function IssuingHouseSettings() {
                     </div>
                     <Switch
                       checked={offeringSettings.investorKycRequired}
-                      onCheckedChange={(checked) => setOfferingSettings({ ...offeringSettings, investorKycRequired: checked })}
+                      onCheckedChange={(checked) =>
+                        setOfferingSettings({
+                          ...offeringSettings,
+                          investorKycRequired: checked,
+                        })
+                      }
                     />
                   </div>
                   <div className="flex items-center justify-between">
@@ -261,7 +309,12 @@ export default function IssuingHouseSettings() {
                     </div>
                     <Switch
                       checked={offeringSettings.autoSendAllotmentLetters}
-                      onCheckedChange={(checked) => setOfferingSettings({ ...offeringSettings, autoSendAllotmentLetters: checked })}
+                      onCheckedChange={(checked) =>
+                        setOfferingSettings({
+                          ...offeringSettings,
+                          autoSendAllotmentLetters: checked,
+                        })
+                      }
                     />
                   </div>
                 </div>
@@ -282,10 +335,12 @@ export default function IssuingHouseSettings() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <DollarSign className="w-5 h-5" />
+                <Coins className="w-5 h-5" />
                 Fee Configuration
               </CardTitle>
-              <CardDescription>Configure offering fees and commissions</CardDescription>
+              <CardDescription>
+                Configure offering fees and commissions
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -293,15 +348,30 @@ export default function IssuingHouseSettings() {
                   <h4 className="font-medium">Standard Fees</h4>
                   <div className="space-y-2">
                     <Label htmlFor="ipoFee">IPO Commission (%)</Label>
-                    <Input id="ipoFee" type="number" step="0.1" defaultValue="2.5" />
+                    <Input
+                      id="ipoFee"
+                      type="number"
+                      step="0.1"
+                      defaultValue="2.5"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="rightsFee">Rights Issue Fee (%)</Label>
-                    <Input id="rightsFee" type="number" step="0.1" defaultValue="2.0" />
+                    <Input
+                      id="rightsFee"
+                      type="number"
+                      step="0.1"
+                      defaultValue="2.0"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="bondFee">Bond Issue Fee (%)</Label>
-                    <Input id="bondFee" type="number" step="0.1" defaultValue="1.5" />
+                    <Input
+                      id="bondFee"
+                      type="number"
+                      step="0.1"
+                      defaultValue="1.5"
+                    />
                   </div>
                 </div>
 
@@ -309,11 +379,23 @@ export default function IssuingHouseSettings() {
                   <h4 className="font-medium">Additional Services</h4>
                   <div className="space-y-2">
                     <Label htmlFor="advisoryFee">Advisory Fee (%)</Label>
-                    <Input id="advisoryFee" type="number" step="0.1" defaultValue="0.5" />
+                    <Input
+                      id="advisoryFee"
+                      type="number"
+                      step="0.1"
+                      defaultValue="0.5"
+                    />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="underwritingFee">Underwriting Fee (%)</Label>
-                    <Input id="underwritingFee" type="number" step="0.1" defaultValue="1.0" />
+                    <Label htmlFor="underwritingFee">
+                      Underwriting Fee (%)
+                    </Label>
+                    <Input
+                      id="underwritingFee"
+                      type="number"
+                      step="0.1"
+                      defaultValue="1.0"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="minFee">Minimum Fee (₦)</Label>
@@ -340,35 +422,45 @@ export default function IssuingHouseSettings() {
                 <FileText className="w-5 h-5" />
                 Document Templates
               </CardTitle>
-              <CardDescription>Manage document templates for offerings</CardDescription>
+              <CardDescription>
+                Manage document templates for offerings
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid gap-4">
                 <div className="flex items-center justify-between p-4 border rounded-lg">
                   <div>
                     <p className="font-medium">Prospectus Template</p>
-                    <p className="text-sm text-muted-foreground">Standard IPO prospectus template</p>
+                    <p className="text-sm text-muted-foreground">
+                      Standard IPO prospectus template
+                    </p>
                   </div>
                   <Button variant="outline">Edit Template</Button>
                 </div>
                 <div className="flex items-center justify-between p-4 border rounded-lg">
                   <div>
                     <p className="font-medium">Rights Circular</p>
-                    <p className="text-sm text-muted-foreground">Rights issue circular template</p>
+                    <p className="text-sm text-muted-foreground">
+                      Rights issue circular template
+                    </p>
                   </div>
                   <Button variant="outline">Edit Template</Button>
                 </div>
                 <div className="flex items-center justify-between p-4 border rounded-lg">
                   <div>
                     <p className="font-medium">Investor Communication</p>
-                    <p className="text-sm text-muted-foreground">Email templates for investors</p>
+                    <p className="text-sm text-muted-foreground">
+                      Email templates for investors
+                    </p>
                   </div>
                   <Button variant="outline">Edit Template</Button>
                 </div>
                 <div className="flex items-center justify-between p-4 border rounded-lg">
                   <div>
                     <p className="font-medium">Allotment Letter</p>
-                    <p className="text-sm text-muted-foreground">Share allotment letter template</p>
+                    <p className="text-sm text-muted-foreground">
+                      Share allotment letter template
+                    </p>
                   </div>
                   <Button variant="outline">Edit Template</Button>
                 </div>
@@ -389,7 +481,9 @@ export default function IssuingHouseSettings() {
                 <Bell className="w-5 h-5" />
                 Notification Preferences
               </CardTitle>
-              <CardDescription>Configure how you receive alerts</CardDescription>
+              <CardDescription>
+                Configure how you receive alerts
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
@@ -398,30 +492,50 @@ export default function IssuingHouseSettings() {
                   <div className="flex items-center justify-between">
                     <div>
                       <Label>Subscription Alerts</Label>
-                      <p className="text-sm text-muted-foreground">Get notified for new subscriptions</p>
+                      <p className="text-sm text-muted-foreground">
+                        Get notified for new subscriptions
+                      </p>
                     </div>
-                    <Switch checked={subscriptionAlerts} onCheckedChange={setSubscriptionAlerts} />
+                    <Switch
+                      checked={subscriptionAlerts}
+                      onCheckedChange={setSubscriptionAlerts}
+                    />
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
                       <Label>Investor Updates</Label>
-                      <p className="text-sm text-muted-foreground">New investor registrations</p>
+                      <p className="text-sm text-muted-foreground">
+                        New investor registrations
+                      </p>
                     </div>
-                    <Switch checked={investorUpdates} onCheckedChange={setInvestorUpdates} />
+                    <Switch
+                      checked={investorUpdates}
+                      onCheckedChange={setInvestorUpdates}
+                    />
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
                       <Label>Regulatory Alerts</Label>
-                      <p className="text-sm text-muted-foreground">SEC and regulatory notifications</p>
+                      <p className="text-sm text-muted-foreground">
+                        SEC and regulatory notifications
+                      </p>
                     </div>
-                    <Switch checked={regulatoryAlerts} onCheckedChange={setRegulatoryAlerts} />
+                    <Switch
+                      checked={regulatoryAlerts}
+                      onCheckedChange={setRegulatoryAlerts}
+                    />
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
                       <Label>Weekly Report</Label>
-                      <p className="text-sm text-muted-foreground">Weekly offering summary</p>
+                      <p className="text-sm text-muted-foreground">
+                        Weekly offering summary
+                      </p>
                     </div>
-                    <Switch checked={weeklyReport} onCheckedChange={setWeeklyReport} />
+                    <Switch
+                      checked={weeklyReport}
+                      onCheckedChange={setWeeklyReport}
+                    />
                   </div>
                 </div>
               </div>
@@ -434,23 +548,38 @@ export default function IssuingHouseSettings() {
                   <div className="flex items-center justify-between">
                     <div>
                       <Label>Email Notifications</Label>
-                      <p className="text-sm text-muted-foreground">Receive updates via email</p>
+                      <p className="text-sm text-muted-foreground">
+                        Receive updates via email
+                      </p>
                     </div>
-                    <Switch checked={emailNotifications} onCheckedChange={setEmailNotifications} />
+                    <Switch
+                      checked={emailNotifications}
+                      onCheckedChange={setEmailNotifications}
+                    />
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
                       <Label>Push Notifications</Label>
-                      <p className="text-sm text-muted-foreground">Browser push notifications</p>
+                      <p className="text-sm text-muted-foreground">
+                        Browser push notifications
+                      </p>
                     </div>
-                    <Switch checked={pushNotifications} onCheckedChange={setPushNotifications} />
+                    <Switch
+                      checked={pushNotifications}
+                      onCheckedChange={setPushNotifications}
+                    />
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
                       <Label>SMS Alerts</Label>
-                      <p className="text-sm text-muted-foreground">Critical alerts via SMS</p>
+                      <p className="text-sm text-muted-foreground">
+                        Critical alerts via SMS
+                      </p>
                     </div>
-                    <Switch checked={smsAlerts} onCheckedChange={setSmsAlerts} />
+                    <Switch
+                      checked={smsAlerts}
+                      onCheckedChange={setSmsAlerts}
+                    />
                   </div>
                 </div>
               </div>
@@ -475,16 +604,20 @@ export default function IssuingHouseSettings() {
                   API Credentials
                 </CardTitle>
                 <CardDescription>
-                  Your API keys for programmatic access to the issuing house platform
+                  Your API keys for programmatic access to the issuing house
+                  platform
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="p-4 rounded-lg bg-warning/10 border border-warning/20 flex items-start gap-3">
                   <AlertTriangle className="w-5 h-5 text-warning shrink-0 mt-0.5" />
                   <div className="text-sm">
-                    <p className="font-medium text-warning">Keep your keys secure</p>
+                    <p className="font-medium text-warning">
+                      Keep your keys secure
+                    </p>
                     <p className="text-muted-foreground">
-                      Never share your secret key. If compromised, rotate immediately.
+                      Never share your secret key. If compromised, rotate
+                      immediately.
                     </p>
                   </div>
                 </div>
@@ -506,13 +639,22 @@ export default function IssuingHouseSettings() {
                           className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-0"
                           onClick={() => setShowApiKey(!showApiKey)}
                         >
-                          {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          {showApiKey ? (
+                            <EyeOff className="w-4 h-4" />
+                          ) : (
+                            <Eye className="w-4 h-4" />
+                          )}
                         </Button>
                       </div>
                       <Button
                         variant="outline"
                         size="icon"
-                        onClick={() => handleCopyToClipboard(apiCredentials.apiKey, "API Key")}
+                        onClick={() =>
+                          handleCopyToClipboard(
+                            apiCredentials.apiKey,
+                            "API Key"
+                          )
+                        }
                       >
                         <Copy className="w-4 h-4" />
                       </Button>
@@ -535,13 +677,22 @@ export default function IssuingHouseSettings() {
                           className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-0"
                           onClick={() => setShowSecretKey(!showSecretKey)}
                         >
-                          {showSecretKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          {showSecretKey ? (
+                            <EyeOff className="w-4 h-4" />
+                          ) : (
+                            <Eye className="w-4 h-4" />
+                          )}
                         </Button>
                       </div>
                       <Button
                         variant="outline"
                         size="icon"
-                        onClick={() => handleCopyToClipboard(apiCredentials.secretKey, "Secret Key")}
+                        onClick={() =>
+                          handleCopyToClipboard(
+                            apiCredentials.secretKey,
+                            "Secret Key"
+                          )
+                        }
                       >
                         <Copy className="w-4 h-4" />
                       </Button>
@@ -565,7 +716,8 @@ export default function IssuingHouseSettings() {
               <CardHeader>
                 <CardTitle>Webhook Configuration</CardTitle>
                 <CardDescription>
-                  Receive real-time updates for subscriptions and offering events
+                  Receive real-time updates for subscriptions and offering
+                  events
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -580,7 +732,12 @@ export default function IssuingHouseSettings() {
                     <Button
                       variant="outline"
                       size="icon"
-                      onClick={() => handleCopyToClipboard(apiCredentials.webhookUrl, "Webhook URL")}
+                      onClick={() =>
+                        handleCopyToClipboard(
+                          apiCredentials.webhookUrl,
+                          "Webhook URL"
+                        )
+                      }
                     >
                       <Copy className="w-4 h-4" />
                     </Button>
@@ -634,7 +791,8 @@ export default function IssuingHouseSettings() {
                   <Label>IP Whitelist</Label>
                   <Input placeholder="Enter IP addresses (comma-separated)" />
                   <p className="text-xs text-muted-foreground">
-                    Leave empty to allow all IPs (not recommended for production)
+                    Leave empty to allow all IPs (not recommended for
+                    production)
                   </p>
                 </div>
 
@@ -697,8 +855,15 @@ export default function IssuingHouseSettings() {
                 <h4 className="font-medium">Two-Factor Authentication</h4>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm">Status: <Badge className="bg-success/10 text-success ml-1">Enabled</Badge></p>
-                    <p className="text-sm text-muted-foreground mt-1">Using authenticator app</p>
+                    <p className="text-sm">
+                      Status:{" "}
+                      <Badge className="bg-success/10 text-success ml-1">
+                        Enabled
+                      </Badge>
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Using authenticator app
+                    </p>
                   </div>
                   <Button variant="outline">Configure</Button>
                 </div>

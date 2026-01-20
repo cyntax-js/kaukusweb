@@ -29,7 +29,7 @@ import {
   CalendarIcon,
   FileText,
   Users,
-  DollarSign,
+  Coins,
   CheckCircle2,
   Shield,
 } from "lucide-react";
@@ -55,7 +55,7 @@ export default function NewOffering() {
 
   const steps = [
     { id: 1, title: "Basic Info", icon: FileText },
-    { id: 2, title: "Pricing", icon: DollarSign },
+    { id: 2, title: "Pricing", icon: Coins },
     { id: 3, title: "Timeline", icon: CalendarIcon },
     { id: 4, title: "Review", icon: CheckCircle2 },
   ];

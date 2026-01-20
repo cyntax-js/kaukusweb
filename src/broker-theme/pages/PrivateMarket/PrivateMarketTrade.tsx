@@ -31,7 +31,7 @@ import {
   Target,
   Award,
   Briefcase,
-  DollarSign,
+  Coins,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -425,7 +425,7 @@ export default function PrivateMarketDetail(): JSX.Element {
               </div>
               <div className="bg-white rounded-xl p-4 border border-gray-100">
                 <p className="text-xs text-gray-400 mb-1 flex items-center gap-1">
-                  <DollarSign className="h-3 w-3" /> Min. Investment
+                  <Coins className="h-3 w-3" /> Min. Investment
                 </p>
                 <p className="text-xl font-bold text-gray-900">{formatNgn(market.minInvestment)}</p>
               </div>

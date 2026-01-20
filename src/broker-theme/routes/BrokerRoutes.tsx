@@ -4,8 +4,8 @@
  * Used by both /preview and /app route trees
  */
 
-import { Route } from 'react-router-dom';
-import { PublicLayout } from '../layouts';
+import { Route } from "react-router-dom";
+import { PublicLayout } from "../layouts";
 import {
   LandingPage,
   LoginPage,
@@ -18,7 +18,7 @@ import {
   LegalPage,
   OTCDexPage,
   OTCDexDetailPage,
-} from '../pages';
+} from "../pages";
 
 /**
  * Public pages (landing, about, legal, auth)
@@ -34,7 +34,7 @@ export const PublicRoutes = () => (
 );
 
 /**
- * App pages (markets, trading, portfolio, settings, otc-dex)
+ * App pages (markets, trading, portfolio, settings, otc-desk)
  */
 export const AppRoutes = () => (
   <>
@@ -43,8 +43,8 @@ export const AppRoutes = () => (
     <Route path="markets/private/:marketId" element={<MarketsPage />} />
     <Route path="markets/secondary/:marketId" element={<MarketsPage />} />
     <Route path="trade/:serviceType/:pair" element={<TradingPage />} />
-    <Route path="otc-dex" element={<OTCDexPage />} />
-    <Route path="otc-dex/:offerId" element={<OTCDexDetailPage />} />
+    <Route path="otc-desk" element={<OTCDexPage />} />
+    <Route path="otc-desk/:offerId" element={<OTCDexDetailPage />} />
     <Route path="portfolio" element={<PortfolioPage />} />
     <Route path="settings" element={<SettingsPage />} />
   </>

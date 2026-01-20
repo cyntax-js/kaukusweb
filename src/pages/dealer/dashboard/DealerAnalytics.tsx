@@ -1,8 +1,42 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, AreaChart, Area } from "recharts";
-import { TrendingUp, TrendingDown, BarChart3, Activity, DollarSign, Users } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+  AreaChart,
+  Area,
+} from "recharts";
+import {
+  TrendingUp,
+  TrendingDown,
+  BarChart3,
+  Activity,
+  Coins,
+  Users,
+} from "lucide-react";
 
 const volumeData = [
   { name: "Mon", volume: 125000000, trades: 45 },
@@ -47,7 +81,9 @@ export default function DealerAnalytics() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Analytics & Reports</h1>
-          <p className="text-muted-foreground">Track performance and trading metrics</p>
+          <p className="text-muted-foreground">
+            Track performance and trading metrics
+          </p>
         </div>
         <Select defaultValue="7d">
           <SelectTrigger className="w-36">
@@ -67,7 +103,7 @@ export default function DealerAnalytics() {
         <Card>
           <CardContent className="p-4 flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-chart-1/10 flex items-center justify-center">
-              <DollarSign className="w-5 h-5 text-chart-1" />
+              <Coins className="w-5 h-5 text-chart-1" />
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Total Volume</p>
@@ -135,20 +171,35 @@ export default function DealerAnalytics() {
           <Card>
             <CardHeader>
               <CardTitle>Daily Trading Volume</CardTitle>
-              <CardDescription>Volume and trade count over the past week</CardDescription>
+              <CardDescription>
+                Volume and trade count over the past week
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={volumeData}>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      className="stroke-muted"
+                    />
                     <XAxis dataKey="name" className="text-xs" />
-                    <YAxis tickFormatter={(value) => formatCurrency(value)} className="text-xs" />
+                    <YAxis
+                      tickFormatter={(value) => formatCurrency(value)}
+                      className="text-xs"
+                    />
                     <Tooltip
                       formatter={(value: number) => formatCurrency(value)}
-                      contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))" }}
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
+                      }}
                     />
-                    <Bar dataKey="volume" fill="hsl(var(--chart-1))" radius={[4, 4, 0, 0]} />
+                    <Bar
+                      dataKey="volume"
+                      fill="hsl(var(--chart-1))"
+                      radius={[4, 4, 0, 0]}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -166,12 +217,21 @@ export default function DealerAnalytics() {
               <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={pnlData}>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      className="stroke-muted"
+                    />
                     <XAxis dataKey="name" className="text-xs" />
-                    <YAxis tickFormatter={(value) => formatCurrency(value)} className="text-xs" />
+                    <YAxis
+                      tickFormatter={(value) => formatCurrency(value)}
+                      className="text-xs"
+                    />
                     <Tooltip
                       formatter={(value: number) => formatCurrency(value)}
-                      contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))" }}
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
+                      }}
                     />
                     <Area
                       type="monotone"
@@ -192,7 +252,9 @@ export default function DealerAnalytics() {
             <Card>
               <CardHeader>
                 <CardTitle>Volume by Symbol</CardTitle>
-                <CardDescription>Distribution of trading volume</CardDescription>
+                <CardDescription>
+                  Distribution of trading volume
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-64">
@@ -204,7 +266,9 @@ export default function DealerAnalytics() {
                         cy="50%"
                         outerRadius={80}
                         dataKey="value"
-                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        label={({ name, percent }) =>
+                          `${name} ${(percent * 100).toFixed(0)}%`
+                        }
                       >
                         {symbolData.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
@@ -224,10 +288,21 @@ export default function DealerAnalytics() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {symbolData.map((symbol, index) => (
-                  <div key={symbol.name} className="flex items-center justify-between">
+                  <div
+                    key={symbol.name}
+                    className="flex items-center justify-between"
+                  >
                     <div className="flex items-center gap-3">
-                      <span className="text-sm text-muted-foreground w-4">{index + 1}</span>
-                      <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold" style={{ backgroundColor: `${symbol.color}20`, color: symbol.color }}>
+                      <span className="text-sm text-muted-foreground w-4">
+                        {index + 1}
+                      </span>
+                      <div
+                        className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold"
+                        style={{
+                          backgroundColor: `${symbol.color}20`,
+                          color: symbol.color,
+                        }}
+                      >
                         {symbol.name.slice(0, 2)}
                       </div>
                       <span className="font-medium">{symbol.name}</span>
@@ -250,13 +325,28 @@ export default function DealerAnalytics() {
               <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={brokerPerformance} layout="vertical">
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                    <XAxis type="number" className="text-xs" />
-                    <YAxis dataKey="name" type="category" width={120} className="text-xs" />
-                    <Tooltip
-                      contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))" }}
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      className="stroke-muted"
                     />
-                    <Bar dataKey="volume" fill="hsl(var(--chart-3))" radius={[0, 4, 4, 0]} />
+                    <XAxis type="number" className="text-xs" />
+                    <YAxis
+                      dataKey="name"
+                      type="category"
+                      width={120}
+                      className="text-xs"
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
+                      }}
+                    />
+                    <Bar
+                      dataKey="volume"
+                      fill="hsl(var(--chart-3))"
+                      radius={[0, 4, 4, 0]}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </div>

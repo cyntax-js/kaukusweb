@@ -28,12 +28,25 @@ import {
 } from "lucide-react";
 
 const sidebarItems = [
-  { title: "Overview", url: "/dealer/dashboard", icon: LayoutDashboard, end: true },
-  { title: "OTC DEX", url: "/dealer/dashboard/otc-dex", icon: TrendingUp },
-  { title: "Primary Market", url: "/dealer/dashboard/primary-market", icon: Building2 },
+  {
+    title: "Overview",
+    url: "/dealer/dashboard",
+    icon: LayoutDashboard,
+    end: true,
+  },
+  { title: "OTC DESK", url: "/dealer/dashboard/otc-desk", icon: TrendingUp },
+  {
+    title: "Primary Market",
+    url: "/dealer/dashboard/primary-market",
+    icon: Building2,
+  },
   { title: "Brokers", url: "/dealer/dashboard/brokers", icon: Users },
   { title: "Inventory", url: "/dealer/dashboard/inventory", icon: Package },
-  { title: "Risk & Compliance", url: "/dealer/dashboard/risk", icon: BarChart3 },
+  {
+    title: "Risk & Compliance",
+    url: "/dealer/dashboard/risk",
+    icon: BarChart3,
+  },
   { title: "Settlement", url: "/dealer/dashboard/settlement", icon: BarChart3 },
   { title: "Reports", url: "/dealer/dashboard/reports", icon: BarChart3 },
   { title: "Settings", url: "/dealer/dashboard/settings", icon: Settings },
@@ -108,7 +121,9 @@ export default function DealerAdminLayout() {
               <SidebarTrigger className="mr-4" />
               <div className="flex items-center gap-2">
                 <Building2 className="w-4 h-4 text-chart-2" />
-                <span className="text-sm font-medium">Dealer Administration</span>
+                <span className="text-sm font-medium">
+                  Dealer Administration
+                </span>
               </div>
             </div>
             <DashboardSwitcher currentDashboard="dealer" />

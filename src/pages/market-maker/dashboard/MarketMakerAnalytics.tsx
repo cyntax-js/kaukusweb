@@ -1,9 +1,50 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, AreaChart, Area, ComposedChart, Legend, ReferenceLine } from "recharts";
-import { TrendingUp, TrendingDown, Activity, Zap, Target, DollarSign, ArrowUpRight, ArrowDownRight, Layers, Package } from "lucide-react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+  AreaChart,
+  Area,
+  ComposedChart,
+  Legend,
+  ReferenceLine,
+} from "recharts";
+import {
+  TrendingUp,
+  TrendingDown,
+  Activity,
+  Zap,
+  Target,
+  Coins,
+  ArrowUpRight,
+  ArrowDownRight,
+  Layers,
+  Package,
+} from "lucide-react";
 
 // Hourly quoting activity data
 const quotingActivityData = [
@@ -19,11 +60,41 @@ const quotingActivityData = [
 
 // Weekly spread performance data
 const spreadPerformanceData = [
-  { day: "Mon", avgSpread: 0.11, targetSpread: 0.12, volume: 180, pnl: 8500000 },
-  { day: "Tue", avgSpread: 0.10, targetSpread: 0.12, volume: 220, pnl: 12200000 },
-  { day: "Wed", avgSpread: 0.15, targetSpread: 0.12, volume: 95, pnl: -3500000 },
-  { day: "Thu", avgSpread: 0.12, targetSpread: 0.12, volume: 175, pnl: 9800000 },
-  { day: "Fri", avgSpread: 0.09, targetSpread: 0.12, volume: 245, pnl: 15000000 },
+  {
+    day: "Mon",
+    avgSpread: 0.11,
+    targetSpread: 0.12,
+    volume: 180,
+    pnl: 8500000,
+  },
+  {
+    day: "Tue",
+    avgSpread: 0.1,
+    targetSpread: 0.12,
+    volume: 220,
+    pnl: 12200000,
+  },
+  {
+    day: "Wed",
+    avgSpread: 0.15,
+    targetSpread: 0.12,
+    volume: 95,
+    pnl: -3500000,
+  },
+  {
+    day: "Thu",
+    avgSpread: 0.12,
+    targetSpread: 0.12,
+    volume: 175,
+    pnl: 9800000,
+  },
+  {
+    day: "Fri",
+    avgSpread: 0.09,
+    targetSpread: 0.12,
+    volume: 245,
+    pnl: 15000000,
+  },
 ];
 
 // Monthly spread trend
@@ -31,17 +102,53 @@ const monthlySpreadTrend = [
   { week: "Week 1", spread: 0.14, fillRate: 97.5 },
   { week: "Week 2", spread: 0.12, fillRate: 98.2 },
   { week: "Week 3", spread: 0.11, fillRate: 98.8 },
-  { week: "Week 4", spread: 0.10, fillRate: 99.1 },
+  { week: "Week 4", spread: 0.1, fillRate: 99.1 },
 ];
 
 // Quote fill rates by symbol
 const fillRatesBySymbol = [
-  { name: "DANGOTE", fillRate: 99.2, quotes: 45000, volume: 125, color: "hsl(var(--chart-1))" },
-  { name: "GTCO", fillRate: 98.5, quotes: 38000, volume: 89, color: "hsl(var(--chart-2))" },
-  { name: "MTN", fillRate: 99.0, quotes: 52000, volume: 156, color: "hsl(var(--chart-3))" },
-  { name: "ZENITH", fillRate: 97.8, quotes: 29000, volume: 67, color: "hsl(var(--chart-4))" },
-  { name: "UBA", fillRate: 98.1, quotes: 21000, volume: 45, color: "hsl(var(--chart-5))" },
-  { name: "AIRTEL", fillRate: 99.5, quotes: 18000, volume: 78, color: "hsl(var(--primary))" },
+  {
+    name: "DANGOTE",
+    fillRate: 99.2,
+    quotes: 45000,
+    volume: 125,
+    color: "hsl(var(--chart-1))",
+  },
+  {
+    name: "GTCO",
+    fillRate: 98.5,
+    quotes: 38000,
+    volume: 89,
+    color: "hsl(var(--chart-2))",
+  },
+  {
+    name: "MTN",
+    fillRate: 99.0,
+    quotes: 52000,
+    volume: 156,
+    color: "hsl(var(--chart-3))",
+  },
+  {
+    name: "ZENITH",
+    fillRate: 97.8,
+    quotes: 29000,
+    volume: 67,
+    color: "hsl(var(--chart-4))",
+  },
+  {
+    name: "UBA",
+    fillRate: 98.1,
+    quotes: 21000,
+    volume: 45,
+    color: "hsl(var(--chart-5))",
+  },
+  {
+    name: "AIRTEL",
+    fillRate: 99.5,
+    quotes: 18000,
+    volume: 78,
+    color: "hsl(var(--primary))",
+  },
 ];
 
 // Spread distribution data
@@ -54,14 +161,70 @@ const spreadDistribution = [
 
 // Inventory positions over time
 const inventoryData = [
-  { time: "9:00", DANGOTE: 150000, GTCO: 500000, MTN: 75000, ZENITH: 300000, UBA: 800000 },
-  { time: "10:00", DANGOTE: 145000, GTCO: 520000, MTN: 72000, ZENITH: 290000, UBA: 850000 },
-  { time: "11:00", DANGOTE: 160000, GTCO: 480000, MTN: 80000, ZENITH: 310000, UBA: 780000 },
-  { time: "12:00", DANGOTE: 155000, GTCO: 510000, MTN: 78000, ZENITH: 305000, UBA: 820000 },
-  { time: "13:00", DANGOTE: 148000, GTCO: 530000, MTN: 70000, ZENITH: 280000, UBA: 860000 },
-  { time: "14:00", DANGOTE: 165000, GTCO: 490000, MTN: 85000, ZENITH: 320000, UBA: 790000 },
-  { time: "15:00", DANGOTE: 170000, GTCO: 475000, MTN: 88000, ZENITH: 335000, UBA: 760000 },
-  { time: "16:00", DANGOTE: 158000, GTCO: 505000, MTN: 82000, ZENITH: 315000, UBA: 810000 },
+  {
+    time: "9:00",
+    DANGOTE: 150000,
+    GTCO: 500000,
+    MTN: 75000,
+    ZENITH: 300000,
+    UBA: 800000,
+  },
+  {
+    time: "10:00",
+    DANGOTE: 145000,
+    GTCO: 520000,
+    MTN: 72000,
+    ZENITH: 290000,
+    UBA: 850000,
+  },
+  {
+    time: "11:00",
+    DANGOTE: 160000,
+    GTCO: 480000,
+    MTN: 80000,
+    ZENITH: 310000,
+    UBA: 780000,
+  },
+  {
+    time: "12:00",
+    DANGOTE: 155000,
+    GTCO: 510000,
+    MTN: 78000,
+    ZENITH: 305000,
+    UBA: 820000,
+  },
+  {
+    time: "13:00",
+    DANGOTE: 148000,
+    GTCO: 530000,
+    MTN: 70000,
+    ZENITH: 280000,
+    UBA: 860000,
+  },
+  {
+    time: "14:00",
+    DANGOTE: 165000,
+    GTCO: 490000,
+    MTN: 85000,
+    ZENITH: 320000,
+    UBA: 790000,
+  },
+  {
+    time: "15:00",
+    DANGOTE: 170000,
+    GTCO: 475000,
+    MTN: 88000,
+    ZENITH: 335000,
+    UBA: 760000,
+  },
+  {
+    time: "16:00",
+    DANGOTE: 158000,
+    GTCO: 505000,
+    MTN: 82000,
+    ZENITH: 315000,
+    UBA: 810000,
+  },
 ];
 
 // Inventory value by symbol (for pie chart)
@@ -80,7 +243,7 @@ const pnlBreakdown = [
   { symbol: "MTN", pnl: 3500000, trades: 189, avgSpread: 0.08 },
   { symbol: "ZENITH", pnl: -850000, trades: 145, avgSpread: 0.14 },
   { symbol: "UBA", pnl: 1950000, trades: 178, avgSpread: 0.12 },
-  { symbol: "AIRTEL", pnl: 900000, trades: 67, avgSpread: 0.10 },
+  { symbol: "AIRTEL", pnl: 900000, trades: 67, avgSpread: 0.1 },
 ];
 
 const formatCurrency = (value: number) => {
@@ -89,18 +252,29 @@ const formatCurrency = (value: number) => {
   return `₦${value.toLocaleString()}`;
 };
 
-const COLORS = ["hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
+const COLORS = [
+  "hsl(var(--chart-1))",
+  "hsl(var(--chart-2))",
+  "hsl(var(--chart-3))",
+  "hsl(var(--chart-4))",
+  "hsl(var(--chart-5))",
+];
 
 export default function MarketMakerAnalytics() {
   const totalPnL = pnlBreakdown.reduce((sum, s) => sum + s.pnl, 0);
-  const totalInventoryValue = inventoryValueData.reduce((sum, s) => sum + s.value, 0);
+  const totalInventoryValue = inventoryValueData.reduce(
+    (sum, s) => sum + s.value,
+    0
+  );
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Analytics & Performance</h1>
-          <p className="text-muted-foreground">Comprehensive market making metrics and analysis</p>
+          <p className="text-muted-foreground">
+            Comprehensive market making metrics and analysis
+          </p>
         </div>
         <Select defaultValue="today">
           <SelectTrigger className="w-36">
@@ -120,11 +294,15 @@ export default function MarketMakerAnalytics() {
         <Card>
           <CardContent className="p-4 flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-chart-1/10 flex items-center justify-center">
-              <DollarSign className="w-5 h-5 text-chart-1" />
+              <Coins className="w-5 h-5 text-chart-1" />
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Daily P&L</p>
-              <p className={`text-xl font-bold ${totalPnL >= 0 ? 'text-success' : 'text-destructive'}`}>
+              <p
+                className={`text-xl font-bold ${
+                  totalPnL >= 0 ? "text-success" : "text-destructive"
+                }`}
+              >
                 {formatCurrency(totalPnL)}
               </p>
             </div>
@@ -183,7 +361,9 @@ export default function MarketMakerAnalytics() {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Inventory Value</p>
-              <p className="text-xl font-bold">{formatCurrency(totalInventoryValue)}</p>
+              <p className="text-xl font-bold">
+                {formatCurrency(totalInventoryValue)}
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -215,37 +395,70 @@ export default function MarketMakerAnalytics() {
             <Card>
               <CardHeader>
                 <CardTitle>Daily Spread vs Target</CardTitle>
-                <CardDescription>Average spread compared to target spread threshold</CardDescription>
+                <CardDescription>
+                  Average spread compared to target spread threshold
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-72">
                   <ResponsiveContainer width="100%" height="100%">
                     <ComposedChart data={spreadPerformanceData}>
-                      <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                      <XAxis dataKey="day" className="text-xs" />
-                      <YAxis 
-                        yAxisId="left" 
-                        domain={[0, 0.2]} 
-                        tickFormatter={(v) => `${(v * 100).toFixed(1)}%`} 
-                        className="text-xs" 
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        className="stroke-muted"
                       />
-                      <YAxis 
-                        yAxisId="right" 
-                        orientation="right" 
-                        tickFormatter={(v) => `${v}M`} 
-                        className="text-xs" 
+                      <XAxis dataKey="day" className="text-xs" />
+                      <YAxis
+                        yAxisId="left"
+                        domain={[0, 0.2]}
+                        tickFormatter={(v) => `${(v * 100).toFixed(1)}%`}
+                        className="text-xs"
+                      />
+                      <YAxis
+                        yAxisId="right"
+                        orientation="right"
+                        tickFormatter={(v) => `${v}M`}
+                        className="text-xs"
                       />
                       <Tooltip
-                        contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))" }}
+                        contentStyle={{
+                          backgroundColor: "hsl(var(--card))",
+                          border: "1px solid hsl(var(--border))",
+                        }}
                         formatter={(value: number, name: string) => {
-                          if (name.includes("Spread")) return [`${(value * 100).toFixed(2)}%`, name];
+                          if (name.includes("Spread"))
+                            return [`${(value * 100).toFixed(2)}%`, name];
                           return [`₦${value}M`, name];
                         }}
                       />
                       <Legend />
-                      <Bar yAxisId="right" dataKey="volume" fill="hsl(var(--muted-foreground))" opacity={0.3} name="Volume (₦M)" />
-                      <Line yAxisId="left" type="monotone" dataKey="avgSpread" stroke="hsl(var(--chart-1))" strokeWidth={2} name="Avg Spread" dot={{ fill: "hsl(var(--chart-1))" }} />
-                      <ReferenceLine yAxisId="left" y={0.12} stroke="hsl(var(--destructive))" strokeDasharray="5 5" label={{ value: "Target", fill: "hsl(var(--destructive))", fontSize: 10 }} />
+                      <Bar
+                        yAxisId="right"
+                        dataKey="volume"
+                        fill="hsl(var(--muted-foreground))"
+                        opacity={0.3}
+                        name="Volume (₦M)"
+                      />
+                      <Line
+                        yAxisId="left"
+                        type="monotone"
+                        dataKey="avgSpread"
+                        stroke="hsl(var(--chart-1))"
+                        strokeWidth={2}
+                        name="Avg Spread"
+                        dot={{ fill: "hsl(var(--chart-1))" }}
+                      />
+                      <ReferenceLine
+                        yAxisId="left"
+                        y={0.12}
+                        stroke="hsl(var(--destructive))"
+                        strokeDasharray="5 5"
+                        label={{
+                          value: "Target",
+                          fill: "hsl(var(--destructive))",
+                          fontSize: 10,
+                        }}
+                      />
                     </ComposedChart>
                   </ResponsiveContainer>
                 </div>
@@ -255,7 +468,9 @@ export default function MarketMakerAnalytics() {
             <Card>
               <CardHeader>
                 <CardTitle>Spread Distribution</CardTitle>
-                <CardDescription>Breakdown of quotes by spread range</CardDescription>
+                <CardDescription>
+                  Breakdown of quotes by spread range
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-72 flex items-center justify-center">
@@ -268,22 +483,34 @@ export default function MarketMakerAnalytics() {
                         innerRadius={60}
                         outerRadius={100}
                         dataKey="value"
-                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                        label={({ name, percent }) =>
+                          `${name}: ${(percent * 100).toFixed(0)}%`
+                        }
                         labelLine={false}
                       >
                         {spreadDistribution.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
                       </Pie>
-                      <Tooltip formatter={(value: number) => [`${value}%`, 'Percentage']} />
+                      <Tooltip
+                        formatter={(value: number) => [
+                          `${value}%`,
+                          "Percentage",
+                        ]}
+                      />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
                 <div className="flex flex-wrap justify-center gap-4 mt-4">
                   {spreadDistribution.map((item, index) => (
                     <div key={index} className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-                      <span className="text-sm text-muted-foreground">{item.name}</span>
+                      <div
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: item.color }}
+                      />
+                      <span className="text-sm text-muted-foreground">
+                        {item.name}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -294,22 +521,55 @@ export default function MarketMakerAnalytics() {
           <Card>
             <CardHeader>
               <CardTitle>Monthly Spread Trend</CardTitle>
-              <CardDescription>Spread improvement and fill rate correlation over time</CardDescription>
+              <CardDescription>
+                Spread improvement and fill rate correlation over time
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={monthlySpreadTrend}>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      className="stroke-muted"
+                    />
                     <XAxis dataKey="week" className="text-xs" />
-                    <YAxis yAxisId="left" domain={[0.08, 0.16]} tickFormatter={(v) => `${(v * 100).toFixed(1)}%`} className="text-xs" />
-                    <YAxis yAxisId="right" orientation="right" domain={[96, 100]} tickFormatter={(v) => `${v}%`} className="text-xs" />
+                    <YAxis
+                      yAxisId="left"
+                      domain={[0.08, 0.16]}
+                      tickFormatter={(v) => `${(v * 100).toFixed(1)}%`}
+                      className="text-xs"
+                    />
+                    <YAxis
+                      yAxisId="right"
+                      orientation="right"
+                      domain={[96, 100]}
+                      tickFormatter={(v) => `${v}%`}
+                      className="text-xs"
+                    />
                     <Tooltip
-                      contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))" }}
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
+                      }}
                     />
                     <Legend />
-                    <Line yAxisId="left" type="monotone" dataKey="spread" stroke="hsl(var(--chart-4))" strokeWidth={2} name="Avg Spread" />
-                    <Line yAxisId="right" type="monotone" dataKey="fillRate" stroke="hsl(var(--chart-2))" strokeWidth={2} name="Fill Rate %" />
+                    <Line
+                      yAxisId="left"
+                      type="monotone"
+                      dataKey="spread"
+                      stroke="hsl(var(--chart-4))"
+                      strokeWidth={2}
+                      name="Avg Spread"
+                    />
+                    <Line
+                      yAxisId="right"
+                      type="monotone"
+                      dataKey="fillRate"
+                      stroke="hsl(var(--chart-2))"
+                      strokeWidth={2}
+                      name="Fill Rate %"
+                    />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -323,33 +583,50 @@ export default function MarketMakerAnalytics() {
             <Card>
               <CardHeader>
                 <CardTitle>Fill Rate by Symbol</CardTitle>
-                <CardDescription>Quote fill performance across all traded symbols</CardDescription>
+                <CardDescription>
+                  Quote fill performance across all traded symbols
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 {fillRatesBySymbol.map((symbol) => (
                   <div key={symbol.name} className="space-y-2">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div 
-                          className="w-10 h-10 rounded-lg flex items-center justify-center text-xs font-bold" 
-                          style={{ backgroundColor: `${symbol.color}20`, color: symbol.color }}
+                        <div
+                          className="w-10 h-10 rounded-lg flex items-center justify-center text-xs font-bold"
+                          style={{
+                            backgroundColor: `${symbol.color}20`,
+                            color: symbol.color,
+                          }}
                         >
                           {symbol.name.slice(0, 2)}
                         </div>
                         <div>
                           <span className="font-medium">{symbol.name}</span>
-                          <p className="text-xs text-muted-foreground">{symbol.quotes.toLocaleString()} quotes</p>
+                          <p className="text-xs text-muted-foreground">
+                            {symbol.quotes.toLocaleString()} quotes
+                          </p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <span className="font-bold text-lg" style={{ color: symbol.color }}>{symbol.fillRate}%</span>
-                        <p className="text-xs text-muted-foreground">₦{symbol.volume}M vol</p>
+                        <span
+                          className="font-bold text-lg"
+                          style={{ color: symbol.color }}
+                        >
+                          {symbol.fillRate}%
+                        </span>
+                        <p className="text-xs text-muted-foreground">
+                          ₦{symbol.volume}M vol
+                        </p>
                       </div>
                     </div>
                     <div className="h-2 bg-muted rounded-full overflow-hidden">
                       <div
                         className="h-full rounded-full transition-all"
-                        style={{ width: `${symbol.fillRate}%`, backgroundColor: symbol.color }}
+                        style={{
+                          width: `${symbol.fillRate}%`,
+                          backgroundColor: symbol.color,
+                        }}
                       />
                     </div>
                   </div>
@@ -360,27 +637,46 @@ export default function MarketMakerAnalytics() {
             <Card>
               <CardHeader>
                 <CardTitle>Hourly Fill Rate Trend</CardTitle>
-                <CardDescription>Fill rate performance throughout the trading day</CardDescription>
+                <CardDescription>
+                  Fill rate performance throughout the trading day
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={quotingActivityData}>
-                      <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                      <XAxis dataKey="hour" className="text-xs" />
-                      <YAxis domain={[96, 100]} tickFormatter={(v) => `${v}%`} className="text-xs" />
-                      <Tooltip
-                        contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))" }}
-                        formatter={(value: number) => [`${value.toFixed(1)}%`, 'Fill Rate']}
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        className="stroke-muted"
                       />
-                      <Area 
-                        type="monotone" 
-                        dataKey="fillRate" 
-                        stroke="hsl(var(--chart-2))" 
-                        fill="hsl(var(--chart-2))" 
+                      <XAxis dataKey="hour" className="text-xs" />
+                      <YAxis
+                        domain={[96, 100]}
+                        tickFormatter={(v) => `${v}%`}
+                        className="text-xs"
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "hsl(var(--card))",
+                          border: "1px solid hsl(var(--border))",
+                        }}
+                        formatter={(value: number) => [
+                          `${value.toFixed(1)}%`,
+                          "Fill Rate",
+                        ]}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="fillRate"
+                        stroke="hsl(var(--chart-2))"
+                        fill="hsl(var(--chart-2))"
                         fillOpacity={0.2}
                       />
-                      <ReferenceLine y={98} stroke="hsl(var(--warning))" strokeDasharray="3 3" />
+                      <ReferenceLine
+                        y={98}
+                        stroke="hsl(var(--warning))"
+                        strokeDasharray="3 3"
+                      />
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
@@ -391,22 +687,48 @@ export default function MarketMakerAnalytics() {
           <Card>
             <CardHeader>
               <CardTitle>Quoting Volume by Hour</CardTitle>
-              <CardDescription>Number of quotes and trading volume throughout the day</CardDescription>
+              <CardDescription>
+                Number of quotes and trading volume throughout the day
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <ComposedChart data={quotingActivityData}>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      className="stroke-muted"
+                    />
                     <XAxis dataKey="hour" className="text-xs" />
                     <YAxis yAxisId="left" className="text-xs" />
-                    <YAxis yAxisId="right" orientation="right" tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} className="text-xs" />
+                    <YAxis
+                      yAxisId="right"
+                      orientation="right"
+                      tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`}
+                      className="text-xs"
+                    />
                     <Tooltip
-                      contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))" }}
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
+                      }}
                     />
                     <Legend />
-                    <Bar yAxisId="left" dataKey="volume" fill="hsl(var(--chart-1))" name="Volume (₦M)" radius={[4, 4, 0, 0]} />
-                    <Line yAxisId="right" type="monotone" dataKey="quotes" stroke="hsl(var(--chart-3))" strokeWidth={2} name="Quote Count" />
+                    <Bar
+                      yAxisId="left"
+                      dataKey="volume"
+                      fill="hsl(var(--chart-1))"
+                      name="Volume (₦M)"
+                      radius={[4, 4, 0, 0]}
+                    />
+                    <Line
+                      yAxisId="right"
+                      type="monotone"
+                      dataKey="quotes"
+                      stroke="hsl(var(--chart-3))"
+                      strokeWidth={2}
+                      name="Quote Count"
+                    />
                   </ComposedChart>
                 </ResponsiveContainer>
               </div>
@@ -420,7 +742,9 @@ export default function MarketMakerAnalytics() {
             <Card>
               <CardHeader>
                 <CardTitle>Inventory Value Distribution</CardTitle>
-                <CardDescription>Current inventory value by symbol</CardDescription>
+                <CardDescription>
+                  Current inventory value by symbol
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-72">
@@ -432,16 +756,27 @@ export default function MarketMakerAnalytics() {
                         cy="50%"
                         outerRadius={100}
                         dataKey="value"
-                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                        label={({ name, percent }) =>
+                          `${name}: ${(percent * 100).toFixed(0)}%`
+                        }
                       >
                         {inventoryValueData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={COLORS[index % COLORS.length]}
+                          />
                         ))}
                       </Pie>
-                      <Tooltip 
-                        formatter={(value: number, name: string, props: any) => [
-                          `${formatCurrency(value)} (${props.payload.shares.toLocaleString()} shares)`,
-                          name
+                      <Tooltip
+                        formatter={(
+                          value: number,
+                          name: string,
+                          props: any
+                        ) => [
+                          `${formatCurrency(
+                            value
+                          )} (${props.payload.shares.toLocaleString()} shares)`,
+                          name,
                         ]}
                       />
                     </PieChart>
@@ -453,28 +788,42 @@ export default function MarketMakerAnalytics() {
             <Card>
               <CardHeader>
                 <CardTitle>Current Inventory Positions</CardTitle>
-                <CardDescription>Real-time inventory levels by symbol</CardDescription>
+                <CardDescription>
+                  Real-time inventory levels by symbol
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {inventoryValueData.map((item, index) => (
-                    <div key={item.name} className="flex items-center justify-between p-3 rounded-lg border border-border">
+                    <div
+                      key={item.name}
+                      className="flex items-center justify-between p-3 rounded-lg border border-border"
+                    >
                       <div className="flex items-center gap-3">
-                        <div 
+                        <div
                           className="w-10 h-10 rounded-lg flex items-center justify-center text-xs font-bold text-white"
-                          style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                          style={{
+                            backgroundColor: COLORS[index % COLORS.length],
+                          }}
                         >
                           {item.name.slice(0, 2)}
                         </div>
                         <div>
                           <p className="font-medium">{item.name}</p>
-                          <p className="text-sm text-muted-foreground">{item.shares.toLocaleString()} shares</p>
+                          <p className="text-sm text-muted-foreground">
+                            {item.shares.toLocaleString()} shares
+                          </p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-bold">{formatCurrency(item.value)}</p>
+                        <p className="font-bold">
+                          {formatCurrency(item.value)}
+                        </p>
                         <p className="text-xs text-muted-foreground">
-                          {((item.value / totalInventoryValue) * 100).toFixed(1)}% of total
+                          {((item.value / totalInventoryValue) * 100).toFixed(
+                            1
+                          )}
+                          % of total
                         </p>
                       </div>
                     </div>
@@ -487,25 +836,74 @@ export default function MarketMakerAnalytics() {
           <Card>
             <CardHeader>
               <CardTitle>Intraday Inventory Movement</CardTitle>
-              <CardDescription>Position changes throughout the trading day</CardDescription>
+              <CardDescription>
+                Position changes throughout the trading day
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={inventoryData}>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      className="stroke-muted"
+                    />
                     <XAxis dataKey="time" className="text-xs" />
-                    <YAxis tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} className="text-xs" />
+                    <YAxis
+                      tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`}
+                      className="text-xs"
+                    />
                     <Tooltip
-                      contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))" }}
-                      formatter={(value: number) => [value.toLocaleString(), 'Shares']}
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
+                      }}
+                      formatter={(value: number) => [
+                        value.toLocaleString(),
+                        "Shares",
+                      ]}
                     />
                     <Legend />
-                    <Area type="monotone" dataKey="DANGOTE" stackId="1" stroke={COLORS[0]} fill={COLORS[0]} fillOpacity={0.6} />
-                    <Area type="monotone" dataKey="GTCO" stackId="1" stroke={COLORS[1]} fill={COLORS[1]} fillOpacity={0.6} />
-                    <Area type="monotone" dataKey="MTN" stackId="1" stroke={COLORS[2]} fill={COLORS[2]} fillOpacity={0.6} />
-                    <Area type="monotone" dataKey="ZENITH" stackId="1" stroke={COLORS[3]} fill={COLORS[3]} fillOpacity={0.6} />
-                    <Area type="monotone" dataKey="UBA" stackId="1" stroke={COLORS[4]} fill={COLORS[4]} fillOpacity={0.6} />
+                    <Area
+                      type="monotone"
+                      dataKey="DANGOTE"
+                      stackId="1"
+                      stroke={COLORS[0]}
+                      fill={COLORS[0]}
+                      fillOpacity={0.6}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="GTCO"
+                      stackId="1"
+                      stroke={COLORS[1]}
+                      fill={COLORS[1]}
+                      fillOpacity={0.6}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="MTN"
+                      stackId="1"
+                      stroke={COLORS[2]}
+                      fill={COLORS[2]}
+                      fillOpacity={0.6}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="ZENITH"
+                      stackId="1"
+                      stroke={COLORS[3]}
+                      fill={COLORS[3]}
+                      fillOpacity={0.6}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="UBA"
+                      stackId="1"
+                      stroke={COLORS[4]}
+                      fill={COLORS[4]}
+                      fillOpacity={0.6}
+                    />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -519,28 +917,52 @@ export default function MarketMakerAnalytics() {
             <Card>
               <CardHeader>
                 <CardTitle>Daily P&L by Symbol</CardTitle>
-                <CardDescription>Profit and loss breakdown across traded symbols</CardDescription>
+                <CardDescription>
+                  Profit and loss breakdown across traded symbols
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={pnlBreakdown} layout="vertical">
-                      <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                      <XAxis type="number" tickFormatter={(v) => formatCurrency(v)} className="text-xs" />
-                      <YAxis dataKey="symbol" type="category" width={80} className="text-xs" />
-                      <Tooltip
-                        contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))" }}
-                        formatter={(value: number) => [formatCurrency(value), 'P&L']}
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        className="stroke-muted"
                       />
-                      <Bar 
-                        dataKey="pnl" 
+                      <XAxis
+                        type="number"
+                        tickFormatter={(v) => formatCurrency(v)}
+                        className="text-xs"
+                      />
+                      <YAxis
+                        dataKey="symbol"
+                        type="category"
+                        width={80}
+                        className="text-xs"
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "hsl(var(--card))",
+                          border: "1px solid hsl(var(--border))",
+                        }}
+                        formatter={(value: number) => [
+                          formatCurrency(value),
+                          "P&L",
+                        ]}
+                      />
+                      <Bar
+                        dataKey="pnl"
                         radius={[0, 4, 4, 0]}
                         fill="hsl(var(--chart-2))"
                       >
                         {pnlBreakdown.map((entry, index) => (
-                          <Cell 
-                            key={`cell-${index}`} 
-                            fill={entry.pnl >= 0 ? "hsl(var(--chart-2))" : "hsl(var(--destructive))"} 
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={
+                              entry.pnl >= 0
+                                ? "hsl(var(--chart-2))"
+                                : "hsl(var(--destructive))"
+                            }
                           />
                         ))}
                       </Bar>
@@ -553,29 +975,46 @@ export default function MarketMakerAnalytics() {
             <Card>
               <CardHeader>
                 <CardTitle>P&L Performance Details</CardTitle>
-                <CardDescription>Detailed breakdown with trade metrics</CardDescription>
+                <CardDescription>
+                  Detailed breakdown with trade metrics
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   {pnlBreakdown.map((item, index) => (
-                    <div key={item.symbol} className="flex items-center justify-between p-3 rounded-lg border border-border">
+                    <div
+                      key={item.symbol}
+                      className="flex items-center justify-between p-3 rounded-lg border border-border"
+                    >
                       <div className="flex items-center gap-3">
-                        <div 
+                        <div
                           className="w-10 h-10 rounded-lg flex items-center justify-center text-xs font-bold text-white"
-                          style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                          style={{
+                            backgroundColor: COLORS[index % COLORS.length],
+                          }}
                         >
                           {item.symbol.slice(0, 2)}
                         </div>
                         <div>
                           <p className="font-medium">{item.symbol}</p>
                           <p className="text-xs text-muted-foreground">
-                            {item.trades} trades • {(item.avgSpread * 100).toFixed(2)}% avg spread
+                            {item.trades} trades •{" "}
+                            {(item.avgSpread * 100).toFixed(2)}% avg spread
                           </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Badge variant={item.pnl >= 0 ? "default" : "destructive"} className={item.pnl >= 0 ? "bg-success/20 text-success" : ""}>
-                          {item.pnl >= 0 ? <ArrowUpRight className="w-3 h-3 mr-1" /> : <ArrowDownRight className="w-3 h-3 mr-1" />}
+                        <Badge
+                          variant={item.pnl >= 0 ? "default" : "destructive"}
+                          className={
+                            item.pnl >= 0 ? "bg-success/20 text-success" : ""
+                          }
+                        >
+                          {item.pnl >= 0 ? (
+                            <ArrowUpRight className="w-3 h-3 mr-1" />
+                          ) : (
+                            <ArrowDownRight className="w-3 h-3 mr-1" />
+                          )}
                           {formatCurrency(Math.abs(item.pnl))}
                         </Badge>
                       </div>
@@ -584,7 +1023,11 @@ export default function MarketMakerAnalytics() {
                 </div>
                 <div className="mt-4 p-4 rounded-lg bg-secondary/30 flex items-center justify-between">
                   <span className="font-medium">Total Daily P&L</span>
-                  <span className={`text-xl font-bold ${totalPnL >= 0 ? 'text-success' : 'text-destructive'}`}>
+                  <span
+                    className={`text-xl font-bold ${
+                      totalPnL >= 0 ? "text-success" : "text-destructive"
+                    }`}
+                  >
                     {formatCurrency(totalPnL)}
                   </span>
                 </div>
@@ -595,35 +1038,65 @@ export default function MarketMakerAnalytics() {
           <Card>
             <CardHeader>
               <CardTitle>Weekly P&L Trend</CardTitle>
-              <CardDescription>Profit and loss performance over the week with volume correlation</CardDescription>
+              <CardDescription>
+                Profit and loss performance over the week with volume
+                correlation
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
                   <ComposedChart data={spreadPerformanceData}>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      className="stroke-muted"
+                    />
                     <XAxis dataKey="day" className="text-xs" />
-                    <YAxis yAxisId="left" tickFormatter={(v) => formatCurrency(v)} className="text-xs" />
-                    <YAxis yAxisId="right" orientation="right" tickFormatter={(v) => `${v}M`} className="text-xs" />
+                    <YAxis
+                      yAxisId="left"
+                      tickFormatter={(v) => formatCurrency(v)}
+                      className="text-xs"
+                    />
+                    <YAxis
+                      yAxisId="right"
+                      orientation="right"
+                      tickFormatter={(v) => `${v}M`}
+                      className="text-xs"
+                    />
                     <Tooltip
-                      contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))" }}
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
+                      }}
                       formatter={(value: number, name: string) => {
-                        if (name === "P&L") return [formatCurrency(value), name];
+                        if (name === "P&L")
+                          return [formatCurrency(value), name];
                         return [`₦${value}M`, name];
                       }}
                     />
                     <Legend />
-                    <Bar yAxisId="right" dataKey="volume" fill="hsl(var(--muted-foreground))" opacity={0.3} name="Volume (₦M)" />
-                    <Area 
-                      yAxisId="left" 
-                      type="monotone" 
-                      dataKey="pnl" 
-                      stroke="hsl(var(--chart-2))" 
-                      fill="hsl(var(--chart-2))" 
+                    <Bar
+                      yAxisId="right"
+                      dataKey="volume"
+                      fill="hsl(var(--muted-foreground))"
+                      opacity={0.3}
+                      name="Volume (₦M)"
+                    />
+                    <Area
+                      yAxisId="left"
+                      type="monotone"
+                      dataKey="pnl"
+                      stroke="hsl(var(--chart-2))"
+                      fill="hsl(var(--chart-2))"
                       fillOpacity={0.2}
                       name="P&L"
                     />
-                    <ReferenceLine yAxisId="left" y={0} stroke="hsl(var(--border))" strokeWidth={2} />
+                    <ReferenceLine
+                      yAxisId="left"
+                      y={0}
+                      stroke="hsl(var(--border))"
+                      strokeWidth={2}
+                    />
                   </ComposedChart>
                 </ResponsiveContainer>
               </div>

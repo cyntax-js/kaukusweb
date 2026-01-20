@@ -1,8 +1,35 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, AreaChart, Area } from "recharts";
-import { TrendingUp, Users, Briefcase, DollarSign } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+  AreaChart,
+  Area,
+} from "recharts";
+import { TrendingUp, Users, Briefcase, Coins } from "lucide-react";
 
 const capitalRaisedData = [
   { month: "Jan", raised: 1200000000 },
@@ -45,7 +72,9 @@ export default function IssuingHouseAnalytics() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Analytics & Reports</h1>
-          <p className="text-muted-foreground">Track offering performance and investor metrics</p>
+          <p className="text-muted-foreground">
+            Track offering performance and investor metrics
+          </p>
         </div>
         <Select defaultValue="6m">
           <SelectTrigger className="w-36">
@@ -65,7 +94,7 @@ export default function IssuingHouseAnalytics() {
         <Card>
           <CardContent className="p-4 flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-chart-1/10 flex items-center justify-center">
-              <DollarSign className="w-5 h-5 text-chart-1" />
+              <Coins className="w-5 h-5 text-chart-1" />
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Total Raised</p>
@@ -115,7 +144,9 @@ export default function IssuingHouseAnalytics() {
             <div>
               <p className="text-sm text-muted-foreground">Avg Subscription</p>
               <p className="text-xl font-bold">145%</p>
-              <p className="text-xs text-muted-foreground">oversubscription rate</p>
+              <p className="text-xs text-muted-foreground">
+                oversubscription rate
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -139,12 +170,21 @@ export default function IssuingHouseAnalytics() {
               <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={capitalRaisedData}>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      className="stroke-muted"
+                    />
                     <XAxis dataKey="month" className="text-xs" />
-                    <YAxis tickFormatter={(value) => formatCurrency(value)} className="text-xs" />
+                    <YAxis
+                      tickFormatter={(value) => formatCurrency(value)}
+                      className="text-xs"
+                    />
                     <Tooltip
                       formatter={(value: number) => formatCurrency(value)}
-                      contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))" }}
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
+                      }}
                     />
                     <Area
                       type="monotone"
@@ -164,17 +204,25 @@ export default function IssuingHouseAnalytics() {
           <Card>
             <CardHeader>
               <CardTitle>Weekly Subscription Trend</CardTitle>
-              <CardDescription>Number of subscriptions per week</CardDescription>
+              <CardDescription>
+                Number of subscriptions per week
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={subscriptionData}>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      className="stroke-muted"
+                    />
                     <XAxis dataKey="week" className="text-xs" />
                     <YAxis className="text-xs" />
                     <Tooltip
-                      contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))" }}
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
+                      }}
                     />
                     <Line
                       type="monotone"
@@ -207,7 +255,9 @@ export default function IssuingHouseAnalytics() {
                         cy="50%"
                         outerRadius={80}
                         dataKey="value"
-                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        label={({ name, percent }) =>
+                          `${name} ${(percent * 100).toFixed(0)}%`
+                        }
                       >
                         {offeringTypeData.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
@@ -227,9 +277,15 @@ export default function IssuingHouseAnalytics() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {offeringTypeData.map((offering) => (
-                  <div key={offering.name} className="flex items-center justify-between">
+                  <div
+                    key={offering.name}
+                    className="flex items-center justify-between"
+                  >
                     <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: offering.color }} />
+                      <div
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: offering.color }}
+                      />
                       <span className="font-medium">{offering.name}</span>
                     </div>
                     <span className="font-medium">{offering.value}%</span>
@@ -244,19 +300,32 @@ export default function IssuingHouseAnalytics() {
           <Card>
             <CardHeader>
               <CardTitle>Investor Type Analysis</CardTitle>
-              <CardDescription>Volume by investor category (₦M)</CardDescription>
+              <CardDescription>
+                Volume by investor category (₦M)
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={investorTypeData}>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      className="stroke-muted"
+                    />
                     <XAxis dataKey="type" className="text-xs" />
                     <YAxis className="text-xs" />
                     <Tooltip
-                      contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))" }}
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
+                      }}
                     />
-                    <Bar dataKey="volume" fill="hsl(var(--chart-4))" radius={[4, 4, 0, 0]} name="Volume (₦M)" />
+                    <Bar
+                      dataKey="volume"
+                      fill="hsl(var(--chart-4))"
+                      radius={[4, 4, 0, 0]}
+                      name="Volume (₦M)"
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
