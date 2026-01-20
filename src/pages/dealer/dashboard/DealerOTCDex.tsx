@@ -1,6 +1,7 @@
 /**
  * Dealer OTC DEX - Over-the-Counter Decentralized Exchange
  * Create and manage buy/sell offers for large block trades
+ * View bargains under specific offers
  */
 
 import { useState } from "react";
@@ -15,6 +16,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { toast } from "sonner";
 import {
   Plus,
   ArrowUpRight,
@@ -29,7 +33,8 @@ import {
   DollarSign,
   Package,
   Users,
-  Filter,
+  ChevronRight,
+  Send,
 } from "lucide-react";
 
 interface OTCOffer {
@@ -60,6 +65,7 @@ interface BargainRequest {
   status: 'pending' | 'accepted' | 'rejected' | 'countered';
   createdAt: Date;
   counterPrice?: number;
+  message?: string;
 }
 
 interface BrokerVolume {
@@ -81,10 +87,12 @@ const mockOffers: OTCOffer[] = [
 ];
 
 const mockBargains: BargainRequest[] = [
-  { id: 'b1', offerId: 'otc1', symbol: 'DANGOTE', originalPrice: 248.50, proposedPrice: 245.00, quantity: 100000, userId: 'u1', userName: 'Chief Adebayo', broker: 'Alpha Securities', status: 'pending', createdAt: new Date() },
-  { id: 'b2', offerId: 'otc3', symbol: 'MTN', originalPrice: 196.00, proposedPrice: 192.50, quantity: 50000, userId: 'u2', userName: 'Investment Trust Beta', broker: 'Beta Investments', status: 'pending', createdAt: new Date(Date.now() - 3600000) },
-  { id: 'b3', offerId: 'otc1', symbol: 'DANGOTE', originalPrice: 248.50, proposedPrice: 244.00, quantity: 75000, userId: 'u3', userName: 'Pension Fund Alpha', broker: 'Gamma Trading', status: 'countered', createdAt: new Date(Date.now() - 7200000), counterPrice: 246.50 },
+  { id: 'b1', offerId: 'otc1', symbol: 'DANGOTE', originalPrice: 248.50, proposedPrice: 245.00, quantity: 100000, userId: 'u1', userName: 'Chief Adebayo', broker: 'Alpha Securities', status: 'pending', createdAt: new Date(), message: 'Looking to acquire a large position. Can you offer a better price for volume?' },
+  { id: 'b2', offerId: 'otc3', symbol: 'MTN', originalPrice: 196.00, proposedPrice: 192.50, quantity: 50000, userId: 'u2', userName: 'Investment Trust Beta', broker: 'Beta Investments', status: 'pending', createdAt: new Date(Date.now() - 3600000), message: 'Interested in building a position. Please consider our offer.' },
+  { id: 'b3', offerId: 'otc1', symbol: 'DANGOTE', originalPrice: 248.50, proposedPrice: 244.00, quantity: 75000, userId: 'u3', userName: 'Pension Fund Alpha', broker: 'Gamma Trading', status: 'countered', createdAt: new Date(Date.now() - 7200000), counterPrice: 246.50, message: 'Our pension fund requires this allocation.' },
   { id: 'b4', offerId: 'otc4', symbol: 'ZENITH', originalPrice: 38.50, proposedPrice: 37.80, quantity: 200000, userId: 'u4', userName: 'Delta Holdings', broker: 'Delta Markets', status: 'accepted', createdAt: new Date(Date.now() - 86400000) },
+  { id: 'b5', offerId: 'otc1', symbol: 'DANGOTE', originalPrice: 248.50, proposedPrice: 246.00, quantity: 150000, userId: 'u5', userName: 'Omega Asset Mgmt', broker: 'Omega Securities', status: 'pending', createdAt: new Date(Date.now() - 1800000), message: 'Large institutional order. Best price appreciated.' },
+  { id: 'b6', offerId: 'otc3', symbol: 'MTN', originalPrice: 196.00, proposedPrice: 194.00, quantity: 30000, userId: 'u6', userName: 'Epsilon Trading', broker: 'Epsilon Capital', status: 'rejected', createdAt: new Date(Date.now() - 14400000) },
 ];
 
 const mockBrokerVolumes: BrokerVolume[] = [
@@ -109,10 +117,35 @@ export default function DealerOTCDex() {
   const [selectedOffer, setSelectedOffer] = useState<OTCOffer | null>(null);
   const [newOfferSide, setNewOfferSide] = useState<'buy' | 'sell'>('sell');
   const [isBargainable, setIsBargainable] = useState(true);
+  const [counterPriceInput, setCounterPriceInput] = useState<string>("");
 
   const activeOffers = mockOffers.filter(o => o.status === 'active' || o.status === 'partially_filled');
   const pendingBargains = mockBargains.filter(b => b.status === 'pending');
   const totalVolume = mockBrokerVolumes.reduce((sum, b) => sum + b.totalVolume, 0);
+
+  // Get bargains for specific offer
+  const getOfferBargains = (offerId: string) => {
+    return mockBargains.filter(b => b.offerId === offerId);
+  };
+
+  const handleAcceptBargain = (bargainId: string) => {
+    toast.success("Bargain accepted!", {
+      description: "The buyer has been notified and the trade will be processed."
+    });
+  };
+
+  const handleRejectBargain = (bargainId: string) => {
+    toast.info("Bargain rejected", {
+      description: "The buyer has been notified of your decision."
+    });
+  };
+
+  const handleCounterBargain = (bargainId: string, counterPrice: number) => {
+    toast.success("Counter offer sent!", {
+      description: `Your counter price of ${formatCurrency(counterPrice)} has been sent to the buyer.`
+    });
+    setCounterPriceInput("");
+  };
 
   const getStatusBadge = (status: OTCOffer['status']) => {
     switch (status) {
@@ -166,7 +199,6 @@ export default function DealerOTCDex() {
               <DialogTitle>Create New OTC Offer</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 py-4">
-              {/* Side Selection */}
               <div className="flex gap-2">
                 <Button
                   variant={newOfferSide === 'buy' ? 'default' : 'outline'}
@@ -312,7 +344,7 @@ export default function DealerOTCDex() {
           <TabsList>
             <TabsTrigger value="offers">My Offers</TabsTrigger>
             <TabsTrigger value="bargains">
-              Bargain Requests
+              All Bargains
               {pendingBargains.length > 0 && (
                 <Badge variant="secondary" className="ml-2">{pendingBargains.length}</Badge>
               )}
@@ -330,76 +362,177 @@ export default function DealerOTCDex() {
           </div>
         </div>
 
-        {/* My Offers Tab */}
+        {/* My Offers Tab with inline bargains */}
         <TabsContent value="offers">
           <Card>
             <CardHeader>
               <CardTitle>OTC Offers</CardTitle>
-              <CardDescription>Manage your active and historical offers</CardDescription>
+              <CardDescription>Click "View More" to see bargain requests for each offer</CardDescription>
             </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Asset</TableHead>
-                    <TableHead>Side</TableHead>
-                    <TableHead className="text-right">Quantity</TableHead>
-                    <TableHead className="text-right">Price</TableHead>
-                    <TableHead className="text-right">Filled</TableHead>
-                    <TableHead>Bargainable</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Expires</TableHead>
-                    <TableHead></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {mockOffers.map((offer) => (
-                    <TableRow key={offer.id}>
-                      <TableCell className="font-medium">{offer.symbol}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className={offer.side === 'buy' ? 'text-success border-success/30' : 'text-destructive border-destructive/30'}>
-                          {offer.side === 'buy' ? <ArrowUpRight className="w-3 h-3 mr-1" /> : <ArrowDownRight className="w-3 h-3 mr-1" />}
-                          {offer.side.toUpperCase()}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">{offer.quantity.toLocaleString()}</TableCell>
-                      <TableCell className="text-right">{formatCurrency(offer.pricePerUnit)}</TableCell>
-                      <TableCell className="text-right">
-                        <span className={offer.filledQuantity > 0 ? 'text-chart-2' : 'text-muted-foreground'}>
-                          {offer.filledQuantity.toLocaleString()} ({Math.round((offer.filledQuantity / offer.quantity) * 100)}%)
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        {offer.isBargainable ? (
-                          <Badge variant="outline" className="text-chart-4">
-                            <MessageSquare className="w-3 h-3 mr-1" />
-                            Yes ({offer.bargainCount})
-                          </Badge>
-                        ) : (
-                          <span className="text-muted-foreground text-sm">No</span>
-                        )}
-                      </TableCell>
-                      <TableCell>{getStatusBadge(offer.status)}</TableCell>
-                      <TableCell className="text-sm text-muted-foreground">{formatDate(offer.expiresAt)}</TableCell>
-                      <TableCell>
-                        <Button variant="ghost" size="sm" onClick={() => setSelectedOffer(offer)}>
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+            <CardContent className="space-y-4">
+              {mockOffers.map((offer) => {
+                const offerBargains = getOfferBargains(offer.id);
+                const pendingOfferBargains = offerBargains.filter(b => b.status === 'pending');
+                
+                return (
+                  <div key={offer.id} className="border border-border rounded-lg overflow-hidden">
+                    {/* Offer Header */}
+                    <div className="p-4 bg-card">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${offer.side === 'buy' ? 'bg-success/10' : 'bg-destructive/10'}`}>
+                            {offer.side === 'buy' ? (
+                              <ArrowUpRight className="w-6 h-6 text-success" />
+                            ) : (
+                              <ArrowDownRight className="w-6 h-6 text-destructive" />
+                            )}
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-semibold text-lg">{offer.symbol}</span>
+                              <Badge variant="outline" className={offer.side === 'buy' ? 'text-success border-success/30' : 'text-destructive border-destructive/30'}>
+                                {offer.side.toUpperCase()}
+                              </Badge>
+                              {getStatusBadge(offer.status)}
+                            </div>
+                            <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
+                              <span>{formatCurrency(offer.pricePerUnit)} per unit</span>
+                              <span>•</span>
+                              <span>{offer.quantity.toLocaleString()} units</span>
+                              <span>•</span>
+                              <span>Filled: {offer.filledQuantity.toLocaleString()} ({Math.round((offer.filledQuantity / offer.quantity) * 100)}%)</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {offer.isBargainable && pendingOfferBargains.length > 0 && (
+                            <Badge className="bg-warning/20 text-warning">
+                              <MessageSquare className="w-3 h-3 mr-1" />
+                              {pendingOfferBargains.length} pending
+                            </Badge>
+                          )}
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => setSelectedOffer(selectedOffer?.id === offer.id ? null : offer)}
+                          >
+                            <Eye className="w-4 h-4 mr-2" />
+                            {selectedOffer?.id === offer.id ? 'Hide' : 'View More'}
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Expanded Bargains Section */}
+                    {selectedOffer?.id === offer.id && offerBargains.length > 0 && (
+                      <div className="border-t border-border bg-muted/30">
+                        <div className="p-4">
+                          <h4 className="font-semibold mb-4 flex items-center gap-2">
+                            <MessageSquare className="w-4 h-4" />
+                            Bargain Requests ({offerBargains.length})
+                          </h4>
+                          <div className="space-y-3">
+                            {offerBargains.map((bargain) => (
+                              <div key={bargain.id} className="p-4 rounded-lg bg-card border border-border">
+                                <div className="flex items-start justify-between">
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <span className="font-medium">{bargain.userName}</span>
+                                      <span className="text-sm text-muted-foreground">via {bargain.broker}</span>
+                                      {getBargainStatusBadge(bargain.status)}
+                                    </div>
+                                    <div className="flex items-center gap-4 text-sm mb-2">
+                                      <div>
+                                        <span className="text-muted-foreground">Quantity: </span>
+                                        <span className="font-medium">{bargain.quantity.toLocaleString()}</span>
+                                      </div>
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-muted-foreground">Your Price:</span>
+                                        <span className="font-medium">{formatCurrency(bargain.originalPrice)}</span>
+                                        <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                                        <span className="font-medium text-chart-4">{formatCurrency(bargain.proposedPrice)}</span>
+                                        <span className="text-destructive text-xs">
+                                          ({((1 - bargain.proposedPrice / bargain.originalPrice) * 100).toFixed(1)}% off)
+                                        </span>
+                                      </div>
+                                    </div>
+                                    {bargain.message && (
+                                      <p className="text-sm text-muted-foreground italic">"{bargain.message}"</p>
+                                    )}
+                                    {bargain.counterPrice && (
+                                      <div className="mt-2 p-2 rounded bg-chart-4/10 text-sm inline-block">
+                                        <span className="text-muted-foreground">Your counter: </span>
+                                        <span className="font-medium">{formatCurrency(bargain.counterPrice)}</span>
+                                      </div>
+                                    )}
+                                  </div>
+                                  
+                                  {bargain.status === 'pending' && (
+                                    <div className="flex flex-col gap-2 ml-4">
+                                      <Button 
+                                        size="sm" 
+                                        className="bg-success hover:bg-success/90"
+                                        onClick={() => handleAcceptBargain(bargain.id)}
+                                      >
+                                        <CheckCircle2 className="w-4 h-4 mr-1" />
+                                        Accept
+                                      </Button>
+                                      <div className="flex gap-1">
+                                        <Input 
+                                          type="number" 
+                                          placeholder="Counter" 
+                                          className="w-24 h-8 text-sm"
+                                          value={counterPriceInput}
+                                          onChange={(e) => setCounterPriceInput(e.target.value)}
+                                        />
+                                        <Button 
+                                          size="sm" 
+                                          variant="outline" 
+                                          className="h-8 px-2"
+                                          onClick={() => handleCounterBargain(bargain.id, parseFloat(counterPriceInput))}
+                                          disabled={!counterPriceInput}
+                                        >
+                                          <Send className="w-3 h-3" />
+                                        </Button>
+                                      </div>
+                                      <Button 
+                                        size="sm" 
+                                        variant="outline" 
+                                        className="text-destructive border-destructive/30"
+                                        onClick={() => handleRejectBargain(bargain.id)}
+                                      >
+                                        <XCircle className="w-4 h-4 mr-1" />
+                                        Reject
+                                      </Button>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedOffer?.id === offer.id && offerBargains.length === 0 && (
+                      <div className="border-t border-border bg-muted/30 p-8 text-center">
+                        <MessageSquare className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                        <p className="text-muted-foreground">No bargain requests for this offer</p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </CardContent>
           </Card>
         </TabsContent>
 
-        {/* Bargain Requests Tab */}
+        {/* All Bargains Tab */}
         <TabsContent value="bargains">
           <Card>
             <CardHeader>
-              <CardTitle>Bargain Requests</CardTitle>
-              <CardDescription>Review and respond to price negotiations from users</CardDescription>
+              <CardTitle>All Bargain Requests</CardTitle>
+              <CardDescription>Review and respond to all price negotiations</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -446,7 +579,7 @@ export default function DealerOTCDex() {
                         <span className="text-xs text-muted-foreground">{formatDate(bargain.createdAt)}</span>
                         {bargain.status === 'pending' && (
                           <div className="flex gap-2 mt-2">
-                            <Button size="sm" variant="outline" className="text-destructive border-destructive/30">
+                            <Button size="sm" variant="outline" className="text-destructive border-destructive/30" onClick={() => handleRejectBargain(bargain.id)}>
                               <XCircle className="w-4 h-4 mr-1" />
                               Reject
                             </Button>
@@ -454,7 +587,7 @@ export default function DealerOTCDex() {
                               <MessageSquare className="w-4 h-4 mr-1" />
                               Counter
                             </Button>
-                            <Button size="sm" className="bg-success hover:bg-success/90">
+                            <Button size="sm" className="bg-success hover:bg-success/90" onClick={() => handleAcceptBargain(bargain.id)}>
                               <CheckCircle2 className="w-4 h-4 mr-1" />
                               Accept
                             </Button>
@@ -505,84 +638,6 @@ export default function DealerOTCDex() {
           </Card>
         </TabsContent>
       </Tabs>
-
-      {/* Offer Detail Dialog */}
-      <Dialog open={!!selectedOffer} onOpenChange={() => setSelectedOffer(null)}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Offer Details</DialogTitle>
-          </DialogHeader>
-          {selectedOffer && (
-            <div className="space-y-4 py-4">
-              <div className="flex items-center justify-between p-4 rounded-lg border border-border">
-                <div className="flex items-center gap-3">
-                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${selectedOffer.side === 'buy' ? 'bg-success/10' : 'bg-destructive/10'}`}>
-                    {selectedOffer.side === 'buy' ? (
-                      <ArrowUpRight className="w-6 h-6 text-success" />
-                    ) : (
-                      <ArrowDownRight className="w-6 h-6 text-destructive" />
-                    )}
-                  </div>
-                  <div>
-                    <p className="font-semibold text-lg">{selectedOffer.symbol}</p>
-                    <p className="text-muted-foreground">{selectedOffer.side.toUpperCase()} Offer</p>
-                  </div>
-                </div>
-                {getStatusBadge(selectedOffer.status)}
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div className="p-3 rounded-lg bg-secondary/30">
-                  <p className="text-muted-foreground mb-1">Total Quantity</p>
-                  <p className="font-semibold">{selectedOffer.quantity.toLocaleString()}</p>
-                </div>
-                <div className="p-3 rounded-lg bg-secondary/30">
-                  <p className="text-muted-foreground mb-1">Price per Unit</p>
-                  <p className="font-semibold">{formatCurrency(selectedOffer.pricePerUnit)}</p>
-                </div>
-                <div className="p-3 rounded-lg bg-secondary/30">
-                  <p className="text-muted-foreground mb-1">Minimum Quantity</p>
-                  <p className="font-semibold">{selectedOffer.minQuantity.toLocaleString()}</p>
-                </div>
-                <div className="p-3 rounded-lg bg-secondary/30">
-                  <p className="text-muted-foreground mb-1">Total Value</p>
-                  <p className="font-semibold">{formatCurrency(selectedOffer.quantity * selectedOffer.pricePerUnit)}</p>
-                </div>
-              </div>
-
-              <div className="p-4 rounded-lg border border-border">
-                <div className="flex justify-between mb-2">
-                  <span className="text-muted-foreground">Filled</span>
-                  <span className="font-medium">{selectedOffer.filledQuantity.toLocaleString()} / {selectedOffer.quantity.toLocaleString()}</span>
-                </div>
-                <div className="h-2 rounded-full bg-secondary overflow-hidden">
-                  <div 
-                    className="h-full bg-chart-2 transition-all" 
-                    style={{ width: `${(selectedOffer.filledQuantity / selectedOffer.quantity) * 100}%` }}
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between p-3 rounded-lg bg-secondary/30">
-                <div>
-                  <p className="font-medium">Bargainable</p>
-                  <p className="text-sm text-muted-foreground">{selectedOffer.bargainCount} negotiations</p>
-                </div>
-                <Badge variant={selectedOffer.isBargainable ? 'default' : 'secondary'}>
-                  {selectedOffer.isBargainable ? 'Yes' : 'No'}
-                </Badge>
-              </div>
-
-              <div className="flex gap-2 pt-4">
-                <Button variant="outline" className="flex-1" onClick={() => setSelectedOffer(null)}>Close</Button>
-                {selectedOffer.status === 'active' && (
-                  <Button variant="destructive" className="flex-1">Cancel Offer</Button>
-                )}
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
