@@ -62,5 +62,10 @@ declare global {
     __BROKER_CONFIG__: BootstrapBrokerConfig | null;
     __BROKER_MODE__: boolean;
     __BROKER_ERROR__: string | null;
+    /**
+     * When broker mode is simulated under a path prefix (e.g. localhost /preview?broker=egoras)
+     * this tells React Router what basename to use.
+     */
+    __BROKER_BASE_PATH__?: string;
   }
 }

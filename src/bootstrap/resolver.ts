@@ -29,6 +29,11 @@ export type TenantType = 'platform' | 'broker';
 export interface TenantResolution {
   type: TenantType;
   subdomain: string | null;
+  /**
+   * Router basename to support local preview paths like /preview?broker=egoras
+   * Production broker subdomains should use an empty base path.
+   */
+  basePath: string;
 }
 
 /**
@@ -98,6 +103,7 @@ export function resolveTenant(): TenantResolution {
   const host = window.location.hostname;
   const params = new URLSearchParams(window.location.search);
   const brokerParam = params.get('broker');
+  const pathname = window.location.pathname;
   
   console.log('[Resolver] Hostname:', host);
   
@@ -107,29 +113,31 @@ export function resolveTenant(): TenantResolution {
     
     if (brokerParam) {
       console.log('[Resolver] Broker param found:', brokerParam);
-      return { type: 'broker', subdomain: brokerParam };
+      // Support local simulation under /preview as a basename
+      const basePath = pathname.startsWith('/preview') ? '/preview' : '';
+      return { type: 'broker', subdomain: brokerParam, basePath };
     }
     
     // No broker param on preview = platform mode
-    return { type: 'platform', subdomain: null };
+    return { type: 'platform', subdomain: null, basePath: '' };
   }
   
   // Case 2: Root platform domain (kaucus.org, www.kaucus.org)
   if (isRootPlatformDomain(host)) {
     console.log('[Resolver] Root platform domain - platform mode');
-    return { type: 'platform', subdomain: null };
+    return { type: 'platform', subdomain: null, basePath: '' };
   }
   
   // Case 3: Broker subdomain (egoras.kaucus.org)
   const subdomain = extractBrokerSubdomain(host);
   if (subdomain) {
     console.log('[Resolver] Broker subdomain detected:', subdomain);
-    return { type: 'broker', subdomain };
+    return { type: 'broker', subdomain, basePath: '' };
   }
   
   // Case 4: Unknown domain - default to platform (safe fallback)
   console.log('[Resolver] Unknown domain, defaulting to platform mode');
-  return { type: 'platform', subdomain: null };
+  return { type: 'platform', subdomain: null, basePath: '' };
 }
 
 /**
