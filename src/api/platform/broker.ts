@@ -8,7 +8,7 @@
  */
 
 import { mockResponse, DELAYS } from "../client";
-import { apiClient } from "@/lib/utils";
+import { apiClient, getFriendlyErrorMessage } from "@/lib/utils";
 
 // ============================================================
 // TYPES
@@ -149,9 +149,12 @@ export async function submitCompanyInfo(
     const response = await apiClient.post("/broker/company", companyInfo);
     return response.data;
   } catch (error: any) {
-    throw new Error(
-      error.response?.data?.message || "Failed to create company"
+    console.log(error.response?.data, "error");
+    console.log(
+      getFriendlyErrorMessage(error.response?.data?.errors[0]),
+      "error"
     );
+    throw new Error(error.response?.data?.errors || "Failed to create company");
   }
 }
 
@@ -177,7 +180,7 @@ export async function getKycStatus(): Promise<KycStatusResponse> {
     const response = await apiClient.get("/broker/company-kyc/get-kyc-status");
     return response.data;
   } catch (error: any) {
-    console.error("Error fetching KYC status:", error);
+    console.log("Error fetching KYC status:", error);
     throw new Error(
       error.response?.data?.message || "Failed to fetch KYC status"
     );
