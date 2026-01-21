@@ -1,78 +1,150 @@
 /**
  * Subdomain Resolver
  * Detects broker subdomain from hostname or query params (dev mode)
+ * 
+ * CRITICAL RULES:
+ * - kaucus.org / www.kaucus.org → Platform mode (NO broker)
+ * - egoras.kaucus.org → Broker mode (subdomain = egoras)
+ * - localhost with ?broker=X → Broker mode simulation
+ * - lovable preview domains → Use ?broker=X param only
  */
 
-/**
- * Platform domains that should NEVER be treated as broker mode
- * These are the main platform/admin domains
- */
-const PLATFORM_DOMAINS = [
+/** The main production domain */
+const PRODUCTION_DOMAIN = 'kaucus.org';
+
+/** Development/preview domains that use query param for broker simulation */
+const PREVIEW_DOMAINS = [
   'localhost',
   '127.0.0.1',
-  'kaucus.org',           // Main platform domain
-  'lovable.app',          // Lovable preview
-  'lovable.dev',          // Lovable dev
-  'lovableproject.com',   // Lovable project preview
+  'lovable.app',
+  'lovable.dev',
+  'lovableproject.com',
 ];
 
+/** Subdomains that are NOT broker tenants (reserved) */
+const RESERVED_SUBDOMAINS = ['www', 'api', 'admin', 'app', 'mail', 'ftp'];
+
+export type TenantType = 'platform' | 'broker';
+
+export interface TenantResolution {
+  type: TenantType;
+  subdomain: string | null;
+}
+
 /**
- * Check if hostname is a platform domain (not broker mode)
+ * Check if hostname is a preview/development domain
  */
-function isPlatformDomain(host: string): boolean {
-  return PLATFORM_DOMAINS.some(domain => 
-    host === domain || 
-    host.endsWith(`.${domain}`) ||
-    host.includes(domain)
+function isPreviewDomain(host: string): boolean {
+  return PREVIEW_DOMAINS.some(domain => 
+    host === domain || host.endsWith(`.${domain}`)
   );
 }
 
 /**
- * Resolve broker subdomain from current URL
- * 
- * Logic:
- * - Platform domains (lovable, localhost, kaucus.org): Use ?broker= query param only
- * - Production broker domains (egoras.kaucus.org): Extract subdomain from hostname
+ * Check if hostname is exactly the root platform domain
+ * kaucus.org or www.kaucus.org → true
+ * egoras.kaucus.org → false
  */
-export function resolveBrokerFromHost(): string | null {
-  const host = window.location.hostname;
-  const params = new URLSearchParams(window.location.search);
-  
-  // Check for explicit broker query param first (works everywhere)
-  const brokerParam = params.get('broker');
-  if (brokerParam) {
-    return brokerParam;
-  }
-  
-  // Platform domains: only use query param (already checked above)
-  if (isPlatformDomain(host)) {
-    return null;
-  }
-  
-  // Production: extract subdomain from hostname
-  // e.g., egoras.kaucus.org → egoras
-  const parts = host.split('.');
-  
-  // Need at least 3 parts for subdomain (e.g., egoras.kaucus.org)
-  if (parts.length < 3) {
-    return null;
-  }
-  
-  const potentialSubdomain = parts[0];
-  
-  // Exclude common non-broker subdomains
-  if (['www', 'api', 'admin', 'app'].includes(potentialSubdomain)) {
-    return null;
-  }
-  
-  return potentialSubdomain;
+function isRootPlatformDomain(host: string): boolean {
+  return (
+    host === PRODUCTION_DOMAIN || 
+    host === `www.${PRODUCTION_DOMAIN}`
+  );
 }
 
 /**
- * Check if we're in broker mode (has subdomain or broker param)
+ * Check if hostname is a broker subdomain of production domain
+ * egoras.kaucus.org → true (subdomain = egoras)
+ * kaucus.org → false
+ * www.kaucus.org → false
+ */
+function extractBrokerSubdomain(host: string): string | null {
+  // Must end with .kaucus.org
+  if (!host.endsWith(`.${PRODUCTION_DOMAIN}`)) {
+    return null;
+  }
+  
+  // Extract the subdomain part
+  const subdomain = host.slice(0, -(PRODUCTION_DOMAIN.length + 1));
+  
+  // Must have exactly one subdomain (no nested subdomains like a.b.kaucus.org)
+  if (subdomain.includes('.')) {
+    return null;
+  }
+  
+  // Must not be a reserved subdomain
+  if (RESERVED_SUBDOMAINS.includes(subdomain.toLowerCase())) {
+    return null;
+  }
+  
+  // Must not be empty
+  if (!subdomain) {
+    return null;
+  }
+  
+  return subdomain;
+}
+
+/**
+ * Master tenant resolver - single source of truth
+ * 
+ * Resolution order:
+ * 1. Preview domains (localhost, lovable) → use ?broker= param
+ * 2. Root platform domain (kaucus.org, www.kaucus.org) → platform mode
+ * 3. Broker subdomain (*.kaucus.org) → broker mode
+ * 4. Unknown domains → platform mode (safe default)
+ */
+export function resolveTenant(): TenantResolution {
+  const host = window.location.hostname;
+  const params = new URLSearchParams(window.location.search);
+  const brokerParam = params.get('broker');
+  
+  console.log('[Resolver] Hostname:', host);
+  
+  // Case 1: Preview/development domains
+  if (isPreviewDomain(host)) {
+    console.log('[Resolver] Preview domain detected');
+    
+    if (brokerParam) {
+      console.log('[Resolver] Broker param found:', brokerParam);
+      return { type: 'broker', subdomain: brokerParam };
+    }
+    
+    // No broker param on preview = platform mode
+    return { type: 'platform', subdomain: null };
+  }
+  
+  // Case 2: Root platform domain (kaucus.org, www.kaucus.org)
+  if (isRootPlatformDomain(host)) {
+    console.log('[Resolver] Root platform domain - platform mode');
+    return { type: 'platform', subdomain: null };
+  }
+  
+  // Case 3: Broker subdomain (egoras.kaucus.org)
+  const subdomain = extractBrokerSubdomain(host);
+  if (subdomain) {
+    console.log('[Resolver] Broker subdomain detected:', subdomain);
+    return { type: 'broker', subdomain };
+  }
+  
+  // Case 4: Unknown domain - default to platform (safe fallback)
+  console.log('[Resolver] Unknown domain, defaulting to platform mode');
+  return { type: 'platform', subdomain: null };
+}
+
+/**
+ * Legacy helper - returns subdomain if in broker mode, null otherwise
+ */
+export function resolveBrokerFromHost(): string | null {
+  const resolution = resolveTenant();
+  return resolution.subdomain;
+}
+
+/**
+ * Check if we're in broker mode
  */
 export function isBrokerMode(): boolean {
-  return resolveBrokerFromHost() !== null;
+  return resolveTenant().type === 'broker';
 }
 
 /**
