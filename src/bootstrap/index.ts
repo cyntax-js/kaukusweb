@@ -12,12 +12,12 @@
  */
 
 import type { BootstrapBrokerConfig, BootstrapResult } from './types';
-import { resolveBrokerFromHost, isBrokerMode } from './resolver';
+import { resolveTenant, resolveBrokerFromHost, isBrokerMode, type TenantResolution } from './resolver';
 import { fetchBrokerConfig } from './api';
 import { applyFullTheme } from './theme-applier';
 
-export type { BootstrapBrokerConfig, BootstrapResult };
-export { resolveBrokerFromHost, isBrokerMode };
+export type { BootstrapBrokerConfig, BootstrapResult, TenantResolution };
+export { resolveTenant, resolveBrokerFromHost, isBrokerMode };
 
 /**
  * Initialize the bootstrap process
