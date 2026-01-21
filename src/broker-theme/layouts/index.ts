@@ -7,3 +7,4 @@ export { TradingLayout } from './TradingLayout';
 export { PreviewLayout } from './PreviewLayout';
 export { AppLayout } from './AppLayout';
 export { PublicLayout } from './PublicLayout';
+export { BrokerAppLayout } from './BrokerAppLayout';
