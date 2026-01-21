@@ -13,10 +13,14 @@ import {
 } from "@/components/layout";
 import { GuestRoute, ProtectedRoute } from "@/components/AuthWrappers";
 
+// Bootstrap system for tenant detection
+import { isInBrokerMode } from "@/bootstrap";
+
 // Broker Theme System
 import { registerMockBrokers } from "@/broker-theme/config";
 import { mockBrokerConfigs } from "@/broker-theme/mocks";
 import { PreviewLayout, AppLayout, PublicLayout } from "@/broker-theme/layouts";
+import { BrokerAppLayout } from "@/broker-theme/layouts/BrokerAppLayout";
 import {
   LandingPage as BrokerLandingPage,
   LoginPage as BrokerLoginPage,
@@ -156,7 +160,42 @@ const BrokerPublicRoutes = () => (
   </Route>
 );
 
-const App = () => (
+// Broker mode app - renders when subdomain is detected
+const BrokerModeApp = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <Routes>
+          {/* Broker routes - config already loaded by bootstrap */}
+          <Route element={<BrokerAppLayout />}>
+            <Route element={<PublicLayout />}>
+              <Route path="/" element={<BrokerLandingPage />} />
+              <Route path="/about" element={<BrokerAboutPage />} />
+              <Route path="/legal" element={<BrokerLegalPage />} />
+              <Route path="/login" element={<BrokerLoginPage />} />
+              <Route path="/signup" element={<BrokerSignupPage />} />
+            </Route>
+            <Route path="/markets" element={<BrokerMarketsPage />} />
+            <Route path="/markets/:marketType" element={<BrokerMarketsPage />} />
+            <Route path="/markets/private/:marketId" element={<BrokerMarketsPage />} />
+            <Route path="/markets/secondary/:marketId" element={<BrokerMarketsPage />} />
+            <Route path="/trade/:serviceType/:pair" element={<BrokerTradingPage />} />
+            <Route path="/otc-desk" element={<BrokerOTCDexPage />} />
+            <Route path="/otc-desk/:offerId" element={<BrokerOTCDexDetailPage />} />
+            <Route path="/portfolio" element={<BrokerPortfolioPage />} />
+            <Route path="/settings" element={<BrokerSettingsPage />} />
+          </Route>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
+
+// Platform mode app - renders when no subdomain
+const PlatformModeApp = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
@@ -327,5 +366,15 @@ const App = () => (
     </TooltipProvider>
   </QueryClientProvider>
 );
+
+// Main App component - chooses between broker and platform mode
+const App = () => {
+  // Check if we're in broker mode (subdomain detected during bootstrap)
+  if (isInBrokerMode()) {
+    return <BrokerModeApp />;
+  }
+  
+  return <PlatformModeApp />;
+};
 
 export default App;
