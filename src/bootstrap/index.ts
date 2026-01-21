@@ -28,12 +28,13 @@ export async function initializeBrokerBootstrap(): Promise<BootstrapResult> {
   window.__BROKER_CONFIG__ = null;
   window.__BROKER_MODE__ = false;
   window.__BROKER_ERROR__ = null;
+  window.__BROKER_BASE_PATH__ = '';
   
-  const subdomain = resolveBrokerFromHost();
+  const tenant = resolveTenant();
   
   // Not in broker mode - return early for platform
-  if (!subdomain) {
-    console.log('[Bootstrap] No broker subdomain detected, loading platform mode');
+  if (tenant.type !== 'broker' || !tenant.subdomain) {
+    console.log('[Bootstrap] Platform mode detected, skipping broker bootstrap');
     return {
       config: null,
       error: null,
@@ -41,6 +42,9 @@ export async function initializeBrokerBootstrap(): Promise<BootstrapResult> {
     };
   }
   
+  const subdomain = tenant.subdomain;
+  window.__BROKER_BASE_PATH__ = tenant.basePath;
+
   console.log(`[Bootstrap] Broker mode detected: ${subdomain}`);
   window.__BROKER_MODE__ = true;
   
@@ -70,6 +74,13 @@ export async function initializeBrokerBootstrap(): Promise<BootstrapResult> {
     error: null,
     isBrokerMode: true,
   };
+}
+
+/**
+ * Get router base path for broker mode (e.g. /preview in localhost simulation)
+ */
+export function getBrokerBasePath(): string {
+  return window.__BROKER_BASE_PATH__ ?? '';
 }
 
 /**
