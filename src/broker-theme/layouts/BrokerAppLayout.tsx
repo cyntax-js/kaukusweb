@@ -1,11 +1,12 @@
 /**
  * Broker App Layout
- * Layout component for broker mode - uses config from bootstrap
+ * Layout component for broker mode - uses config from bootstrap and stores in Zustand
  */
 
+import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useBootstrapConfig } from '@/hooks/useBootstrapConfig';
-import { ThemeProvider } from '@/broker-theme/config/provider';
+import { ThemeProvider, useThemeStore } from '@/broker-theme/config';
 import type { BrokerConfig } from '@/broker-theme/config/types';
 
 /**
@@ -39,6 +40,20 @@ function mapBootstrapToBrokerConfig(bootstrapConfig: any): BrokerConfig {
   };
 }
 
+/**
+ * Inner component that stores config in Zustand after ThemeProvider is mounted
+ */
+function BrokerAppLayoutInner({ brokerConfig }: { brokerConfig: BrokerConfig }) {
+  const { setConfig } = useThemeStore();
+  
+  // Store config in Zustand so all components can access it
+  useEffect(() => {
+    setConfig(brokerConfig);
+  }, [brokerConfig, setConfig]);
+  
+  return <Outlet />;
+}
+
 export function BrokerAppLayout() {
   const { config, isBrokerMode, error } = useBootstrapConfig();
   
@@ -62,7 +77,7 @@ export function BrokerAppLayout() {
   
   return (
     <ThemeProvider config={brokerConfig}>
-      <Outlet />
+      <BrokerAppLayoutInner brokerConfig={brokerConfig} />
     </ThemeProvider>
   );
 }
