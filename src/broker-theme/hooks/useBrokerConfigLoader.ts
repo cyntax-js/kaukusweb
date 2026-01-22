@@ -3,11 +3,11 @@
  * Handles all config loading logic for broker layouts (PreviewLayout, AppLayout)
  */
 
-import { useEffect, useMemo, useState } from 'react';
-import type { BrokerConfig } from '../config/types';
-import { getSubdomain, loadBrokerConfig } from '../config/engine';
-import { mockBrokerConfigs } from '../mocks';
-import { useBrokerDeploymentStore } from '@/stores/brokerDeploymentStore';
+import { useEffect, useMemo, useState } from "react";
+import type { BrokerConfig } from "../config/types";
+import { getSubdomain, loadBrokerConfig } from "../config/engine";
+import { mockBrokerConfigs } from "../mocks";
+import { useBrokerDeploymentStore } from "@/stores/brokerDeploymentStore";
 
 interface ConfigLoaderResult {
   config: BrokerConfig | null;
@@ -16,19 +16,19 @@ interface ConfigLoaderResult {
 }
 
 /**
- * Check if deployment config has meaningful customizations
+ * Check if deploymentk config has meaningful customizations
  */
 function hasMeaningfulConfig(config: BrokerConfig): boolean {
   return Boolean(
     config.subdomain ||
-    config.brokerName ||
-    config.services.length > 0 ||
-    config.branding?.logoUrl ||
-    config.branding?.faviconUrl ||
-    config.theme.colors.primary !== '217 91% 50%' ||
-    config.theme.colors.background !== '210 20% 98%' ||
-    config.theme.typography.fontFamily !== 'Inter' ||
-    config.theme.layout.orderBookPosition !== 'right'
+      config.brokerName ||
+      config.services.length > 0 ||
+      config.branding?.logoUrl ||
+      config.branding?.faviconUrl ||
+      config.theme.colors.primary !== "217 91% 50%" ||
+      config.theme.colors.background !== "210 20% 98%" ||
+      config.theme.typography.fontFamily !== "Inter" ||
+      config.theme.layout.orderBookPosition !== "right"
   );
 }
 
@@ -39,7 +39,7 @@ function hasMeaningfulConfig(config: BrokerConfig): boolean {
  * 3. Demo fallback
  */
 export function useBrokerConfigLoader(): ConfigLoaderResult {
-  const deploymentConfig = useBrokerDeploymentStore(state => state.config);
+  const deploymentConfig = useBrokerDeploymentStore((state) => state.config);
   const [asyncConfig, setAsyncConfig] = useState<BrokerConfig | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -49,7 +49,11 @@ export function useBrokerConfigLoader(): ConfigLoaderResult {
     if (hasMeaningfulConfig(deploymentConfig)) {
       const subdomain = getSubdomain();
       // Use deployment config if no subdomain conflict
-      if (!subdomain || !deploymentConfig.subdomain || deploymentConfig.subdomain === subdomain) {
+      if (
+        !subdomain ||
+        !deploymentConfig.subdomain ||
+        deploymentConfig.subdomain === subdomain
+      ) {
         return deploymentConfig;
       }
     }
@@ -82,14 +86,16 @@ export function useBrokerConfigLoader(): ConfigLoaderResult {
         }
 
         // Fall back to demo config
-        const demoConfig = mockBrokerConfigs.find(c => c.subdomain === 'demo');
+        const demoConfig = mockBrokerConfigs.find(
+          (c) => c.subdomain === "demo"
+        );
         setAsyncConfig(demoConfig ?? mockBrokerConfigs[0] ?? null);
-        
+
         if (!demoConfig && mockBrokerConfigs.length === 0) {
-          setError('Unable to load broker configuration');
+          setError("Unable to load broker configuration");
         }
       } catch (err) {
-        setError('Failed to load broker configuration');
+        setError("Failed to load broker configuration");
       } finally {
         setIsLoading(false);
       }
