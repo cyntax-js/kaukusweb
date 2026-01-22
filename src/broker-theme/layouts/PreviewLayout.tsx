@@ -1,14 +1,23 @@
 /**
  * Preview Layout - Wrapper for broker preview routes
- * Uses unified config loader hook
+ * Uses unified config loader hook and stores config in Zustand
  */
 
+import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-import { ThemeProvider } from '@/broker-theme/config';
+import { ThemeProvider, useThemeStore } from '@/broker-theme/config';
 import { useBrokerConfigLoader } from '@/broker-theme/hooks';
 
 export const PreviewLayout = () => {
   const { config, isLoading, error } = useBrokerConfigLoader();
+  const { setConfig } = useThemeStore();
+
+  // Store config in Zustand so it persists and all components can access it
+  useEffect(() => {
+    if (config) {
+      setConfig(config);
+    }
+  }, [config, setConfig]);
 
   if (isLoading) {
     return (

@@ -5,13 +5,14 @@
  */
 
 import React, { useState, useMemo, useEffect, useCallback } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "sonner";
+import { useBrokerPaths } from "@/broker-theme/hooks/useBrokerPaths";
 import {
   ChevronRight,
   TrendingUp,
@@ -110,7 +111,7 @@ const generateId = () => `ord_${Math.random().toString(36).substr(2, 9)}`;
 const SecondaryMarketDetail: React.FC = () => {
   const { marketId } = useParams<{ marketId: string }>();
   const navigate = useNavigate();
-  const location = useLocation();
+  const { appPrefix } = useBrokerPaths();
   
   const [timeRange, setTimeRange] = useState<"7d" | "1M" | "3M">("7d");
   const [activeTab, setActiveTab] = useState<"market" | "about" | "rules">("market");
@@ -155,15 +156,13 @@ const SecondaryMarketDetail: React.FC = () => {
     { id: "5", time: "9h ago", orderType: "Filled", side: "Buy", pair: "DANGCEM/USDC", price: 0.0889, amount: 790, collateral: 70.2 },
   ]);
 
-  const routePrefix = location.pathname.includes("/preview/app") ? "/preview/app" : "/app";
-
   const chartData = useMemo(() => {
     const days = timeRange === "7d" ? 30 : timeRange === "1M" ? 60 : 90;
     return generateChartData(days);
   }, [timeRange]);
 
   const handleBack = () => {
-    navigate(`${routePrefix}/markets/secondary`);
+    navigate(`${appPrefix}/markets/secondary`);
   };
 
   const maxBuyAmount = Math.max(...buyOrders.map(o => o.amount), 1);

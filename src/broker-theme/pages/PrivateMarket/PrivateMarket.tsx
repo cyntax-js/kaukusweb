@@ -4,7 +4,8 @@
  */
 
 import { useMemo, useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useBrokerPaths } from "@/broker-theme/hooks/useBrokerPaths";
 import {
   ChevronLeft,
   ChevronRight,
@@ -1162,7 +1163,7 @@ const formatAmount = (v: number) =>
 
 const PrivateMarket = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  const { appPrefix } = useBrokerPaths();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [selectedType, setSelectedType] = useState<string>("all");
@@ -1170,10 +1171,6 @@ const PrivateMarket = () => {
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [depositModalOpen, setDepositModalOpen] = useState(false);
-
-  const routePrefix = location.pathname.includes("/preview/app")
-    ? "/preview/app"
-    : "/app";
 
   const ongoingSecurities = useMemo(
     () => mockSecurities.filter((i) => i.status === "ongoing"),
@@ -1258,7 +1255,7 @@ const PrivateMarket = () => {
     );
 
   const handleCardClick = (securityId: string) => {
-    navigate(`${routePrefix}/markets/private/${securityId}`);
+    navigate(`${appPrefix}/markets/private/${securityId}`);
   };
 
   // Featured Card Component
@@ -1785,7 +1782,7 @@ const PrivateMarket = () => {
                 <Button
                   variant="outline"
                   className="w-full justify-start rounded-lg h-10"
-                  onClick={() => navigate(`${routePrefix}/portfolio`)}
+                  onClick={() => navigate(`${appPrefix}/portfolio`)}
                 >
                   <Eye className="h-4 w-4 mr-2" />
                   View Portfolio
