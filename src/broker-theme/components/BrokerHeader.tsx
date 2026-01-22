@@ -9,6 +9,7 @@ import { useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTheme } from "@/broker-theme/config";
 import { useBrokerAuthStore } from "@/broker-theme/stores";
+import { useBrokerPaths } from "@/broker-theme/hooks/useBrokerPaths";
 import BrokerLogo from "./BrokerLogo";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,9 +35,8 @@ const BrokerHeader = ({ className, variant = "solid" }: BrokerHeaderProps) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const routePrefix = location.pathname.startsWith("/app")
-    ? "/app"
-    : "/preview";
+  // Use centralized path hook instead of inline detection
+  const { publicPrefix, appPrefix } = useBrokerPaths();
 
   const [marketsOpen, setMarketsOpen] = useState(false);
   const [assetsOpen, setAssetsOpen] = useState(false);
@@ -47,29 +47,29 @@ const BrokerHeader = ({ className, variant = "solid" }: BrokerHeaderProps) => {
         {
           id: "stock",
           label: "Stock",
-          href: `${routePrefix}/markets/stock`,
+          href: `${appPrefix}/markets/stock`,
           enabled: config.services.includes("stock"),
         },
         {
           id: "futures",
           label: "Futures",
-          href: `${routePrefix}/markets/futures`,
+          href: `${appPrefix}/markets/futures`,
           enabled: config.services.includes("futures"),
         },
         {
           id: "options",
           label: "Options",
-          href: `${routePrefix}/markets/options`,
+          href: `${appPrefix}/markets/options`,
           enabled: config.services.includes("options"),
         },
         {
           id: "private",
           label: "Private Markets",
-          href: `${routePrefix}/markets/private`,
+          href: `${appPrefix}/markets/private`,
           enabled: config.services.includes("private_markets"),
         },
       ].filter((o) => o.enabled),
-    [config.services, routePrefix]
+    [config.services, appPrefix]
   );
 
   const userInitials = user
@@ -79,7 +79,7 @@ const BrokerHeader = ({ className, variant = "solid" }: BrokerHeaderProps) => {
   const requireAuth = (action: () => void) => {
     if (!isAuthenticated) {
       toast.error("Please login to continue");
-      navigate(`${routePrefix}/login`);
+      navigate(`${publicPrefix}/login`);
       return;
     }
     action();
@@ -88,8 +88,11 @@ const BrokerHeader = ({ className, variant = "solid" }: BrokerHeaderProps) => {
   const handleLogout = () => {
     logout();
     toast.success("Logged out successfully");
-    navigate(routePrefix);
+    navigate(publicPrefix || '/');
   };
+
+  // Home link - use publicPrefix or "/" if empty
+  const homeLink = publicPrefix || '/';
 
   return (
     <header
@@ -100,7 +103,7 @@ const BrokerHeader = ({ className, variant = "solid" }: BrokerHeaderProps) => {
     >
       <div className="mx-auto max-w-screen-2xl px-6 h-14 flex items-center justify-between">
         <div className="flex items-center gap-8 min-w-0">
-          <Link to={routePrefix} className="shrink-0">
+          <Link to={homeLink} className="shrink-0">
             <BrokerLogo size="md" showName />
           </Link>
 
@@ -187,7 +190,7 @@ const BrokerHeader = ({ className, variant = "solid" }: BrokerHeaderProps) => {
                 <DropdownMenuItem
                   className="cursor-pointer"
                   onClick={() =>
-                    requireAuth(() => navigate(`${routePrefix}/portfolio`))
+                    requireAuth(() => navigate(`${appPrefix}/portfolio`))
                   }
                 >
                   <Wallet className="h-4 w-4 mr-2" />
@@ -229,7 +232,7 @@ const BrokerHeader = ({ className, variant = "solid" }: BrokerHeaderProps) => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     className="cursor-pointer"
-                    onClick={() => navigate(`${routePrefix}/portfolio`)}
+                    onClick={() => navigate(`${appPrefix}/portfolio`)}
                   >
                     <Wallet className="h-4 w-4 mr-2" />
                     Portfolio
@@ -247,13 +250,13 @@ const BrokerHeader = ({ className, variant = "solid" }: BrokerHeaderProps) => {
                 <>
                   <DropdownMenuItem
                     className="cursor-pointer"
-                    onClick={() => navigate(`${routePrefix}/login`)}
+                    onClick={() => navigate(`${publicPrefix}/login`)}
                   >
                     Login
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     className="cursor-pointer"
-                    onClick={() => navigate(`${routePrefix}/signup`)}
+                    onClick={() => navigate(`${publicPrefix}/signup`)}
                   >
                     Create account
                   </DropdownMenuItem>

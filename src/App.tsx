@@ -150,17 +150,6 @@ const BrokerAppRoutes = () => (
   </>
 );
 
-// Shared broker public routes (landing, about, auth)
-const BrokerPublicRoutes = () => (
-  <Route element={<PublicLayout />}>
-    <Route index element={<BrokerLandingPage />} />
-    <Route path="about" element={<BrokerAboutPage />} />
-    <Route path="legal" element={<BrokerLegalPage />} />
-    <Route path="login" element={<BrokerLoginPage />} />
-    <Route path="signup" element={<BrokerSignupPage />} />
-  </Route>
-);
-
 // Broker mode app - renders when subdomain is detected
 const BrokerModeApp = () => (
   <QueryClientProvider client={queryClient}>
@@ -348,15 +337,29 @@ const PlatformModeApp = () => (
               <Route path="risk-management" element={<RiskManagement />} />
             </Route>
 
-            {/* Broker Preview (deployment setup) */}
+            {/* Broker Preview (deployment setup) - flat structure, no nested BrokerPublicRoutes */}
             <Route path="/preview" element={<PreviewLayout />}>
-              {BrokerPublicRoutes()}
-              <Route path="app">{BrokerAppRoutes()}</Route>
+              <Route element={<PublicLayout />}>
+                <Route index element={<BrokerLandingPage />} />
+                <Route path="about" element={<BrokerAboutPage />} />
+                <Route path="legal" element={<BrokerLegalPage />} />
+                <Route path="login" element={<BrokerLoginPage />} />
+                <Route path="signup" element={<BrokerSignupPage />} />
+              </Route>
+              <Route path="app">
+                {BrokerAppRoutes()}
+              </Route>
             </Route>
 
-            {/* Deployed Broker Runtime */}
+            {/* Deployed Broker Runtime - flat structure */}
             <Route path="/app" element={<AppLayout />}>
-              {BrokerPublicRoutes()}
+              <Route element={<PublicLayout />}>
+                <Route index element={<BrokerLandingPage />} />
+                <Route path="about" element={<BrokerAboutPage />} />
+                <Route path="legal" element={<BrokerLegalPage />} />
+                <Route path="login" element={<BrokerLoginPage />} />
+                <Route path="signup" element={<BrokerSignupPage />} />
+              </Route>
               {BrokerAppRoutes()}
             </Route>
           </Route>

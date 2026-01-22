@@ -7,6 +7,7 @@ import { useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTheme } from "@/broker-theme/config";
 import { useBrokerAuthStore } from "@/broker-theme/stores";
+import { useBrokerPaths } from "@/broker-theme/hooks/useBrokerPaths";
 import BrokerLogo from "./BrokerLogo";
 import { Button } from "@/components/ui/button";
 import {
@@ -38,17 +39,9 @@ const AppHeader = ({ className }: AppHeaderProps) => {
   const { user, isAuthenticated, logout } = useBrokerAuthStore();
   const location = useLocation();
   const navigate = useNavigate();
-
-  // For trading pages, use /preview/app or /app prefix
-  const isRuntime =
-    location.pathname.startsWith("/app") &&
-    !location.pathname.startsWith("/app/");
-  const routePrefix = location.pathname.includes("/preview/app")
-    ? "/preview/app"
-    : "/app";
-  const publicPrefix = location.pathname.includes("/preview")
-    ? "/preview"
-    : "/app";
+  
+  // Use centralized path hook instead of inline detection
+  const { publicPrefix, appPrefix } = useBrokerPaths();
 
   const [marketsOpen, setMarketsOpen] = useState(false);
   const [assetsOpen, setAssetsOpen] = useState(false);
@@ -59,35 +52,35 @@ const AppHeader = ({ className }: AppHeaderProps) => {
         {
           id: "stock",
           label: "Stock",
-          href: `${routePrefix}/markets/stock`,
+          href: `${appPrefix}/markets/stock`,
           enabled: config.services.includes("stock"),
         },
         {
           id: "futures",
           label: "Futures / Derivatives",
-          href: `${routePrefix}/markets/futures`,
+          href: `${appPrefix}/markets/futures`,
           enabled: config.services.includes("futures"),
         },
         {
           id: "options",
           label: "Options",
-          href: `${routePrefix}/markets/options`,
+          href: `${appPrefix}/markets/options`,
           enabled: config.services.includes("options"),
         },
         {
           id: "private",
           label: "Private Market",
-          href: `${routePrefix}/markets/private`,
+          href: `${appPrefix}/markets/private`,
           enabled: config.services.includes("private_markets"),
         },
         {
           id: "secondary",
           label: "Secondary Market",
-          href: `${routePrefix}/markets/secondary`,
+          href: `${appPrefix}/markets/secondary`,
           enabled: null,
         },
       ].filter((o) => o.enabled),
-    [config.services, routePrefix]
+    [config.services, appPrefix]
   );
 
   const hasPrivateMarkets = config.services.includes("private_markets");
@@ -112,8 +105,11 @@ const AppHeader = ({ className }: AppHeaderProps) => {
   const handleLogout = () => {
     logout();
     toast.success("Logged out successfully");
-    navigate(publicPrefix);
+    navigate(publicPrefix || '/');
   };
+
+  // Home link - use publicPrefix or "/" if empty
+  const homeLink = publicPrefix || '/';
 
   return (
     <header
@@ -124,7 +120,7 @@ const AppHeader = ({ className }: AppHeaderProps) => {
     >
       <div className="mx-auto max-w-screen-2xl px-6 h-14 flex items-center justify-between">
         <div className="flex items-center gap-8 min-w-0">
-          <Link to={publicPrefix} className="shrink-0">
+          <Link to={homeLink} className="shrink-0">
             <BrokerLogo size="md" showName />
           </Link>
 
@@ -174,7 +170,7 @@ const AppHeader = ({ className }: AppHeaderProps) => {
             {/* Private Market link */}
             {hasPrivateMarkets && (
               <Link
-                to={`${routePrefix}/markets/private`}
+                to={`${appPrefix}/markets/private`}
                 className={cn(
                   "inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors",
                   location.pathname.includes("/markets/private")
@@ -187,7 +183,7 @@ const AppHeader = ({ className }: AppHeaderProps) => {
             )}
             {hasPrivateMarkets && (
               <Link
-                to={`${routePrefix}/markets/secondary`}
+                to={`${appPrefix}/markets/secondary`}
                 className={cn(
                   "inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors",
                   location.pathname.includes("/markets/secondary")
@@ -201,7 +197,7 @@ const AppHeader = ({ className }: AppHeaderProps) => {
 
             {/* OTC DESK link */}
             <Link
-              to={`${routePrefix}/otc-desk`}
+              to={`${appPrefix}/otc-desk`}
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                 location.pathname.includes("/otc-desk")
@@ -215,7 +211,7 @@ const AppHeader = ({ className }: AppHeaderProps) => {
 
             {/* Portfolio link */}
             <Link
-              to={`${routePrefix}/portfolio`}
+              to={`${appPrefix}/portfolio`}
               className={cn(
                 "inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors",
                 location.pathname.includes("/portfolio")
@@ -242,8 +238,6 @@ const AppHeader = ({ className }: AppHeaderProps) => {
           {/* Language Switcher */}
           <BrokerLanguageSwitcher />
 
-          {/* Deposit */}
-
           {/* Assets */}
           <DropdownMenu open={assetsOpen} onOpenChange={setAssetsOpen}>
             <DropdownMenuTrigger asChild>
@@ -262,7 +256,7 @@ const AppHeader = ({ className }: AppHeaderProps) => {
               <DropdownMenuItem
                 className="cursor-pointer"
                 onClick={() =>
-                  requireAuth(() => navigate(`${routePrefix}/portfolio`))
+                  requireAuth(() => navigate(`${appPrefix}/portfolio`))
                 }
               >
                 <Wallet className="h-4 w-4 mr-2" />
@@ -303,7 +297,7 @@ const AppHeader = ({ className }: AppHeaderProps) => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     className="cursor-pointer"
-                    onClick={() => navigate(`${routePrefix}/portfolio`)}
+                    onClick={() => navigate(`${appPrefix}/portfolio`)}
                   >
                     <Wallet className="h-4 w-4 mr-2" />
                     Portfolio
