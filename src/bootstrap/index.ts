@@ -15,6 +15,7 @@ import type { BootstrapBrokerConfig, BootstrapResult } from './types';
 import { resolveTenant, resolveBrokerFromHost, isBrokerMode, type TenantResolution } from './resolver';
 import { fetchBrokerConfig } from './api';
 import { applyFullTheme } from './theme-applier';
+import { writeCachedBootstrapConfig } from '@/lib/brokerConfigCache';
 
 export type { BootstrapBrokerConfig, BootstrapResult, TenantResolution };
 export { resolveTenant, resolveBrokerFromHost, isBrokerMode };
@@ -63,6 +64,10 @@ export async function initializeBrokerBootstrap(): Promise<BootstrapResult> {
   
   // Apply theme and branding BEFORE React loads
   applyFullTheme(config);
+
+  // Persist fetched config to localStorage so preview deep-links can survive reloads
+  // even if the URL loses ?broker=... (bootstrap/resolver will fall back to this).
+  writeCachedBootstrapConfig(subdomain, config);
   
   // Store config globally for React to access
   window.__BROKER_CONFIG__ = config;
