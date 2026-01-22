@@ -160,6 +160,7 @@ const BrokerModeApp = () => (
         <Routes>
           {/* Broker routes - config already loaded by bootstrap */}
           <Route element={<BrokerAppLayout />}>
+            {/* Public routes (landing, auth) - no /app prefix */}
             <Route element={<PublicLayout />}>
               <Route path="/" element={<BrokerLandingPage />} />
               <Route path="/about" element={<BrokerAboutPage />} />
@@ -167,6 +168,7 @@ const BrokerModeApp = () => (
               <Route path="/login" element={<BrokerLoginPage />} />
               <Route path="/signup" element={<BrokerSignupPage />} />
             </Route>
+            {/* App routes - these are the authenticated/trading pages */}
             <Route path="/markets" element={<BrokerMarketsPage />} />
             <Route path="/markets/:marketType" element={<BrokerMarketsPage />} />
             <Route path="/markets/private/:marketId" element={<BrokerMarketsPage />} />
