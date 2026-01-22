@@ -5,8 +5,9 @@
  */
 
 import React, { useState, useMemo, useEffect, useCallback } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
+import { useBrokerPaths } from "@/broker-theme/hooks/useBrokerPaths";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -333,7 +334,7 @@ const formatCountdown = (ms: number): string => {
 
 const SecondaryMarket: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  const { appPrefix } = useBrokerPaths();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<
     "live" | "upcoming" | "ended"
@@ -347,10 +348,6 @@ const SecondaryMarket: React.FC = () => {
   const [countdowns, setCountdowns] = useState<Record<string, number>>({});
   const [animatedFearGreed, setAnimatedFearGreed] = useState(0);
   const [animatedMarketSeason, setAnimatedMarketSeason] = useState(0);
-
-  const routePrefix = location.pathname.includes("/preview/app")
-    ? "/preview/app"
-    : "/app";
 
   // Calculate dynamic values on mount
   useEffect(() => {
@@ -439,7 +436,7 @@ const SecondaryMarket: React.FC = () => {
   }, [searchQuery, activeFilter, sortField, sortDirection]);
 
   const handleTokenClick = (token: TokenData) => {
-    navigate(`${routePrefix}/markets/secondary/${token.id}`);
+    navigate(`${appPrefix}/markets/secondary/${token.id}`);
   };
 
   const handleSort = (field: string) => {

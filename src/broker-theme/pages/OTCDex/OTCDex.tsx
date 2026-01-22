@@ -4,8 +4,9 @@
  */
 
 import React, { useState, useMemo, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
+import { useBrokerPaths } from "@/broker-theme/hooks/useBrokerPaths";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -370,17 +371,13 @@ const calculateNeedlePosition = (value: number): { cx: number; cy: number } => {
 
 const OTCDex: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  const { appPrefix } = useBrokerPaths();
   const [searchQuery, setSearchQuery] = useState("");
   const [sideFilter, setSideFilter] = useState<"all" | "buy" | "sell">("all");
   const [otcScore, setOtcScore] = useState(0);
   const [animatedOtcScore, setAnimatedOtcScore] = useState(0);
   const [watchlist, setWatchlist] = useState<string[]>([]);
   const [showWatchlistOnly, setShowWatchlistOnly] = useState(false);
-
-  const routePrefix = location.pathname.includes("/preview/app")
-    ? "/preview/app"
-    : "/app";
 
   useEffect(() => {
     const targetScore = calculateOTCScore(mockDealerOffers);
@@ -444,7 +441,7 @@ const OTCDex: React.FC = () => {
   }, [searchQuery, sideFilter, showWatchlistOnly, watchlist]);
 
   const handleOfferClick = (offer: DealerOffer) => {
-    navigate(`${routePrefix}/otc-desk/${offer.id}`);
+    navigate(`${appPrefix}/otc-desk/${offer.id}`);
   };
 
   const totalVolume = mockDealerOffers.reduce((sum, o) => sum + o.volume24h, 0);
