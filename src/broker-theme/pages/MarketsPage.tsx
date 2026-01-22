@@ -19,6 +19,8 @@ import {
   Layers,
   Lock,
 } from "lucide-react";
+import PrivateMarket from "./PrivateMarket/PrivateMarket";
+import PrivateMarketTrade from "./PrivateMarket/PrivateMarketTrade";
 
 type MarketType = "stock" | "futures" | "options" | "private";
 
@@ -69,6 +71,10 @@ const MarketsPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  console.log("mockMarkets", mockMarkets);
+  console.log("====================================");
+  console.log(config, "config");
+  console.log("====================================");
   // Trading/Markets pages use /preview/app or /app prefix
   const routePrefix = location.pathname.includes("/preview/app")
     ? "/preview/app"
@@ -82,6 +88,9 @@ const MarketsPage = () => {
     return "stock";
   });
 
+  console.log("====================================");
+  console.log(marketTypeParam, "marketTypeParam");
+  console.log("====================================");
   // Sync with URL changes
   useEffect(() => {
     if (marketTypeParam === "futures") setActiveMarketType("futures");
@@ -123,7 +132,10 @@ const MarketsPage = () => {
         );
       }
       if (activeMarketType === "private") {
-        return config.services.includes("private_markets");
+        return (
+          m.type === "private_market" &&
+          config.services.includes("private_markets")
+        );
       }
       return false;
     });
@@ -183,10 +195,25 @@ const MarketsPage = () => {
   }, [filteredMarkets]);
 
   const handleMarketClick = (market: Market) => {
-    const serviceType = market.type === "derivative" ? "futures" : "stock";
-    navigate(
-      `${routePrefix}/${serviceType}/trade/${serviceType}/${market.symbol}`
+    const serviceType =
+      market.type === "derivative"
+        ? "futures"
+        : market.type === "stock"
+        ? "stock"
+        : market.type;
+
+    console.log("====================================");
+    console.log(market, "marketurl");
+    console.log("====================================");
+
+    console.log("====================================");
+    console.log(
+      `${routePrefix}/trade/${serviceType}/${market.symbol}`,
+      "marketurl"
     );
+    console.log("====================================");
+    // return;
+    navigate(`${routePrefix}/trade/${serviceType}/${market.symbol}`);
   };
 
   const handleTypeChange = (type: MarketType) => {
@@ -216,358 +243,365 @@ const MarketsPage = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <AppHeader />
 
-      <main className="flex-1 px-6 py-6">
-        <div className="mx-auto max-w-screen-2xl space-y-6">
-          {/* Market Type Tabs */}
-          <section className="flex items-center gap-2 border-b border-border pb-4">
-            {availableTypes.map((type) => (
-              <button
-                key={type}
-                onClick={() => handleTypeChange(type)}
-                className={cn(
-                  "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
-                  activeMarketType === type
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                )}
-              >
-                {marketTypeLabels[type].icon}
-                {marketTypeLabels[type].label}
-              </button>
-            ))}
-          </section>
-
-          {/* Top overview cards */}
-          <section className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card className="bg-card border-border">
-              <CardContent className="p-4">
-                <div className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4 text-primary" /> Hot{" "}
-                  {marketTypeLabels[activeMarketType].label}
-                </div>
-                <div className="space-y-3">
-                  {hotAssets.length > 0 ? (
-                    hotAssets.map((m) => (
-                      <div
-                        key={m.symbol}
-                        className="flex items-center justify-between gap-3 cursor-pointer hover:bg-muted/50 rounded p-1 -m-1"
-                        onClick={() => handleMarketClick(m)}
-                      >
-                        <div className="min-w-0">
-                          <div className="text-sm text-foreground truncate">
-                            {m.name}
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-sm text-foreground">
-                            {m.price.toFixed(2)}
-                          </div>
-                          <div
-                            className={cn(
-                              "text-xs",
-                              m.change24h >= 0
-                                ? "text-green-500"
-                                : "text-red-500"
-                            )}
-                          >
-                            {m.change24h >= 0 ? "+" : ""}
-                            {m.change24h.toFixed(2)}%
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-sm text-muted-foreground">
-                      No assets available
-                    </div>
+      {activeMarketType == "private" &&
+      config.services.includes("private_markets") ? (
+        <PrivateMarket />
+      ) : (
+        // <PrivateMarketTrade />
+        <main className="flex-1 px-6 py-6">
+          <div className="mx-auto max-w-screen-2xl space-y-6">
+            {/* Market Type Tabs */}
+            <section className="flex items-center gap-2 border-b border-border pb-4">
+              {availableTypes.map((type) => (
+                <button
+                  key={type}
+                  onClick={() => handleTypeChange(type)}
+                  className={cn(
+                    "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                    activeMarketType === type
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
                   )}
-                </div>
-              </CardContent>
-            </Card>
+                >
+                  {marketTypeLabels[type].icon}
+                  {marketTypeLabels[type].label}
+                </button>
+              ))}
+            </section>
 
-            <Card className="bg-card border-border">
-              <CardContent className="p-4">
-                <div className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-                  <Star className="h-4 w-4 text-primary" /> New listings
-                </div>
-                <div className="space-y-3">
-                  {newListings.length > 0 ? (
-                    newListings.map((m) => (
-                      <div
-                        key={m.symbol}
-                        className="flex items-center justify-between gap-3 cursor-pointer hover:bg-muted/50 rounded p-1 -m-1"
-                        onClick={() => handleMarketClick(m)}
-                      >
-                        <div className="min-w-0">
-                          <div className="text-sm text-foreground truncate">
-                            {m.name}
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-sm text-foreground">
-                            {m.price.toFixed(2)}
-                          </div>
-                          <div
-                            className={cn(
-                              "text-xs",
-                              m.change24h >= 0
-                                ? "text-green-500"
-                                : "text-red-500"
-                            )}
-                          >
-                            {m.change24h >= 0 ? "+" : ""}
-                            {m.change24h.toFixed(2)}%
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-sm text-muted-foreground">
-                      No listings
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-card border-border">
-              <CardContent className="p-4">
-                <div className="text-sm font-semibold text-foreground mb-3">
-                  Market Stats
-                </div>
-                <div className="grid grid-cols-2 gap-3 text-sm">
-                  <div>
-                    <div className="text-xs text-muted-foreground">
-                      Total Volume
-                    </div>
-                    <div className="text-foreground font-semibold">
-                      ₦{(stats.totalVolume / 1_000_000).toFixed(1)}M
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-xs text-muted-foreground">
-                      Active Pairs
-                    </div>
-                    <div className="text-foreground font-semibold">
-                      {typeMarkets.length}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-card border-border">
-              <CardContent className="p-4">
-                <div className="text-sm font-semibold text-foreground mb-3">
-                  Market Type
-                </div>
-                <div className="flex items-center gap-2">
-                  {marketTypeLabels[activeMarketType].icon}
-                  <span className="text-foreground font-medium">
+            {/* Top overview cards */}
+            <section className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <Card className="bg-card border-border">
+                <CardContent className="p-4">
+                  <div className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+                    <TrendingUp className="h-4 w-4 text-primary" /> Hot{" "}
                     {marketTypeLabels[activeMarketType].label}
-                  </span>
-                </div>
-                <p className="text-xs text-muted-foreground mt-2">
-                  {activeMarketType === "stock" &&
-                    "Buy and sell assets at current market prices"}
-                  {activeMarketType === "futures" &&
-                    "Trade contracts with leverage"}
-                  {activeMarketType === "options" && "Trade options contracts"}
-                  {activeMarketType === "private" &&
-                    "Exclusive private investments"}
-                </p>
-              </CardContent>
-            </Card>
-          </section>
-
-          {/* Search */}
-          <section>
-            <div className="relative max-w-sm">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={`Search ${marketTypeLabels[
-                  activeMarketType
-                ].label.toLowerCase()}...`}
-                className="pl-10 h-10 bg-card border-border"
-              />
-            </div>
-          </section>
-
-          {/* Filters */}
-          <section className="flex flex-wrap gap-2">
-            {(
-              [
-                ["all", "All"],
-                ["top_gainers", "Top Gainers"],
-                ["top_losers", "Top Losers"],
-                ["most_active", "Most Active"],
-                ["financial_services", "Financial Services"],
-                ["consumer_goods", "Consumer Goods"],
-                ["oil_gas", "Oil & Gas"],
-                ["telecoms", "Telecommunications"],
-              ] as const
-            ).map(([key, label]) => (
-              <button
-                key={key}
-                onClick={() => setActiveFilter(key)}
-                className={cn(
-                  "rounded-md border border-border px-3 py-1 text-xs transition-colors",
-                  activeFilter === key
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-card text-muted-foreground hover:text-foreground hover:bg-muted"
-                )}
-              >
-                {label}
-              </button>
-            ))}
-          </section>
-
-          {/* Table */}
-          <section>
-            <Card className="bg-card border-border">
-              <CardContent className="p-0">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b border-border text-muted-foreground">
-                        <th className="py-3 px-4 text-left w-10"></th>
-                        <th className="py-3 px-4 text-left">Symbol</th>
-                        <th className="py-3 px-4 text-right">Price</th>
-                        <th className="py-3 px-4 text-right">Change %</th>
-                        <th className="py-3 px-4 text-right hidden md:table-cell">
-                          Volume
-                        </th>
-                        <th className="py-3 px-4 text-right hidden lg:table-cell">
-                          Rel Volume
-                        </th>
-                        <th className="py-3 px-4 text-right hidden lg:table-cell">
-                          Market cap
-                        </th>
-                        <th className="py-3 px-4 text-right hidden xl:table-cell">
-                          P/E
-                        </th>
-                        <th className="py-3 px-4 text-right hidden lg:table-cell">
-                          Sector
-                        </th>
-                        <th className="py-3 px-4 text-right hidden lg:table-cell">
-                          Rating
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredMarkets.map((m) => {
-                        const f = fundamentalsFor(m);
-                        const up = m.change24h >= 0;
-                        return (
-                          <tr
-                            key={m.symbol}
-                            className="border-b border-border hover:bg-muted/40 transition-colors cursor-pointer"
-                            onClick={() => handleMarketClick(m)}
-                          >
-                            <td className="py-3 px-4">
-                              <Star
-                                className={cn(
-                                  "h-4 w-4",
-                                  m.isFavorite
-                                    ? "fill-yellow-500 text-yellow-500"
-                                    : "text-muted-foreground"
-                                )}
-                                onClick={(e) => e.stopPropagation()}
-                              />
-                            </td>
-                            <td className="py-3 px-4">
-                              <div className="flex items-center gap-3 min-w-[180px]">
-                                <div
-                                  className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs font-bold text-foreground"
-                                  style={{
-                                    backgroundColor: m.color || undefined,
-                                  }}
-                                >
-                                  {m.baseAsset.slice(0, 2)}
-                                </div>
-                                <div className="min-w-0">
-                                  <div className="font-semibold text-foreground truncate">
-                                    {m.baseAsset}
-                                  </div>
-                                  <div className="text-xs text-muted-foreground truncate">
-                                    {m.name}
-                                  </div>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="py-3 px-4 text-right text-foreground">
-                              {m.quoteAsset === "USD" ? "$" : "₦"}
-                              {m.price.toLocaleString(undefined, {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2,
-                              })}
-                            </td>
-                            <td
+                  </div>
+                  <div className="space-y-3">
+                    {hotAssets.length > 0 ? (
+                      hotAssets.map((m) => (
+                        <div
+                          key={m.symbol}
+                          className="flex items-center justify-between gap-3 cursor-pointer hover:bg-muted/50 rounded p-1 -m-1"
+                          onClick={() => handleMarketClick(m)}
+                        >
+                          <div className="min-w-0">
+                            <div className="text-sm text-foreground truncate">
+                              {m.name}
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-sm text-foreground">
+                              {m.price.toFixed(2)}
+                            </div>
+                            <div
                               className={cn(
-                                "py-3 px-4 text-right font-medium",
-                                up ? "text-green-500" : "text-red-500"
+                                "text-xs",
+                                m.change24h >= 0
+                                  ? "text-green-500"
+                                  : "text-red-500"
                               )}
                             >
-                              <span className="inline-flex items-center justify-end gap-1">
-                                {up ? (
-                                  <TrendingUp className="h-4 w-4" />
-                                ) : (
-                                  <TrendingDown className="h-4 w-4" />
-                                )}
-                                {up ? "+" : ""}
-                                {m.change24h.toFixed(2)}%
-                              </span>
-                            </td>
-                            <td className="py-3 px-4 text-right text-muted-foreground hidden md:table-cell">
-                              ₦{(m.volume24h / 1_000_000).toFixed(2)}M
-                            </td>
-                            <td className="py-3 px-4 text-right text-muted-foreground hidden lg:table-cell">
-                              {f.relVolume.toFixed(2)}
-                            </td>
-                            <td className="py-3 px-4 text-right text-muted-foreground hidden lg:table-cell">
-                              ₦{(f.marketCap / 1_000_000_000).toFixed(0)}B
-                            </td>
-                            <td className="py-3 px-4 text-right text-muted-foreground hidden xl:table-cell">
-                              {f.pe.toFixed(2)}
-                            </td>
-                            <td className="py-3 px-4 text-right text-muted-foreground hidden lg:table-cell">
-                              {m.sector ?? "—"}
-                            </td>
-                            <td
+                              {m.change24h >= 0 ? "+" : ""}
+                              {m.change24h.toFixed(2)}%
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-sm text-muted-foreground">
+                        No assets available
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-card border-border">
+                <CardContent className="p-4">
+                  <div className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+                    <Star className="h-4 w-4 text-primary" /> New listings
+                  </div>
+                  <div className="space-y-3">
+                    {newListings.length > 0 ? (
+                      newListings.map((m) => (
+                        <div
+                          key={m.symbol}
+                          className="flex items-center justify-between gap-3 cursor-pointer hover:bg-muted/50 rounded p-1 -m-1"
+                          onClick={() => handleMarketClick(m)}
+                        >
+                          <div className="min-w-0">
+                            <div className="text-sm text-foreground truncate">
+                              {m.name}
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-sm text-foreground">
+                              {m.price.toFixed(2)}
+                            </div>
+                            <div
                               className={cn(
-                                "py-3 px-4 text-right hidden lg:table-cell",
-                                f.analyst === "Neutral"
-                                  ? "text-muted-foreground"
-                                  : "text-green-500"
+                                "text-xs",
+                                m.change24h >= 0
+                                  ? "text-green-500"
+                                  : "text-red-500"
                               )}
                             >
-                              {f.analyst}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                              {m.change24h >= 0 ? "+" : ""}
+                              {m.change24h.toFixed(2)}%
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-sm text-muted-foreground">
+                        No listings
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
 
-                  {filteredMarkets.length === 0 && (
-                    <div className="py-12 text-center text-muted-foreground">
-                      <p>
-                        No markets found for{" "}
-                        {marketTypeLabels[activeMarketType].label}
-                      </p>
-                      <p className="text-sm mt-1">
-                        Try adjusting your search or filters.
-                      </p>
+              <Card className="bg-card border-border">
+                <CardContent className="p-4">
+                  <div className="text-sm font-semibold text-foreground mb-3">
+                    Market Stats
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <div className="text-xs text-muted-foreground">
+                        Total Volume
+                      </div>
+                      <div className="text-foreground font-semibold">
+                        ₦{(stats.totalVolume / 1_000_000).toFixed(1)}M
+                      </div>
                     </div>
+                    <div>
+                      <div className="text-xs text-muted-foreground">
+                        Active Pairs
+                      </div>
+                      <div className="text-foreground font-semibold">
+                        {typeMarkets.length}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-card border-border">
+                <CardContent className="p-4">
+                  <div className="text-sm font-semibold text-foreground mb-3">
+                    Market Type
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {marketTypeLabels[activeMarketType].icon}
+                    <span className="text-foreground font-medium">
+                      {marketTypeLabels[activeMarketType].label}
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    {activeMarketType === "stock" &&
+                      "Buy and sell assets at current market prices"}
+                    {activeMarketType === "futures" &&
+                      "Trade contracts with leverage"}
+                    {activeMarketType === "options" &&
+                      "Trade options contracts"}
+                    {activeMarketType === "private" &&
+                      "Exclusive private investments"}
+                  </p>
+                </CardContent>
+              </Card>
+            </section>
+
+            {/* Search */}
+            <section>
+              <div className="relative max-w-sm">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={`Search ${marketTypeLabels[
+                    activeMarketType
+                  ].label.toLowerCase()}...`}
+                  className="pl-10 h-10 bg-card border-border"
+                />
+              </div>
+            </section>
+
+            {/* Filters */}
+            <section className="flex flex-wrap gap-2">
+              {(
+                [
+                  ["all", "All"],
+                  ["top_gainers", "Top Gainers"],
+                  ["top_losers", "Top Losers"],
+                  ["most_active", "Most Active"],
+                  ["financial_services", "Financial Services"],
+                  ["consumer_goods", "Consumer Goods"],
+                  ["oil_gas", "Oil & Gas"],
+                  ["telecoms", "Telecommunications"],
+                ] as const
+              ).map(([key, label]) => (
+                <button
+                  key={key}
+                  onClick={() => setActiveFilter(key)}
+                  className={cn(
+                    "rounded-md border border-border px-3 py-1 text-xs transition-colors",
+                    activeFilter === key
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-card text-muted-foreground hover:text-foreground hover:bg-muted"
                   )}
-                </div>
-              </CardContent>
-            </Card>
-          </section>
-        </div>
-      </main>
+                >
+                  {label}
+                </button>
+              ))}
+            </section>
+
+            {/* Table */}
+            <section>
+              <Card className="bg-card border-border">
+                <CardContent className="p-0">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-border text-muted-foreground">
+                          <th className="py-3 px-4 text-left w-10"></th>
+                          <th className="py-3 px-4 text-left">Symbol</th>
+                          <th className="py-3 px-4 text-right">Price</th>
+                          <th className="py-3 px-4 text-right">Change %</th>
+                          <th className="py-3 px-4 text-right hidden md:table-cell">
+                            Volume
+                          </th>
+                          <th className="py-3 px-4 text-right hidden lg:table-cell">
+                            Rel Volume
+                          </th>
+                          <th className="py-3 px-4 text-right hidden lg:table-cell">
+                            Market cap
+                          </th>
+                          <th className="py-3 px-4 text-right hidden xl:table-cell">
+                            P/E
+                          </th>
+                          <th className="py-3 px-4 text-right hidden lg:table-cell">
+                            Sector
+                          </th>
+                          <th className="py-3 px-4 text-right hidden lg:table-cell">
+                            Rating
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredMarkets.map((m) => {
+                          const f = fundamentalsFor(m);
+                          const up = m.change24h >= 0;
+                          return (
+                            <tr
+                              key={m.symbol}
+                              className="border-b border-border hover:bg-muted/40 transition-colors cursor-pointer"
+                              onClick={() => handleMarketClick(m)}
+                            >
+                              <td className="py-3 px-4">
+                                <Star
+                                  className={cn(
+                                    "h-4 w-4",
+                                    m.isFavorite
+                                      ? "fill-yellow-500 text-yellow-500"
+                                      : "text-muted-foreground"
+                                  )}
+                                  onClick={(e) => e.stopPropagation()}
+                                />
+                              </td>
+                              <td className="py-3 px-4">
+                                <div className="flex items-center gap-3 min-w-[180px]">
+                                  <div
+                                    className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs font-bold text-foreground"
+                                    style={{
+                                      backgroundColor: m.color || undefined,
+                                    }}
+                                  >
+                                    {m.baseAsset.slice(0, 2)}
+                                  </div>
+                                  <div className="min-w-0">
+                                    <div className="font-semibold text-foreground truncate">
+                                      {m.baseAsset}
+                                    </div>
+                                    <div className="text-xs text-muted-foreground truncate">
+                                      {m.name}
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="py-3 px-4 text-right text-foreground">
+                                {m.quoteAsset === "USD" ? "$" : "₦"}
+                                {m.price.toLocaleString(undefined, {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                })}
+                              </td>
+                              <td
+                                className={cn(
+                                  "py-3 px-4 text-right font-medium",
+                                  up ? "text-green-500" : "text-red-500"
+                                )}
+                              >
+                                <span className="inline-flex items-center justify-end gap-1">
+                                  {up ? (
+                                    <TrendingUp className="h-4 w-4" />
+                                  ) : (
+                                    <TrendingDown className="h-4 w-4" />
+                                  )}
+                                  {up ? "+" : ""}
+                                  {m.change24h.toFixed(2)}%
+                                </span>
+                              </td>
+                              <td className="py-3 px-4 text-right text-muted-foreground hidden md:table-cell">
+                                ₦{(m.volume24h / 1_000_000).toFixed(2)}M
+                              </td>
+                              <td className="py-3 px-4 text-right text-muted-foreground hidden lg:table-cell">
+                                {f.relVolume.toFixed(2)}
+                              </td>
+                              <td className="py-3 px-4 text-right text-muted-foreground hidden lg:table-cell">
+                                ₦{(f.marketCap / 1_000_000_000).toFixed(0)}B
+                              </td>
+                              <td className="py-3 px-4 text-right text-muted-foreground hidden xl:table-cell">
+                                {f.pe.toFixed(2)}
+                              </td>
+                              <td className="py-3 px-4 text-right text-muted-foreground hidden lg:table-cell">
+                                {m.sector ?? "—"}
+                              </td>
+                              <td
+                                className={cn(
+                                  "py-3 px-4 text-right hidden lg:table-cell",
+                                  f.analyst === "Neutral"
+                                    ? "text-muted-foreground"
+                                    : "text-green-500"
+                                )}
+                              >
+                                {f.analyst}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+
+                    {filteredMarkets.length === 0 && (
+                      <div className="py-12 text-center text-muted-foreground">
+                        <p>
+                          No markets found for{" "}
+                          {marketTypeLabels[activeMarketType].label}
+                        </p>
+                        <p className="text-sm mt-1">
+                          Try adjusting your search or filters.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </section>
+          </div>
+        </main>
+      )}
     </div>
   );
 };

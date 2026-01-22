@@ -44,6 +44,8 @@ const TradingPage = () => {
 
   const orderBookPosition = config.theme.layout.orderBookPosition || "right";
 
+  console.log("mockMarkets", mockMarkets);
+
   const availableMarkets = useMemo(() => {
     return mockMarkets.filter((m) => {
       if (m.type === "stock" && config.services.includes("stock")) return true;
@@ -51,6 +53,11 @@ const TradingPage = () => {
         m.type === "derivative" &&
         (config.services.includes("futures") ||
           config.services.includes("options"))
+      )
+        return true;
+      if (
+        m.type === "private_market" &&
+        config.services.includes("private_markets")
       )
         return true;
       if (m.type === "crypto" && config.services.includes("stock")) return true;
