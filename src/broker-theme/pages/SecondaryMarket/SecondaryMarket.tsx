@@ -5,9 +5,8 @@
  */
 
 import React, { useState, useMemo, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
-import { useBrokerPaths } from "@/broker-theme/hooks/useBrokerPaths";
+import { useBrokerNavigation } from "@/broker-theme/hooks/useBrokerNavigation";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -333,8 +332,7 @@ const formatCountdown = (ms: number): string => {
 };
 
 const SecondaryMarket: React.FC = () => {
-  const navigate = useNavigate();
-  const { appPrefix } = useBrokerPaths();
+  const { navigate, buildAppLink } = useBrokerNavigation();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<
     "live" | "upcoming" | "ended"
@@ -436,7 +434,7 @@ const SecondaryMarket: React.FC = () => {
   }, [searchQuery, activeFilter, sortField, sortDirection]);
 
   const handleTokenClick = (token: TokenData) => {
-    navigate(`${appPrefix}/markets/secondary/${token.id}`);
+    navigate(buildAppLink(`/markets/secondary/${token.id}`));
   };
 
   const handleSort = (field: string) => {

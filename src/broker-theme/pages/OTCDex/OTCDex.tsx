@@ -4,9 +4,8 @@
  */
 
 import React, { useState, useMemo, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
-import { useBrokerPaths } from "@/broker-theme/hooks/useBrokerPaths";
+import { useBrokerNavigation } from "@/broker-theme/hooks/useBrokerNavigation";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -370,8 +369,7 @@ const calculateNeedlePosition = (value: number): { cx: number; cy: number } => {
 };
 
 const OTCDex: React.FC = () => {
-  const navigate = useNavigate();
-  const { appPrefix } = useBrokerPaths();
+  const { navigate, buildAppLink } = useBrokerNavigation();
   const [searchQuery, setSearchQuery] = useState("");
   const [sideFilter, setSideFilter] = useState<"all" | "buy" | "sell">("all");
   const [otcScore, setOtcScore] = useState(0);
@@ -441,7 +439,7 @@ const OTCDex: React.FC = () => {
   }, [searchQuery, sideFilter, showWatchlistOnly, watchlist]);
 
   const handleOfferClick = (offer: DealerOffer) => {
-    navigate(`${appPrefix}/otc-desk/${offer.id}`);
+    navigate(buildAppLink(`/otc-desk/${offer.id}`));
   };
 
   const totalVolume = mockDealerOffers.reduce((sum, o) => sum + o.volume24h, 0);

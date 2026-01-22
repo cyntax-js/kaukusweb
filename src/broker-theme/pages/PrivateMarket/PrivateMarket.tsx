@@ -4,8 +4,7 @@
  */
 
 import { useMemo, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useBrokerPaths } from "@/broker-theme/hooks/useBrokerPaths";
+import { useBrokerNavigation } from "@/broker-theme/hooks/useBrokerNavigation";
 import {
   ChevronLeft,
   ChevronRight,
@@ -1162,8 +1161,7 @@ const formatAmount = (v: number) =>
     : `₦${(v / 1_000_000).toFixed(0)}M`;
 
 const PrivateMarket = () => {
-  const navigate = useNavigate();
-  const { appPrefix } = useBrokerPaths();
+  const { navigate, buildAppLink } = useBrokerNavigation();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [selectedType, setSelectedType] = useState<string>("all");
@@ -1255,7 +1253,7 @@ const PrivateMarket = () => {
     );
 
   const handleCardClick = (securityId: string) => {
-    navigate(`${appPrefix}/markets/private/${securityId}`);
+    navigate(buildAppLink(`/markets/private/${securityId}`));
   };
 
   // Featured Card Component
@@ -1779,7 +1777,7 @@ const PrivateMarket = () => {
                 <Button
                   variant="outline"
                   className="w-full justify-start rounded-lg h-10"
-                  onClick={() => navigate(`${appPrefix}/portfolio`)}
+                  onClick={() => navigate(buildAppLink("/portfolio"))}
                 >
                   <Eye className="h-4 w-4 mr-2" />
                   View Portfolio
