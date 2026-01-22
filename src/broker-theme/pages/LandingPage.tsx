@@ -413,13 +413,15 @@ const LandingPage = () => {
                     style={{ animationDelay: `${index * 0.1}s` }}
                   >
                     <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary mb-5 group-hover:scale-110 transition-transform">
-                      {info.icon}
+                      {/* {info.icon} */}
                     </div>
                     <h3 className="text-xl font-semibold text-foreground mb-3">
-                      {info.title}
+                      {/* {info.title || "hhh"} */}
+                      hhh
                     </h3>
                     <p className="text-muted-foreground leading-relaxed">
-                      {info.description}
+                      {/* {info.description || "uuu"} */}
+                      hhh
                     </p>
                     <ArrowRight className="h-5 w-5 text-primary mt-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
