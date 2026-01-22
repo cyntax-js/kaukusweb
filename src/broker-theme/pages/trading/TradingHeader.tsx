@@ -1,17 +1,23 @@
+/**
+ * Trading Header - Used on trading page
+ */
+
 import { Search, ChevronDown, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useBrokerPaths } from "@/broker-theme/hooks/useBrokerPaths";
 import { Button } from "@/components/ui/button";
 import BrokerLanguageSwitcher from "@/broker-theme/components/BrokerLanguageSwitcher";
 
 const TradingHeader = () => {
   const navigate = useNavigate();
+  const { publicPrefix, appPrefix } = useBrokerPaths();
 
   return (
     <header className="h-14 bg-[hsl(var(--trading-bg))] border-b border-[hsl(var(--trading-border))] flex items-center justify-between px-4">
       <div className="flex items-center gap-6">
         <div
           className="text-white font-bold text-xl cursor-pointer hover:opacity-80 transition-opacity"
-          onClick={() => navigate("/")}
+          onClick={() => navigate(publicPrefix || '/')}
         >
           ContiSX
         </div>
@@ -19,16 +25,10 @@ const TradingHeader = () => {
           <Button
             variant="ghost"
             className="text-sm text-[hsl(var(--trading-text-primary))] hover:text-white"
-            onClick={() => navigate("/markets")}
+            onClick={() => navigate(`${appPrefix}/markets`)}
           >
             Markets
           </Button>
-          {/* <Button
-            variant="ghost"
-            className="text-sm text-[hsl(var(--trading-text-primary))] hover:text-white"
-          >
-            Trade <ChevronDown className="w-4 h-4 ml-1" />
-          </Button> */}
 
           <Button
             variant="ghost"

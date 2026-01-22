@@ -33,6 +33,7 @@ import {
   LegalPage as BrokerLegalPage,
   OTCDexPage as BrokerOTCDexPage,
   OTCDexDetailPage as BrokerOTCDexDetailPage,
+  BrokerNotFound,
 } from "@/broker-theme/pages";
 
 // Platform Pages
@@ -187,7 +188,7 @@ const BrokerModeApp = () => (
             <Route path="/portfolio" element={<BrokerPortfolioPage />} />
             <Route path="/settings" element={<BrokerSettingsPage />} />
           </Route>
-          <Route path="*" element={<NotFound />} />
+          <Route path="*" element={<BrokerNotFound />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
