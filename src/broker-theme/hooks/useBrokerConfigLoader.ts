@@ -118,7 +118,7 @@ function getBrokerIdFromUrl(): string | null {
 /**
  * Unified hook for loading broker config with priority:
  * 1. Bootstrap config (from subdomain/API)
- * 2. URL ?broker= param (fetch from API)
+ * 2. URL ?broker= param (fetch from API)k
  * 3. Deployment store (if meaningful)
  * 4. Demo fallback
  */
