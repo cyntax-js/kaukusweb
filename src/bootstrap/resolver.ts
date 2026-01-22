@@ -118,6 +118,14 @@ export function resolveTenant(): TenantResolution {
       return { type: 'broker', subdomain: brokerParam, basePath };
     }
     
+    // Fallback: check localStorage for previously cached broker key
+    // This allows deep links to survive page reloads when ?broker= is missing
+    const cachedBrokerKey = getCachedBrokerKeyFromLocalStorage();
+    if (cachedBrokerKey && pathname.startsWith('/preview')) {
+      console.log('[Resolver] Fallback to cached broker:', cachedBrokerKey);
+      return { type: 'broker', subdomain: cachedBrokerKey, basePath: '/preview' };
+    }
+    
     // No broker param on preview = platform mode
     return { type: 'platform', subdomain: null, basePath: '' };
   }
@@ -138,6 +146,17 @@ export function resolveTenant(): TenantResolution {
   // Case 4: Unknown domain - default to platform (safe fallback)
   console.log('[Resolver] Unknown domain, defaulting to platform mode');
   return { type: 'platform', subdomain: null, basePath: '' };
+}
+
+/**
+ * Get cached broker key from localStorage (for resolver fallback)
+ */
+function getCachedBrokerKeyFromLocalStorage(): string | null {
+  try {
+    return localStorage.getItem('ContiSX_last_broker');
+  } catch {
+    return null;
+  }
 }
 
 /**

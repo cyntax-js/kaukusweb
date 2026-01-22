@@ -1,23 +1,33 @@
 /**
  * Preview Layout - Wrapper for broker preview routes
- * Uses unified config loader hook and stores config in Zustand
+ * Uses unified config loader hook and stores config in both:
+ * 1. Theme Zustand store (for React context)
+ * 2. IndexedDB-persisted broker config store (for reload persistence)
  */
 
 import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { ThemeProvider, useThemeStore } from '@/broker-theme/config';
 import { useBrokerConfigLoader } from '@/broker-theme/hooks';
+import { useBrokerConfigStore } from '@/broker-theme/stores';
+import { getBrokerParam } from '@/broker-theme/hooks/useBrokerNavigation';
 
 export const PreviewLayout = () => {
   const { config, isLoading, error } = useBrokerConfigLoader();
   const { setConfig } = useThemeStore();
+  const { setConfig: persistConfig } = useBrokerConfigStore();
 
   // Store config in Zustand so it persists and all components can access it
   useEffect(() => {
     if (config) {
+      // Update the theme store (for React context)
       setConfig(config);
+      
+      // Persist to IndexedDB store for reload survival
+      const brokerKey = getBrokerParam() || config.subdomain || 'demo';
+      persistConfig(brokerKey, config);
     }
-  }, [config, setConfig]);
+  }, [config, setConfig, persistConfig]);
 
   if (isLoading) {
     return (
