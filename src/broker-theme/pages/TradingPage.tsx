@@ -7,7 +7,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTheme } from "@/broker-theme/config";
-import { useRoutePrefix } from "@/broker-theme/hooks";
+import { useBrokerPaths } from "@/broker-theme/hooks/useBrokerPaths";
 import { mockMarkets, Market } from "@/data/mockTradingData";
 
 import { AppHeader, DepositWithdrawModal } from "@/broker-theme/components";
@@ -28,7 +28,7 @@ const TradingPage = () => {
     pair?: string;
   }>();
   const navigate = useNavigate();
-  const routePrefix = useRoutePrefix();
+  const { appPrefix } = useBrokerPaths();
 
   const [selectedMarket, setSelectedMarket] = useState<Market | null>(null);
   const [ngnBalance] = useState(1000000);
@@ -67,7 +67,7 @@ const TradingPage = () => {
   const handleSelectMarket = (market: Market) => {
     setSelectedMarket(market);
     const serviceType = market.type === "derivative" ? "futures" : "stock";
-    navigate(`${routePrefix}/${serviceType}/trade/${serviceType}/${market.symbol}`, { replace: true });
+    navigate(`${appPrefix}/trade/${serviceType}/${market.symbol}`, { replace: true });
   };
 
   const handlePlaceOrder = async (order: any) => {

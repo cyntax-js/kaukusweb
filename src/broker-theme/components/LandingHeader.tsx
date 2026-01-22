@@ -3,8 +3,9 @@
  * Shows: Logo, About, Legal, Get Started
  */
 
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useTheme } from '@/broker-theme/config';
+import { useBrokerPaths } from '@/broker-theme/hooks/useBrokerPaths';
 import BrokerLogo from './BrokerLogo';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -16,10 +17,7 @@ interface LandingHeaderProps {
 
 const LandingHeader = ({ className }: LandingHeaderProps) => {
   const { config } = useTheme();
-  const location = useLocation();
-  
-  // For public pages, stay at root level (/preview or /app)
-  const routePrefix = location.pathname.startsWith('/app') ? '/app' : '/preview';
+  const { publicPrefix } = useBrokerPaths();
 
   return (
     <header
@@ -30,19 +28,19 @@ const LandingHeader = ({ className }: LandingHeaderProps) => {
     >
       <div className="mx-auto max-w-screen-2xl px-6 h-14 flex items-center justify-between">
         <div className="flex items-center gap-8">
-          <Link to={routePrefix} className="shrink-0">
+          <Link to={publicPrefix || '/'} className="shrink-0">
             <BrokerLogo size="md" showName />
           </Link>
 
           <nav className="hidden md:flex items-center gap-6">
             <Link
-              to={`${routePrefix}/about`}
+              to={`${publicPrefix}/about`}
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               About
             </Link>
             <Link
-              to={`${routePrefix}/legal`}
+              to={`${publicPrefix}/legal`}
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               Legal
@@ -52,12 +50,12 @@ const LandingHeader = ({ className }: LandingHeaderProps) => {
 
         <div className="flex items-center gap-3">
           <BrokerLanguageSwitcher />
-          <Link to={`${routePrefix}/login`}>
+          <Link to={`${publicPrefix}/login`}>
             <Button variant="ghost" size="sm">
               Login
             </Button>
           </Link>
-          <Link to={`${routePrefix}/signup`}>
+          <Link to={`${publicPrefix}/signup`}>
             <Button size="sm">
               Get Started
             </Button>

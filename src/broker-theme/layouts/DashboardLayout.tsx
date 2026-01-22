@@ -8,6 +8,7 @@ import { type ReactNode, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTheme } from "@/broker-theme/config";
 import { useBrokerAuthStore } from "@/broker-theme/stores";
+import { useBrokerPaths } from "@/broker-theme/hooks/useBrokerPaths";
 import { cn } from "@/lib/utils";
 import {
   Wallet,
@@ -42,13 +43,9 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const { user, isAuthenticated, logout } = useBrokerAuthStore();
   const location = useLocation();
   const navigate = useNavigate();
+  const { publicPrefix, appPrefix } = useBrokerPaths();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const variant = config.theme.layout.dashboard;
-
-  // Determine route prefix
-  const routePrefix = location.pathname.startsWith("/app")
-    ? "/app"
-    : "/preview";
 
   // Build market options based on enabled services
   const marketOptions = [
@@ -79,7 +76,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const handleLogout = () => {
     logout();
     toast.success("Logged out successfully");
-    navigate(routePrefix);
+    navigate(publicPrefix || '/');
   };
 
   const userInitials = user
@@ -116,7 +113,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           </>
         )}
         <DropdownMenuItem
-          onClick={() => navigate(`${routePrefix}/portfolio`)}
+          onClick={() => navigate(`${appPrefix}/portfolio`)}
           className="cursor-pointer"
         >
           <User className="mr-2 h-4 w-4" />
@@ -144,7 +141,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             isSidebar
               ? "px-4 py-3 rounded-lg text-sm font-medium hover:bg-muted"
               : "px-4 py-2 rounded-lg text-sm font-medium hover:bg-muted",
-            isActive(`${routePrefix}/markets`)
+            isActive(`${appPrefix}/markets`)
               ? isSidebar
                 ? "bg-primary text-primary-foreground"
                 : "bg-primary text-primary-foreground"
@@ -160,7 +157,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         {marketOptions.map((option) => (
           <DropdownMenuItem
             key={option.id}
-            onClick={() => navigate(`${routePrefix}/markets/${option.id}`)}
+            onClick={() => navigate(`${appPrefix}/markets/${option.id}`)}
             className="cursor-pointer"
           >
             {option.icon}
@@ -171,7 +168,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           <>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              onClick={() => navigate(`${routePrefix}/markets/private`)}
+              onClick={() => navigate(`${appPrefix}/markets/private`)}
               className="cursor-pointer"
             >
               <Lock className="h-4 w-4" />
@@ -201,7 +198,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           <div className="flex flex-col h-full">
             <div className="h-16 flex items-center justify-between px-6 border-b border-border">
               <Link
-                to={routePrefix}
+                to={publicPrefix || '/'}
                 className="text-lg font-bold text-foreground"
               >
                 {config.brokerName || "Trading"}
@@ -220,10 +217,10 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
               {config.pages.portfolio && (
                 <Link
-                  to={`${routePrefix}/portfolio`}
+                  to={`${appPrefix}/portfolio`}
                   className={cn(
                     "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors",
-                    isActive(`${routePrefix}/portfolio`)
+                    isActive(`${appPrefix}/portfolio`)
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted"
                   )}
