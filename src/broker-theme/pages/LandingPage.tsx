@@ -384,53 +384,6 @@ const LandingPage = () => {
       </section>
 
       {/* Services Section */}
-      {services.length > 0 && (
-        <section className="py-24 bg-muted/30 relative overflow-hidden">
-          <div
-            className="absolute inset-0 opacity-[0.02]"
-            style={{
-              backgroundImage:
-                "radial-gradient(hsl(var(--foreground)) 1px, transparent 1px)",
-              backgroundSize: "30px 30px",
-            }}
-          />
-          <div className="container mx-auto px-6 relative">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                Trade Every Market
-              </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Comprehensive trading solutions for every investment strategy
-              </p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {services.map((service, index) => {
-                const info = serviceInfo[service];
-                return (
-                  <div
-                    key={service}
-                    className="group relative bg-card rounded-2xl border border-border p-6 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 hover:-translate-y-1"
-                    style={{ animationDelay: `${index * 0.1}s` }}
-                  >
-                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary mb-5 group-hover:scale-110 transition-transform">
-                      {/* {info.icon} */}
-                    </div>
-                    <h3 className="text-xl font-semibold text-foreground mb-3">
-                      {/* {info.title || "hhh"} */}
-                      hhh
-                    </h3>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {/* {info.description || "uuu"} */}
-                      hhh
-                    </p>
-                    <ArrowRight className="h-5 w-5 text-primary mt-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Features Section */}
       <section className="py-24 relative overflow-hidden">
