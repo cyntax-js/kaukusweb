@@ -14,7 +14,7 @@ import {
 import { GuestRoute, ProtectedRoute } from "@/components/AuthWrappers";
 
 // Bootstrap system for tenant detection
-import { isInBrokerMode } from "@/bootstrap";
+import { getBrokerBasePath, isInBrokerMode } from "@/bootstrap";
 
 // Broker Theme System
 import { registerMockBrokers } from "@/broker-theme/config";
@@ -166,7 +166,7 @@ const BrokerModeApp = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <BrowserRouter basename={getBrokerBasePath()}>
         <Routes>
           {/* Broker routes - config already loaded by bootstrap */}
           <Route element={<BrokerAppLayout />}>
