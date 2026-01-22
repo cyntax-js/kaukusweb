@@ -5,7 +5,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTheme } from "@/broker-theme/config";
-import { useRoutePrefix } from "@/broker-theme/hooks";
+import { useBrokerPaths } from "@/broker-theme/hooks/useBrokerPaths";
 import { AppHeader } from "@/broker-theme/components";
 import { mockMarkets, type Market } from "@/data/mockTradingData";
 import { Card, CardContent } from "@/components/ui/card";
@@ -82,7 +82,7 @@ const MarketsPage = () => {
     marketId?: string;
   }>();
   const navigate = useNavigate();
-  const routePrefix = useRoutePrefix();
+  const { appPrefix } = useBrokerPaths();
 
   // Check route types
   const isPrivateMarketDetail =
@@ -208,7 +208,7 @@ const MarketsPage = () => {
         : market.type === "stock"
           ? "stock"
           : market.type;
-    navigate(`${routePrefix}/trade/${serviceType}/${market.symbol}`);
+    navigate(`${appPrefix}/trade/${serviceType}/${market.symbol}`);
   };
 
   const handleTypeChange = (type: MarketType) => {

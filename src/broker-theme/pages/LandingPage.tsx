@@ -4,8 +4,9 @@
  * ============================================================
  */
 
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTheme } from "@/broker-theme/config";
+import { useBrokerPaths } from "@/broker-theme/hooks/useBrokerPaths";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -96,7 +97,7 @@ const generateTickerData = () => [
 
 const LandingPage = () => {
   const { config } = useTheme();
-  const location = useLocation();
+  const { publicPrefix, appPrefix } = useBrokerPaths();
   const { brokerName, services } = config;
   const [tickerData, setTickerData] = useState(generateTickerData());
 
@@ -107,13 +108,6 @@ const LandingPage = () => {
     }, 3000);
     return () => clearInterval(interval);
   }, []);
-
-  const publicPrefix = location.pathname.startsWith("/app")
-    ? "/app"
-    : "/preview";
-  const appPrefix = location.pathname.startsWith("/app")
-    ? "/app"
-    : "/preview/app";
 
   const defaultMarketPath = services.includes("stock")
     ? `${appPrefix}/markets/stock`

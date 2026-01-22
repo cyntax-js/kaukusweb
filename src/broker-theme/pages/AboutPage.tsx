@@ -4,8 +4,9 @@
  * ============================================================
  */
 
-import { useLocation, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTheme } from "@/broker-theme/config";
+import { useBrokerPaths } from "@/broker-theme/hooks/useBrokerPaths";
 import { Button } from "@/components/ui/button";
 import {
   Shield,
@@ -24,15 +25,8 @@ import {
 
 const AboutPage = () => {
   const { config } = useTheme();
-  const location = useLocation();
+  const { publicPrefix, appPrefix } = useBrokerPaths();
   const { brokerName } = config;
-
-  const publicPrefix = location.pathname.startsWith("/app")
-    ? "/app"
-    : "/preview";
-  const appPrefix = location.pathname.startsWith("/app")
-    ? "/app"
-    : "/preview/app";
 
   const values = [
     {

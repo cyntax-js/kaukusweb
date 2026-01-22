@@ -9,10 +9,11 @@
  * Route: /preview/login
  */
 
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useTheme } from "@/broker-theme/config";
 import { useBrokerAuthStore } from "@/broker-theme/stores";
+import { useBrokerPaths } from "@/broker-theme/hooks/useBrokerPaths";
 import { AuthLayout } from "@/broker-theme/layouts";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,21 +29,13 @@ import { Loader2 } from "lucide-react";
 const LoginPage = () => {
   const { config } = useTheme();
   const navigate = useNavigate();
-  const location = useLocation();
+  const { publicPrefix, appPrefix } = useBrokerPaths();
   const { login, isLoading, error, isAuthenticated, clearError } =
     useBrokerAuthStore();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-
-  // Determine route prefix based on current path
-  const publicPrefix = location.pathname.startsWith("/app")
-    ? "/app"
-    : "/preview";
-  const appPrefix = location.pathname.startsWith("/app")
-    ? "/app"
-    : "/preview/app";
 
   // Redirect if already authenticated
   useEffect(() => {
