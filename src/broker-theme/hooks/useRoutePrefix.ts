@@ -1,16 +1,23 @@
 /**
  * Route Prefix Hook
  * Provides the correct route prefix for broker app pages
- * Replaces scattered pathname checks throughout the codebase
+ * 
+ * In broker mode: Returns "" (basename handles path construction)
+ * In platform mode: Returns "/preview/app" or "/app" based on current pathname
  */
 
-import { useLocation } from 'react-router-dom';
+import { isInBrokerMode } from '@/bootstrap';
 
 /**
  * Get the route prefix for navigation within broker app
- * Returns '/preview/app' for preview mode, '/app' for production
  */
 export function useRoutePrefix(): string {
-  const { pathname } = useLocation();
-  return pathname.includes('/preview/app') ? '/preview/app' : '/app';
+  // In broker mode, BrowserRouter has basename set - use empty prefix
+  if (isInBrokerMode()) {
+    return '';
+  }
+  
+  // Platform mode - check pathname
+  const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
+  return pathname.startsWith('/preview/app') ? '/preview/app' : '/app';
 }

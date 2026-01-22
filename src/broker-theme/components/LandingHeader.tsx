@@ -18,6 +18,9 @@ interface LandingHeaderProps {
 const LandingHeader = ({ className }: LandingHeaderProps) => {
   const { config } = useTheme();
   const { publicPrefix } = useBrokerPaths();
+  
+  // Home link - use publicPrefix or "/" if empty
+  const homeLink = publicPrefix || '/';
 
   return (
     <header
@@ -28,7 +31,7 @@ const LandingHeader = ({ className }: LandingHeaderProps) => {
     >
       <div className="mx-auto max-w-screen-2xl px-6 h-14 flex items-center justify-between">
         <div className="flex items-center gap-8">
-          <Link to={publicPrefix || '/'} className="shrink-0">
+          <Link to={homeLink} className="shrink-0">
             <BrokerLogo size="md" showName />
           </Link>
 
