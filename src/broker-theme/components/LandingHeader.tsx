@@ -1,11 +1,12 @@
 /**
  * Landing page specific header for broker platform
  * Shows: Logo, About, Legal, Get Started
+ * Preserves ?broker= param in preview mode
  */
 
 import { Link } from 'react-router-dom';
 import { useTheme } from '@/broker-theme/config';
-import { useBrokerPaths } from '@/broker-theme/hooks/useBrokerPaths';
+import { useBrokerNavigation } from '@/broker-theme/hooks/useBrokerNavigation';
 import BrokerLogo from './BrokerLogo';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -17,10 +18,7 @@ interface LandingHeaderProps {
 
 const LandingHeader = ({ className }: LandingHeaderProps) => {
   const { config } = useTheme();
-  const { publicPrefix } = useBrokerPaths();
-  
-  // Home link - use publicPrefix or "/" if empty
-  const homeLink = publicPrefix || '/';
+  const { homeLink, buildPublicLink } = useBrokerNavigation();
 
   return (
     <header
@@ -37,13 +35,13 @@ const LandingHeader = ({ className }: LandingHeaderProps) => {
 
           <nav className="hidden md:flex items-center gap-6">
             <Link
-              to={`${publicPrefix}/about`}
+              to={buildPublicLink('/about')}
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               About
             </Link>
             <Link
-              to={`${publicPrefix}/legal`}
+              to={buildPublicLink('/legal')}
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               Legal
@@ -53,12 +51,12 @@ const LandingHeader = ({ className }: LandingHeaderProps) => {
 
         <div className="flex items-center gap-3">
           <BrokerLanguageSwitcher />
-          <Link to={`${publicPrefix}/login`}>
+          <Link to={buildPublicLink('/login')}>
             <Button variant="ghost" size="sm">
               Login
             </Button>
           </Link>
-          <Link to={`${publicPrefix}/signup`}>
+          <Link to={buildPublicLink('/signup')}>
             <Button size="sm">
               Get Started
             </Button>

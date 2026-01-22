@@ -4,13 +4,13 @@
  */
 
 import React, { useState, useMemo, useEffect, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useBrokerPaths } from "@/broker-theme/hooks/useBrokerPaths";
+import { useBrokerNavigation } from "@/broker-theme/hooks/useBrokerNavigation";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
@@ -140,8 +140,7 @@ const mockRecentTrades = [
 
 const OTCDexDetail: React.FC = () => {
   const { offerId } = useParams<{ offerId: string }>();
-  const navigate = useNavigate();
-  const { appPrefix } = useBrokerPaths();
+  const { navigate, buildAppLink } = useBrokerNavigation();
 
   const [timeRange, setTimeRange] = useState<"7d" | "1M" | "3M">("7d");
   const [activeTab, setActiveTab] = useState<"trade" | "about" | "dealer">(
@@ -171,7 +170,7 @@ const OTCDexDetail: React.FC = () => {
   }, [timeRange]);
 
   const handleBack = () => {
-    navigate(`${appPrefix}/otc-desk`);
+    navigate(buildAppLink("/otc-desk"));
   };
 
   const formatPrice = (val: number) => {

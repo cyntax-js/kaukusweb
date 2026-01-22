@@ -4,8 +4,8 @@
  */
 
 import React, { useEffect, useMemo, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useBrokerPaths } from "@/broker-theme/hooks/useBrokerPaths";
+import { useParams } from "react-router-dom";
+import { useBrokerNavigation } from "@/broker-theme/hooks/useBrokerNavigation";
 import {
   Clock,
   Users,
@@ -308,8 +308,7 @@ const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
 
 export default function PrivateMarketDetail(): JSX.Element {
   const { marketId } = useParams<{ marketId: string }>();
-  const navigate = useNavigate();
-  const { appPrefix } = useBrokerPaths();
+  const { navigate, buildAppLink } = useBrokerNavigation();
 
   const [purchaseModalOpen, setPurchaseModalOpen] = useState<boolean>(false);
   const [purchaseAmountNgn, setPurchaseAmountNgn] = useState<number>(5_000_000);
@@ -369,7 +368,7 @@ export default function PrivateMarketDetail(): JSX.Element {
           <Button
             variant="ghost"
             className="text-gray-600 hover:text-gray-900 -ml-2 gap-1"
-            onClick={() => navigate(`${appPrefix}/markets/private`)}
+            onClick={() => navigate(buildAppLink("/markets/private"))}
           >
             <ChevronRight className="h-4 w-4 rotate-180" />
             Back to Projects

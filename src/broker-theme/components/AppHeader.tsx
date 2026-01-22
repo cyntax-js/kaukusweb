@@ -1,13 +1,14 @@
 /**
  * App header for logged-in broker platform experience
  * Shows: Logo, Markets dropdown (click to open), Portfolio, Private Market
+ * Preserves ?broker= param in preview mode
  */
 
 import { useMemo, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useTheme } from "@/broker-theme/config";
 import { useBrokerAuthStore } from "@/broker-theme/stores";
-import { useBrokerPaths } from "@/broker-theme/hooks/useBrokerPaths";
+import { useBrokerNavigation } from "@/broker-theme/hooks/useBrokerNavigation";
 import BrokerLogo from "./BrokerLogo";
 import { Button } from "@/components/ui/button";
 import {
@@ -38,10 +39,9 @@ const AppHeader = ({ className }: AppHeaderProps) => {
   const { config } = useTheme();
   const { user, isAuthenticated, logout } = useBrokerAuthStore();
   const location = useLocation();
-  const navigate = useNavigate();
   
-  // Use centralized path hook instead of inline detection
-  const { publicPrefix, appPrefix } = useBrokerPaths();
+  // Use navigation hook that preserves broker param
+  const { navigate, homeLink, buildPublicLink, buildAppLink } = useBrokerNavigation();
 
   const [marketsOpen, setMarketsOpen] = useState(false);
   const [assetsOpen, setAssetsOpen] = useState(false);
@@ -52,35 +52,35 @@ const AppHeader = ({ className }: AppHeaderProps) => {
         {
           id: "stock",
           label: "Stock",
-          href: `${appPrefix}/markets/stock`,
+          path: "/markets/stock",
           enabled: config.services.includes("stock"),
         },
         {
           id: "futures",
           label: "Futures / Derivatives",
-          href: `${appPrefix}/markets/futures`,
+          path: "/markets/futures",
           enabled: config.services.includes("futures"),
         },
         {
           id: "options",
           label: "Options",
-          href: `${appPrefix}/markets/options`,
+          path: "/markets/options",
           enabled: config.services.includes("options"),
         },
         {
           id: "private",
           label: "Private Market",
-          href: `${appPrefix}/markets/private`,
+          path: "/markets/private",
           enabled: config.services.includes("private_markets"),
         },
         {
           id: "secondary",
           label: "Secondary Market",
-          href: `${appPrefix}/markets/secondary`,
+          path: "/markets/secondary",
           enabled: null,
         },
       ].filter((o) => o.enabled),
-    [config.services, appPrefix]
+    [config.services]
   );
 
   const hasPrivateMarkets = config.services.includes("private_markets");
@@ -96,7 +96,7 @@ const AppHeader = ({ className }: AppHeaderProps) => {
   const requireAuth = (action: () => void) => {
     if (!isAuthenticated) {
       toast.error("Please login to continue");
-      navigate(`${publicPrefix}/login`);
+      navigate(buildPublicLink('/login'));
       return;
     }
     action();
@@ -105,11 +105,8 @@ const AppHeader = ({ className }: AppHeaderProps) => {
   const handleLogout = () => {
     logout();
     toast.success("Logged out successfully");
-    navigate(publicPrefix || '/');
+    navigate(homeLink);
   };
-
-  // Home link - use publicPrefix or "/" if empty
-  const homeLink = publicPrefix || '/';
 
   return (
     <header
@@ -155,7 +152,7 @@ const AppHeader = ({ className }: AppHeaderProps) => {
                     <DropdownMenuItem
                       key={o.id}
                       onClick={() => {
-                        navigate(o.href);
+                        navigate(buildAppLink(o.path));
                         setMarketsOpen(false);
                       }}
                       className="cursor-pointer"
@@ -170,7 +167,7 @@ const AppHeader = ({ className }: AppHeaderProps) => {
             {/* Private Market link */}
             {hasPrivateMarkets && (
               <Link
-                to={`${appPrefix}/markets/private`}
+                to={buildAppLink("/markets/private")}
                 className={cn(
                   "inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors",
                   location.pathname.includes("/markets/private")
@@ -183,7 +180,7 @@ const AppHeader = ({ className }: AppHeaderProps) => {
             )}
             {hasPrivateMarkets && (
               <Link
-                to={`${appPrefix}/markets/secondary`}
+                to={buildAppLink("/markets/secondary")}
                 className={cn(
                   "inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors",
                   location.pathname.includes("/markets/secondary")
@@ -197,7 +194,7 @@ const AppHeader = ({ className }: AppHeaderProps) => {
 
             {/* OTC DESK link */}
             <Link
-              to={`${appPrefix}/otc-desk`}
+              to={buildAppLink("/otc-desk")}
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                 location.pathname.includes("/otc-desk")
@@ -211,7 +208,7 @@ const AppHeader = ({ className }: AppHeaderProps) => {
 
             {/* Portfolio link */}
             <Link
-              to={`${appPrefix}/portfolio`}
+              to={buildAppLink("/portfolio")}
               className={cn(
                 "inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors",
                 location.pathname.includes("/portfolio")
@@ -256,7 +253,7 @@ const AppHeader = ({ className }: AppHeaderProps) => {
               <DropdownMenuItem
                 className="cursor-pointer"
                 onClick={() =>
-                  requireAuth(() => navigate(`${appPrefix}/portfolio`))
+                  requireAuth(() => navigate(buildAppLink("/portfolio")))
                 }
               >
                 <Wallet className="h-4 w-4 mr-2" />
@@ -297,7 +294,7 @@ const AppHeader = ({ className }: AppHeaderProps) => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     className="cursor-pointer"
-                    onClick={() => navigate(`${appPrefix}/portfolio`)}
+                    onClick={() => navigate(buildAppLink("/portfolio"))}
                   >
                     <Wallet className="h-4 w-4 mr-2" />
                     Portfolio
@@ -315,13 +312,13 @@ const AppHeader = ({ className }: AppHeaderProps) => {
                 <>
                   <DropdownMenuItem
                     className="cursor-pointer"
-                    onClick={() => navigate(`${publicPrefix}/login`)}
+                    onClick={() => navigate(buildPublicLink("/login"))}
                   >
                     Login
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     className="cursor-pointer"
-                    onClick={() => navigate(`${publicPrefix}/signup`)}
+                    onClick={() => navigate(buildPublicLink("/signup"))}
                   >
                     Create account
                   </DropdownMenuItem>
