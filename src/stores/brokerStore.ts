@@ -54,7 +54,7 @@ interface BrokerStore {
   addDocument: (doc: BrokerDocument) => void;
   setCurrentStep: (step: BrokerStep) => void;
   submitApplication: (docUrls: Record<string, string>) => Promise<void>;
-  checkApprovalStatus: () => void;
+  checkApprovalStatus: () => Promise<BrokerStatus>;
   resetApplication: () => void;
 }
 
@@ -167,6 +167,7 @@ export const useBrokerStore = create<BrokerStore>()(
         set({
           status: status.status,
         });
+        return status.status;
       },
 
       /**

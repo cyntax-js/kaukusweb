@@ -1,6 +1,7 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/stores/authStore";
 import { Loader2 } from "lucide-react";
+import { useBrokerStore } from "@/stores/brokerStore";
 
 const Spinner = () => (
   <div className="h-screen w-full flex items-center justify-center">
@@ -13,6 +14,7 @@ const Spinner = () => (
  */
 export const GuestRoute = () => {
   const { isAuthenticated, _hasHydrated } = useAuthStore();
+  const { status } = useBrokerStore();
 
   // wait for indexedDB to load
   if (!_hasHydrated) {
@@ -20,7 +22,11 @@ export const GuestRoute = () => {
   }
 
   if (isAuthenticated) {
-    return <Navigate to="/" replace />;
+    if (status === "approved") {
+      return <Navigate to="/broker/dashboard" replace />;
+    } else if (status === "pending") {
+      return <Navigate to="/broker/awaiting-approval" replace />;
+    }
   }
 
   return <Outlet />;

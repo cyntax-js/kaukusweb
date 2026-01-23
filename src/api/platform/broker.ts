@@ -83,6 +83,63 @@ export interface KycStatusResponse {
   data: KycStatusItem[];
 }
 
+export interface CompanyInfo {
+  name: string;
+  registration_number: string;
+  country: string;
+  address: string;
+  website?: string;
+  contact_email: string;
+  contact_phone: string;
+  operational_capital: string;
+}
+
+export interface CompanyResponse {
+  company: {
+    id: string;
+    name: string;
+    website: string;
+    status: BrokerStatus;
+  };
+  message: string;
+}
+
+export interface KycDocument {
+  name: string;
+  fileUrls: string[];
+}
+
+export interface KycSubmission {
+  license_id: string;
+  regulatory_body: string;
+  documents: KycDocument[];
+}
+
+export interface SubmitKycPayload {
+  company_id: string;
+  legal_name: string;
+  incorporation_date: string;
+  business_type: string;
+  document_type: string;
+  kyc_documents: Partial<Record<KycType, KycSubmission>>;
+}
+
+export interface KycSubmissionResponse {
+  created_kyc_types: KycType[];
+  message: string;
+}
+
+export interface KycStatusItem {
+  company_id: string;
+  company_name: string;
+  kyc_status: "pending" | "approved" | "rejected";
+  kyc_types?: KycType[];
+}
+
+export interface KycStatusResponse {
+  data: KycStatusItem[];
+}
+
 export interface BrokerApplication {
   id: string;
   userId: string;
@@ -133,6 +190,7 @@ export interface BrokerUser {
   lastActive: Date;
 }
 
+// apiClient is already configured with base URL
 // apiClient is already configured with base URL
 
 // ============================================================
@@ -203,9 +261,12 @@ export async function submitApplication(
     contact_phone: request.contactPhone || "",
     operational_capital: request.capitalRequirement || "",
   };
-
   return submitCompanyInfo(companyInfo);
 }
+
+/**
+ * Legacy: Submit company documents (kept for backwards compatibility)
+ */
 
 /**
  * Legacy: Submit company documents (kept for backwards compatibility)
@@ -237,6 +298,7 @@ export async function submitCompanyDocuments(payload: {
 }
 
 /**
+ * Get application status (legacy - uses new API)
  * Get application status (legacy - uses new API)
  */
 export async function getApplicationStatus(): Promise<{

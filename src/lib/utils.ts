@@ -1,6 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-
 import axios from "axios";
 
 export function cn(...inputs: ClassValue[]) {
@@ -45,6 +44,9 @@ export const apiFetch = async (url: string, options: RequestInit = {}) => {
     headers,
   });
 
+  return response;
+};
+/*
   return response;
 };
 /*

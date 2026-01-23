@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuthStore } from "@/stores/authStore";
 import { platformApi, type KycType } from "@/api/platform";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const dashboardRoutes: Record<KycType, string> = {
@@ -21,6 +21,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isCheckingKyc, setIsCheckingKyc] = useState(false);
   const { t } = useTranslation();
 
@@ -32,7 +33,6 @@ export default function Login() {
       setError(t("auth.pleaseAllFields"));
       return;
     }
-
     const success = await login(email, password);
 
     if (success) {
@@ -40,10 +40,10 @@ export default function Login() {
       setIsCheckingKyc(true);
       try {
         const kycResponse = await platformApi.broker.getKycStatus();
-        
+
         if (kycResponse.data && kycResponse.data.length > 0) {
           const item = kycResponse.data[0];
-          
+
           if (item.kyc_status === "pending") {
             // KYC still pending - go to awaiting approval
             navigate("/awaiting-approval");
@@ -80,14 +80,13 @@ export default function Login() {
     } else {
       setError(t("auth.invalidCredentials"));
     }
+    await login(email, password);
   };
 
   return (
     <div className="animate-fade-in">
       <h1 className="text-2xl font-bold mb-2">{t("auth.welcomeBack")}</h1>
-      <p className="text-muted-foreground mb-8">
-        {t("auth.signInToAccount")}
-      </p>
+      <p className="text-muted-foreground mb-8">{t("auth.signInToAccount")}</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
@@ -109,20 +108,41 @@ export default function Login() {
         </div>
         <div className="space-y-2">
           <Label htmlFor="password">{t("auth.password")}</Label>
-          <Input
-            id="password"
-            type="password"
-            placeholder={t("auth.passwordPlaceholder")}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            disabled={isLoading || isCheckingKyc}
-          />
+          <div className="relative">
+            <Input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              placeholder={t("auth.passwordPlaceholder")}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="pr-10"
+              disabled={isLoading || isCheckingKyc}
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+              onClick={() => setShowPassword((prev) => !prev)}
+              disabled={isLoading}
+            >
+              {showPassword ? (
+                <EyeOff className="h-4 w-4 text-muted-foreground" />
+              ) : (
+                <Eye className="h-4 w-4 text-muted-foreground" />
+              )}
+            </Button>
+          </div>
         </div>
-        <Button type="submit" className="w-full" disabled={isLoading || isCheckingKyc}>
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={isLoading || isCheckingKyc}
+        >
           {isLoading || isCheckingKyc ? (
             <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" /> 
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
               {isCheckingKyc ? "Checking status..." : t("auth.signingIn")}
             </>
           ) : (

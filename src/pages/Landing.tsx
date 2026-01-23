@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowRight } from "lucide-react";
 import { mockMarkets } from "@/mocks/data";
+import { ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import avatarGroup from "@/assets/avatargroup.png";
@@ -93,9 +93,7 @@ function FeaturesGrid() {
         />
       </Card>
 
-      <Card
-        className={`${cardBase} h-full flex flex-col justify-end align-end`}
-      >
+      <Card className={`${cardBase} h-full flex flex-col justify-end`}>
         <h3 className="text-xl font-semibold mb-3 text-white">
           {t("landing.theMarket")}
         </h3>
@@ -109,9 +107,7 @@ function FeaturesGrid() {
         />
       </Card>
 
-      <Card
-        className={`${cardBase} h-full flex flex-col justify-end align-end`}
-      >
+      <Card className={`${cardBase} h-full flex flex-col justify-end`}>
         <h3 className="text-xl font-semibold mb-3 text-white">
           {t("landing.infrastructure")}
         </h3>
@@ -132,20 +128,13 @@ function AudienceCards() {
   const { t } = useTranslation();
 
   return (
-    <div className="">
+    <div>
       <div className="grid md:grid-cols-2 gap-5 mb-10">
         <div className="relative bg-[#1B1F28] backdrop-blur-sm rounded-3xl p-12 overflow-hidden rounded-[15px] pt-[100px] pb-[100px]">
           <img
             src={bgLines}
             alt=""
-            className="
-           absolute
-            right-[0px]
-            left-[0px]
-            top-[0px]
-            w-[100%]
-            opacity-100
-            pointer-events-none"
+            className="absolute right-[0px] left-[0px] top-[0px] w-[100%] opacity-100 pointer-events-none"
           />
           <div className="absolute bottom-[0px] bg-gradient-to-t from-[#1B1F28] via-[#1B1F28] to-[#1B1F28]/0 w-full h-[80%] left-0" />
           <img
@@ -168,14 +157,7 @@ function AudienceCards() {
           <img
             src={bgLines}
             alt=""
-            className="
-           absolute
-            right-[0px]
-            left-[0px]
-            top-[0px]
-            w-[100%]
-            opacity-100
-            pointer-events-none"
+            className="absolute right-[0px] left-[0px] top-[0px] w-[100%] opacity-100 pointer-events-none"
           />
           <div className="absolute bottom-[0px] bg-gradient-to-t from-[#1B1F28] via-[#1B1F28] to-[#1B1F28]/0 w-full h-[80%] left-0" />
           <img
@@ -199,15 +181,7 @@ function AudienceCards() {
         <img
           src={bgLines2}
           alt=""
-          className="
-           absolute
-            right-[0px]
-            left-[0px]
-            top-[0px]
-            w-[100%]
-            opacity-100
-            pointer-events-none
-            "
+          className="absolute right-[0px] left-[0px] top-[0px] w-[100%] opacity-100 pointer-events-none"
         />
         <div className="relative z-10 flex-1">
           <p className="text-gray-500 text-lg mb-4">03 —</p>
@@ -222,13 +196,7 @@ function AudienceCards() {
           <img
             src={engineRing}
             alt=""
-            className="
-            absolute
-            right-[-50px]
-            top-[-70px]
-            w-[50%]
-            opacity-100
-            pointer-events-none"
+            className="absolute right-[-50px] top-[-70px] w-[50%] opacity-100 pointer-events-none"
           />
         </div>
         <div className="absolute top-[70px] bg-gradient-to-t from-[#1B1F28] via-[#1B1F28] to-[#1B1F28]/0 w-full h-full left-0" />
@@ -257,17 +225,17 @@ function BrokerDealers() {
   ];
 
   return (
-    <>
+    <div>
       <div className="relative bg-[#FAFAFA] rounded-3xl p-10 overflow-hidden flex items-center justify-between rounded-[20px]">
         <div className="relative z-10 flex-1">
           <h3 className="text-2xl md:text-4xl font-medium text-black mb-8">
             {t("landing.forBrokers")}
           </h3>
           <div className="flex flex-col">
-            {forBrokers.map((data, i) => (
-              <div key={i} className="flex items-center mb-4">
+            {forBrokers.map((item, idx) => (
+              <div key={idx} className="flex items-center mb-4">
                 <img src={checkIcon} alt="" className="mr-3 w-5 h-5" />
-                <p className="text-[#535862] text-md font-normal">{data.txt}</p>
+                <p className="text-[#535862] text-md font-normal">{item.txt}</p>
               </div>
             ))}
           </div>
@@ -276,10 +244,8 @@ function BrokerDealers() {
             asChild
             className="shadow-glow hover:shadow-glow-lg transition-shadow px-4 mt-10"
           >
-            <Link to="/broker/dashboard">
-              {selectedRole === "broker"
-                ? "Continue as Broker"
-                : "Apply as Broker"}
+            <Link to="/services">
+              {t("common.continueAsBroker")}
               <ArrowRight className="w-4 h-4 ml-1" />
             </Link>
           </Button>
@@ -306,10 +272,10 @@ function BrokerDealers() {
             {t("landing.forDealers")}
           </h3>
           <div className="flex flex-col">
-            {forDealers.map((data, i) => (
-              <div key={i} className="flex items-center mb-4">
+            {forDealers.map((item, idx) => (
+              <div key={idx} className="flex items-center mb-4">
                 <img src={checkIcon} alt="" className="mr-3 w-5 h-5" />
-                <p className="text-[#535862] text-md font-normal">{data.txt}</p>
+                <p className="text-[#535862] text-md font-normal">{item.txt}</p>
               </div>
             ))}
           </div>
@@ -319,15 +285,11 @@ function BrokerDealers() {
             asChild
             className="py-6 hover:bg-black bg-[#fff] mt-10"
           >
-            <Link to="/signup">
-              {selectedRole === "dealer"
-                ? "Continue as Dealer"
-                : "Apply as Dealer"}
-            </Link>
+            <Link to="/signup">{t("common.applyAsDealer")}</Link>
           </Button>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -379,6 +341,7 @@ export default function Landing() {
     { question: t("landing.faq3Question"), answer: t("landing.faq3Answer") },
     { question: t("landing.faq4Question"), answer: t("landing.faq4Answer") },
     { question: t("landing.faq5Question"), answer: t("landing.faq5Answer") },
+    // duplicates removed; include unique items only
   ];
 
   const majorIndices = [
@@ -402,7 +365,7 @@ export default function Landing() {
     },
     {
       name: "ContiSX Industrial Goods",
-      ticker: "CSI",
+      ticker: "CSG",
       value: "28,750.20",
       change: "+0.15%",
     },
@@ -414,7 +377,7 @@ export default function Landing() {
     },
     {
       name: "ContiSX Insurance",
-      ticker: "CSI",
+      ticker: "CIN",
       value: "12,450.60",
       change: "+0.95%",
     },
@@ -443,18 +406,8 @@ export default function Landing() {
         <img
           src={heroLines}
           alt=""
-          className="
-           absolute
-            right-[0px]
-            left-[0px]
-            top-[0px]
-            w-[65%]
-            opacity-100
-            pointer-events-none
-            m-auto
-            "
+          className="absolute right-[0px] left-[0px] top-[0px] w-[65%] opacity-100 pointer-events-none m-auto"
         />
-        {/* Background Effects */}
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
           <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
@@ -534,77 +487,87 @@ export default function Landing() {
 
           <div className="flex justify-between">
             <div className="flex-1 flex flex-col border rounded-[15px]">
-              <div className="flex items-center gap-3 p-4">
-                <div className="flex items-center justify-center w-10 h-10 bg-primary rounded-full">
-                  <span className="text-white font-semibold">C</span>
+              <div className="flex justify-between">
+                <div className="flex-1 flex flex-col border rounded-[15px]">
+                  <div className="flex items-center gap-3 p-4">
+                    <div className="flex items-center justify-center w-10 h-10 bg-primary rounded-full">
+                      <span className="text-white font-semibold">C</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <h3>{t("landing.allShareIndex")}</h3>
+                      <h1 className="flex items-center gap-1 text-2xl font-semibold">
+                        ₦765,000.00{" "}
+                        <p className="text-green-500 text-base">+10.05%</p>
+                      </h1>
+                    </div>
+                  </div>
+                  <div className="mt-5 h-[300px] pb-2 pr-2">
+                    <MarketSummaryChart />
+                  </div>
+                  <p className="p-4 text-xs text-black/50 text-center">
+                    {t("landing.allShareDescription")}
+                  </p>
                 </div>
-                <div className="flex flex-col">
-                  <h3>{t("landing.allShareIndex")}</h3>
-                  <h1 className="flex items-center gap-1 text-2xl font-semibold">
-                    ₦765,000.00{" "}
-                    <p className="text-green-500 text-base">+10.05%</p>
-                  </h1>
-                </div>
-              </div>
-              <div className="mt-5 h-[300px] pb-2 pr-2">
-                <MarketSummaryChart />
-              </div>
-              <p className="p-4 text-xs text-black/50 text-center">
-                {t("landing.allShareDescription")}
-              </p>
-            </div>
-            <div className="w-1/3 flex flex-col pl-5">
-              <h1 className="text-xl">{t("landing.majorIndices")}</h1>
-              <div className="mt-5 flex flex-col gap-2">
-                {majorIndices.map((data, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center justify-between border-b border-border pb-2"
-                  >
-                    <div className="flex items-center gap-3">
+
+                <div className="w-1/3 flex flex-col pl-5">
+                  <h1 className="text-xl">{t("landing.majorIndices")}</h1>
+                  <div className="mt-5 flex flex-col gap-2">
+                    {majorIndices.map((data, i) => (
                       <div
-                        className={cn(
-                          "w-10 h-10 rounded-full flex items-center justify-center font-semibold text-white"
-                        )}
-                        style={{
-                          backgroundColor: (() => {
-                            const words = data.name.split(" ").filter(Boolean);
-                            const initials = words
-                              .slice(0, 2)
-                              .map((w) => w[0])
-                              .join("")
-                              .toUpperCase();
-                            const hash = Array.from(initials).reduce(
-                              (acc, c) => acc * 31 + c.charCodeAt(0),
-                              0
-                            );
-                            const hue = Math.abs(hash) % 360;
-                            return `hsl(${hue} 65% 50%)`;
-                          })(),
-                        }}
+                        key={i}
+                        className="flex items-center justify-between border-b border-border pb-2"
                       >
-                        {(() => {
-                          const words = data.name.split(" ").filter(Boolean);
-                          return words
-                            .slice(0, 2)
-                            .map((w) => w[0])
-                            .join("")
-                            .toUpperCase();
-                        })()}
-                      </div>
-                      <div className="flex flex-col">
-                        <p className="font-semibold">{data.name}</p>
-                        <span className="text-[12px] bg-gray-100 rounded-md px-2 py-1 w-fit">
-                          {data.ticker}
+                        <div className="flex items-center gap-3">
+                          <div
+                            className={cn(
+                              "w-10 h-10 rounded-full flex items-center justify-center font-semibold text-white"
+                            )}
+                            style={{
+                              backgroundColor: (() => {
+                                const words = (data.name || "")
+                                  .split(" ")
+                                  .filter(Boolean) as string[];
+                                const initials = words
+                                  .slice(0, 2)
+                                  .map((w: string) => w[0])
+                                  .join("")
+                                  .toUpperCase();
+                                const hash = Array.from(initials).reduce(
+                                  (acc: number, c: string) =>
+                                    acc * 31 + c.charCodeAt(0),
+                                  0
+                                );
+                                const hue = Math.abs(hash) % 360;
+                                return `hsl(${hue} 65% 50%)`;
+                              })(),
+                            }}
+                          >
+                            {(() => {
+                              const words = (data.name || "")
+                                .split(" ")
+                                .filter(Boolean) as string[];
+                              return words
+                                .slice(0, 2)
+                                .map((w: string) => w[0])
+                                .join("")
+                                .toUpperCase();
+                            })()}
+                          </div>
+                          <div className="flex flex-col">
+                            <p className="font-semibold">{data.name}</p>
+                            <span className="text-[12px] bg-gray-100 rounded-md px-2 py-1 w-fit">
+                              {data.ticker}
+                            </span>
+                          </div>
+                        </div>
+                        <span className="flex items-end gap-1 flex-col font-semibold">
+                          ₦{data.value}{" "}
+                          <p className="text-green-500">{data.change}</p>
                         </span>
                       </div>
-                    </div>
-                    <span className="flex items-end gap-1 flex-col font-semibold">
-                      ₦{data.value}{" "}
-                      <p className="text-green-500">{data.change}</p>
-                    </span>
+                    ))}
                   </div>
-                ))}
+                </div>
               </div>
             </div>
           </div>
@@ -665,10 +628,10 @@ export default function Landing() {
         <div className="max-w-[1100px] mx-auto px-4">
           <div className="text-left mb-12">
             <h2 className="text-3xl md:text-5xl font-bold mb-2 text-white">
-              How ContiSX Works
+              {t("landing.howContiSXWorks")}
             </h2>
             <p className="text-white/70 max-w-2xl mb-4">
-              A simple, transparent flow connecting market participants
+              {t("landing.howContiSXDescription")}
             </p>
             <Button
               size="lg"
@@ -706,14 +669,14 @@ export default function Landing() {
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
-            {mockStats.map((stat) => (
+            {mockStats.map((stat, idx) => (
               <div
-                key={stat.label}
+                key={idx}
                 className="text-left flex flex-col gap-[150px] border-l md:border-l border-gray-200 px-4 py-0"
               >
                 <p className="text-gray-500 text-sm font-bold">{stat.label}</p>
-                <h3 className="text-4xl md:text-6xl font-bold text-[#1570EF] m=t-2 flex items-end">
-                  {stat.value} <p className="text-4xl">{stat.symbol}</p>
+                <h3 className="text-4xl md:text-6xl font-bold text-[#1570EF] mt-2 flex items-end">
+                  {stat.value} <span className="text-4xl">{stat.symbol}</span>
                 </h3>
               </div>
             ))}
@@ -726,7 +689,7 @@ export default function Landing() {
         <div className="container mx-auto px-4">
           <div className="text-left mb-12">
             <div className="flex items-end gap-3 mb-4 w-full justify-end">
-              <div className="w-5 h-5 rounded-full bg-[#17B26A]"></div>
+              <div className="w-5 h-5 rounded-full bg-[#17B26A]" />
               <p className="text-3xl text-right">{t("landing.levelUp")}</p>
             </div>
             <h2
@@ -858,10 +821,8 @@ export default function Landing() {
                 >
                   {selectedRole === "broker" ? (
                     <Link to="/broker/dashboard">Continue as Broker</Link>
-                  ) : selectedRole === "dealer" ? (
-                    <Link to="/dealer/dashboard">Continue as Dealer</Link>
                   ) : (
-                    <Link to="/broker/dashboard">Apply as Broker</Link>
+                    <Link to="/dealer/dashboard">Continue as Dealer</Link>
                   )}
                 </Button>
                 <Button
@@ -872,10 +833,8 @@ export default function Landing() {
                 >
                   {selectedRole === "broker" ? (
                     <Link to="/dealer/requirements">Apply as Dealer</Link>
-                  ) : selectedRole === "dealer" ? (
-                    <Link to="/broker/requirements">Apply as Broker</Link>
                   ) : (
-                    <Link to="/dealer/requirements">Apply as Dealer</Link>
+                    <Link to="/broker/requirements">Apply as Broker</Link>
                   )}
                 </Button>
               </div>

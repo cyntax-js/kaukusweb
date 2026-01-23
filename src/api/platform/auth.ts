@@ -4,7 +4,7 @@
  * ============================================================
  */
 
-import { apiFetch, apiClient } from "@/lib/utils";
+import { apiClient } from "@/lib/utils";
 import { getFriendlyErrorMessage } from "@/lib/utils";
 
 // ============================================================
@@ -67,7 +67,25 @@ export async function login(request: LoginRequest): Promise<AuthResponse> {
   try {
     const response = await apiClient.post("/auth/identity/caucus", request);
     const data = await response.data;
+    try {
+      const response = await apiClient.post("/auth/identity/caucus", request);
+      const data = await response.data;
 
+      return {
+        user: {
+          id: data.uid,
+          email: data.email,
+          name: data.username || data.name,
+          role: data.role,
+          state: data.state,
+          createdAt: data.created_at,
+        },
+        jwt_token: data.csrf_token,
+      };
+    } catch (error) {
+      const message = error.message || "Login failed";
+      throw new Error(message);
+    }
     return {
       user: {
         id: data.uid,

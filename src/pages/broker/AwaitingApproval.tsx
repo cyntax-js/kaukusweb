@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+import { useAuthStore } from "@/stores/authStore";
 import { useBrokerStore } from "@/stores/brokerStore";
 import {
   Clock,
@@ -18,14 +18,20 @@ const reviewSteps = [
   { id: "documents", label: "Document Verification", icon: Shield },
   { id: "compliance", label: "Compliance Check", icon: Shield },
   { id: "approval", label: "Approval", icon: CheckCircle2 },
+  { id: "approval", label: "Approval", icon: CheckCircle2 },
 ];
 
 export default function AwaitingApproval() {
   const navigate = useNavigate();
   const { status, application, checkApprovalStatus } = useBrokerStore();
+  const { isAuthenticated, logout, _hasHydrated } = useAuthStore();
 
   checkApprovalStatus();
   const isApproved = status === "approved";
+
+  const handleLogout = () => {
+    logout();
+  };
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
@@ -57,6 +63,14 @@ export default function AwaitingApproval() {
                   Your application is being reviewed. This typically takes 12-24
                   hours.
                 </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="mt-4"
+                  onClick={checkApprovalStatus}
+                >
+                  Refresh Status
+                </Button>
               </>
             )}
           </div>
@@ -165,6 +179,15 @@ export default function AwaitingApproval() {
               Go to Home
             </Button>
           )}
+
+          {/* Logout Button */}
+          <Button
+            variant="ghost"
+            className="w-full mt-4"
+            onClick={handleLogout}
+          >
+            Logout
+          </Button>
         </Card>
       </div>
     </div>

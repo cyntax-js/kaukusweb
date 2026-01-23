@@ -3,38 +3,27 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { TrendingUp, Menu, X } from "lucide-react";
 import { useState } from "react";
-import { useAuthStore, UserRole } from "@/stores/authStore";
+import { useAuthStore } from "@/stores/authStore";
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 import Logo from "@/assets/logo.png";
-
-type NavLink = { href: string; label: string };
-
-const navLinks: NavLink[] = [
-  { href: "/", label: "Home" },
-  { href: "/features", label: "Features" },
-  { href: "/pricing", label: "Pricing" },
-  { href: "/about", label: "About" },
-];
-
-function LanguageSwitcher() {
-  // minimal placeholder for the language switcher used in the navbar
-  return (
-    <button aria-label="Change language" className="text-sm px-2 py-1">
-      EN
-    </button>
-  );
-}
 
 export function Navbar() {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { isAuthenticated, getSelectedRole, logout, _hasHydrated } =
-    useAuthStore();
+  const { isAuthenticated, logout, _hasHydrated } = useAuthStore();
+  const { t } = useTranslation();
 
-  const selectedRole: UserRole = getSelectedRole();
+  const navLinks = [
+    { href: "/", label: t("nav.home") },
+    { href: "/about", label: t("nav.about") },
+    { href: "/services", label: t("nav.services") },
+  ];
 
   const handleLogout = () => {
     logout();
+    setIsMobileMenuOpen(false);
   };
 
   if (!_hasHydrated) {
@@ -69,47 +58,38 @@ export function Navbar() {
           ))}
         </div>
 
-        <div>
+        <div className="flex items-center gap-3">
+          <LanguageSwitcher />
           {isAuthenticated ? (
-            <div className="flex gap-3">
-              {selectedRole === "broker" && (
-                <Link
-                  to="/broker/dashboard"
-                  className="text-xs text-muted-foreground hover:text-primary"
-                >
-                  <Button size="lg">Broker Dashboard</Button>
-                </Link>
-              )}
-              {selectedRole === "dealer" && (
-                <Link
-                  to="/dealer/dashboard"
-                  className="text-xs text-muted-foreground hover:text-primary"
-                >
-                  <Button size="lg">Dealer Dashboard</Button>
-                </Link>
-              )}
+            <>
+              <Link
+                to="/broker/dashboard"
+                className="text-xs text-muted-foreground hover:text-primary"
+              >
+                <Button size="lg">{t("common.dashboard")}</Button>
+              </Link>
 
               <Button variant="outline" size="lg" onClick={handleLogout}>
-                Logout
+                {t("common.logout")}
               </Button>
-            </div>
+            </>
           ) : (
-            <div className="flex gap-3">
+            <>
               <Link
                 to="/login"
                 className="text-xs text-muted-foreground hover:text-primary"
               >
                 <Button variant="outline" size="lg">
-                  Login
+                  {t("common.login")}
                 </Button>
               </Link>
               <Link
                 to="/signup"
                 className="text-xs text-muted-foreground hover:text-primary"
               >
-                <Button size="lg">Sign up</Button>
+                <Button size="lg">{t("common.signup")}</Button>
               </Link>
-            </div>
+            </>
           )}
         </div>
       </nav>
@@ -122,17 +102,12 @@ export function Navbar() {
 
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
-          <button
+          <div
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle menu"
-            className="p-2 rounded-md"
+            className=""
           >
-            {isMobileMenuOpen ? (
-              <X className="w-5 h-5" />
-            ) : (
-              <Menu className="w-5 h-5" />
-            )}
-          </button>
+            {isMobileMenuOpen ? <X size={30} /> : <Menu size={30} />}
+          </div>
         </div>
 
         {/* Mobile menu overlay */}
@@ -162,9 +137,9 @@ export function Navbar() {
             ))}
             {isAuthenticated ? (
               <div className="pt-4 space-y-2">
-                <Link to="/dashboard">
+                <Link to="/broker/dashboard">
                   <Button size="sm" className="w-full">
-                    Dashboard
+                    {t("common.dashboard")}
                   </Button>
                 </Link>
                 <Button
@@ -173,19 +148,28 @@ export function Navbar() {
                   className="w-full"
                   onClick={handleLogout}
                 >
-                  Logout
+                  {t("common.logout")}
                 </Button>
               </div>
             ) : (
               <div className="pt-4 space-y-2">
                 <Link to="/login">
-                  <Button variant="outline" size="sm" className="w-full">
-                    Login
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {t("common.login")}
                   </Button>
                 </Link>
                 <Link to="/signup">
-                  <Button size="sm" className="w-full">
-                    Sign up
+                  <Button
+                    size="sm"
+                    className="w-full"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {t("common.signup")}
                   </Button>
                 </Link>
               </div>

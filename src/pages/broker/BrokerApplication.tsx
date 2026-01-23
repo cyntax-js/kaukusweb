@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -60,6 +60,7 @@ export default function BrokerApplication() {
     currentStep,
     setCurrentStep,
     resetApplication,
+    checkApprovalStatus,
   } = useBrokerStore();
 
   const { getUser } = useAuthStore();
@@ -166,7 +167,7 @@ export default function BrokerApplication() {
         async ([docId, file]) => {
           const url = await uploadToCDN(file);
           docUrls[docId] = url;
-        },
+        }
       );
 
       await Promise.all(uploadPromises);
@@ -597,8 +598,8 @@ export default function BrokerApplication() {
                       uploadedDocs[doc.id]
                         ? "border-success bg-success/5"
                         : errors[doc.id]
-                          ? "border-destructive bg-destructive/5"
-                          : "border-border hover:border-primary/50"
+                        ? "border-destructive bg-destructive/5"
+                        : "border-border hover:border-primary/50"
                     }`}
                   >
                     <div className="flex items-center justify-between">
@@ -612,13 +613,19 @@ export default function BrokerApplication() {
                         )}
                         <div>
                           <span
-                            className={`font-medium ${errors[doc.id] ? "text-destructive" : ""}`}
+                            className={`font-medium ${
+                              errors[doc.id] ? "text-destructive" : ""
+                            }`}
                           >
                             {doc.name}
                           </span>
                           {doc.required && (
                             <span
-                              className={`text-xs ml-2 ${errors[doc.id] ? "text-destructive font-bold" : "text-destructive"}`}
+                              className={`text-xs ml-2 ${
+                                errors[doc.id]
+                                  ? "text-destructive font-bold"
+                                  : "text-destructive"
+                              }`}
                             >
                               Required
                             </span>
