@@ -63,7 +63,7 @@ export function Navbar() {
           {isAuthenticated ? (
             <>
               <Link
-                to="/dashboard"
+                to="/broker/dashboard"
                 className="text-xs text-muted-foreground hover:text-primary"
               >
                 <Button size="lg">{t("common.dashboard")}</Button>
@@ -137,7 +137,7 @@ export function Navbar() {
             ))}
             {isAuthenticated ? (
               <div className="pt-4 space-y-2">
-                <Link to="/dashboard">
+                <Link to="/broker/dashboard">
                   <Button size="sm" className="w-full">
                     {t("common.dashboard")}
                   </Button>
