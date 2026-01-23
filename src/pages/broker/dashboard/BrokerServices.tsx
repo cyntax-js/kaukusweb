@@ -33,7 +33,7 @@ const serviceInfo: Record<
     description: "Trade options contracts",
     icon: "Layers",
   },
-  private_markets: {
+  private_market: {
     name: "Private Markets",
     description: "Access to private market offerings",
     icon: "Lock",

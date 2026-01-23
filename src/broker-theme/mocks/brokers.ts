@@ -63,7 +63,7 @@ const createBrokerFromPreset = (
 export const mockBrokerConfigs: BrokerConfig[] = [
   // Demo Trading - Uses "institutional" theme
   createBrokerFromPreset("demo-001", "Demo Trading", "demo", "institutional", {
-    services: ["stock", "futures", "options", "private_markets"],
+    services: ["stock", "futures", "options", "private_market"],
   }),
 
   // FBS Markets - Uses "professional" theme with custom colors
@@ -91,7 +91,7 @@ export const mockBrokerConfigs: BrokerConfig[] = [
 
   // CryptoMax - Uses "crypto" theme
   createBrokerFromPreset("cryptomax-001", "CryptoMax", "cryptomax", "crypto", {
-    services: ["stock", "futures", "options", "private_markets"],
+    services: ["stock", "futures", "options", "private_market"],
   }),
 
   // Forex Simple - Uses "minimal" theme

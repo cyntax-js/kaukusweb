@@ -69,14 +69,14 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     },
   ].filter((opt) => opt.enabled);
 
-  const hasPrivateMarkets = config.services.includes("private_markets");
+  const hasPrivateMarkets = config.services.includes("private_market");
 
   const isActive = (href: string) => location.pathname.startsWith(href);
 
   const handleLogout = () => {
     logout();
     toast.success("Logged out successfully");
-    navigate(publicPrefix || '/');
+    navigate(publicPrefix || "/");
   };
 
   const userInitials = user
@@ -198,7 +198,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           <div className="flex flex-col h-full">
             <div className="h-16 flex items-center justify-between px-6 border-b border-border">
               <Link
-                to={publicPrefix || '/'}
+                to={publicPrefix || "/"}
                 className="text-lg font-bold text-foreground"
               >
                 {config.brokerName || "Trading"}

@@ -36,7 +36,8 @@ const BrokerHeader = ({ className, variant = "solid" }: BrokerHeaderProps) => {
   const location = useLocation();
 
   // Use navigation hook that preserves broker param
-  const { navigate, homeLink, buildPublicLink, buildAppLink } = useBrokerNavigation();
+  const { navigate, homeLink, buildPublicLink, buildAppLink } =
+    useBrokerNavigation();
 
   const [marketsOpen, setMarketsOpen] = useState(false);
   const [assetsOpen, setAssetsOpen] = useState(false);
@@ -66,7 +67,7 @@ const BrokerHeader = ({ className, variant = "solid" }: BrokerHeaderProps) => {
           id: "private",
           label: "Private Markets",
           path: "/markets/private",
-          enabled: config.services.includes("private_markets"),
+          enabled: config.services.includes("private_market"),
         },
       ].filter((o) => o.enabled),
     [config.services]
@@ -79,7 +80,7 @@ const BrokerHeader = ({ className, variant = "solid" }: BrokerHeaderProps) => {
   const requireAuth = (action: () => void) => {
     if (!isAuthenticated) {
       toast.error("Please login to continue");
-      navigate(buildPublicLink('/login'));
+      navigate(buildPublicLink("/login"));
       return;
     }
     action();

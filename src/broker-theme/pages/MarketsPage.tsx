@@ -128,7 +128,7 @@ const MarketsPage = () => {
     if (config.services.includes("stock")) types.push("stock");
     if (config.services.includes("futures")) types.push("futures");
     if (config.services.includes("options")) types.push("options");
-    if (config.services.includes("private_markets")) types.push("private");
+    if (config.services.includes("private_market")) types.push("private");
     return types;
   }, [config.services]);
 
@@ -154,7 +154,7 @@ const MarketsPage = () => {
       if (activeMarketType === "private") {
         return (
           m.type === "private_market" &&
-          config.services.includes("private_markets")
+          config.services.includes("private_market")
         );
       }
       return false;
@@ -289,7 +289,7 @@ const MarketsPage = () => {
       <AppHeader />
 
       {activeMarketType === "private" &&
-      config.services.includes("private_markets") ? (
+      config.services.includes("private_market") ? (
         <PrivateMarket />
       ) : activeMarketType === "secondary" ? (
         <SecondaryMarket />

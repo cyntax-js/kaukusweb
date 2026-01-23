@@ -44,8 +44,17 @@ const TradingPage = () => {
   const availableMarkets = useMemo(() => {
     return mockMarkets.filter((m) => {
       if (m.type === "stock" && config.services.includes("stock")) return true;
-      if (m.type === "derivative" && (config.services.includes("futures") || config.services.includes("options"))) return true;
-      if (m.type === "private_market" && config.services.includes("private_markets")) return true;
+      if (
+        m.type === "derivative" &&
+        (config.services.includes("futures") ||
+          config.services.includes("options"))
+      )
+        return true;
+      if (
+        m.type === "private_market" &&
+        config.services.includes("private_market")
+      )
+        return true;
       if (m.type === "crypto" && config.services.includes("stock")) return true;
       return false;
     });
@@ -53,7 +62,9 @@ const TradingPage = () => {
 
   useEffect(() => {
     if (pairParam) {
-      const found = availableMarkets.find((m) => m.symbol.toLowerCase() === pairParam.toLowerCase());
+      const found = availableMarkets.find(
+        (m) => m.symbol.toLowerCase() === pairParam.toLowerCase()
+      );
       if (found) {
         setSelectedMarket(found);
         return;
@@ -67,7 +78,9 @@ const TradingPage = () => {
   const handleSelectMarket = (market: Market) => {
     setSelectedMarket(market);
     const serviceType = market.type === "derivative" ? "futures" : "stock";
-    navigate(`${appPrefix}/trade/${serviceType}/${market.symbol}`, { replace: true });
+    navigate(`${appPrefix}/trade/${serviceType}/${market.symbol}`, {
+      replace: true,
+    });
   };
 
   const handlePlaceOrder = async (order: any) => {
@@ -76,7 +89,8 @@ const TradingPage = () => {
 
   const getMarketType = (): "stock" | "futures" | "options" => {
     if (marketTypeParam === "options") return "options";
-    if (marketTypeParam === "futures" || selectedMarket?.type === "derivative") return "futures";
+    if (marketTypeParam === "futures" || selectedMarket?.type === "derivative")
+      return "futures";
     return "stock";
   };
 
@@ -93,7 +107,9 @@ const TradingPage = () => {
   if (!selectedMarket) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center text-muted-foreground">Loading markets...</div>
+        <div className="text-center text-muted-foreground">
+          Loading markets...
+        </div>
       </div>
     );
   }
@@ -104,8 +120,17 @@ const TradingPage = () => {
       <PriceInfo market={selectedMarket} />
 
       {/* Deposit/Withdraw Modals */}
-      <DepositWithdrawModal open={depositModalOpen} onOpenChange={setDepositModalOpen} mode="deposit" />
-      <DepositWithdrawModal open={withdrawModalOpen} onOpenChange={setWithdrawModalOpen} mode="withdraw" availableBalance={ngnBalance} />
+      <DepositWithdrawModal
+        open={depositModalOpen}
+        onOpenChange={setDepositModalOpen}
+        mode="deposit"
+      />
+      <DepositWithdrawModal
+        open={withdrawModalOpen}
+        onOpenChange={setWithdrawModalOpen}
+        mode="withdraw"
+        availableBalance={ngnBalance}
+      />
 
       {/* DIV1: Main Trading Workspace */}
       <TradingGrid
@@ -135,14 +160,20 @@ const TradingPage = () => {
           </>
         }
         orderbookPanel={
-          <OrderBook market={selectedMarket} isDerivative={selectedMarket.type === "derivative"} />
+          <OrderBook
+            market={selectedMarket}
+            isDerivative={selectedMarket.type === "derivative"}
+          />
         }
       />
 
       {/* DIV2: User Activity & Funds */}
       <div className="bg-card border-t border-border grid grid-cols-12 gap-px min-h-[200px]">
         <div className="col-span-10 bg-card overflow-hidden">
-          <OrderHistory userTrades={trades} isDerivative={selectedMarket.type === "derivative"} />
+          <OrderHistory
+            userTrades={trades}
+            isDerivative={selectedMarket.type === "derivative"}
+          />
         </div>
         <div className="col-span-2 bg-card overflow-hidden">
           <EquityBalance
