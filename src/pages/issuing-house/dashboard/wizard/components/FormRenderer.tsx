@@ -20,6 +20,7 @@ export function FormRenderer() {
     savedDraft,
     formValues,
     errors,
+    isFieldVisible,
   } = useWizard();
   const formRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
@@ -83,18 +84,28 @@ export function FormRenderer() {
     }
   };
 
-  // De-duplicate fields by id (keep first matching based on visibility)
-  const getVisibleFields = (fields: FieldSchema[]): FieldSchema[] => {
+  // De-duplicate fields by id - for fields with same id, show only the one that's visible
+  const getVisibleFields = useCallback((fields: FieldSchema[]): FieldSchema[] => {
     const seen = new Set<string>();
+    
     return fields.filter((field) => {
-      // For fields with same id, only show the first one that matches visibility
+      // Skip if we've already seen this field id AND added it
       if (seen.has(field.id)) {
         return false;
       }
-      seen.add(field.id);
-      return true;
+      
+      // Check if this field is visible based on visibleWhen condition
+      const visible = isFieldVisible(field);
+      
+      // Only mark as seen and include if visible
+      if (visible) {
+        seen.add(field.id);
+        return true;
+      }
+      
+      return false;
     });
-  };
+  }, [isFieldVisible]);
 
   const errorCount = Object.keys(errors).length;
 

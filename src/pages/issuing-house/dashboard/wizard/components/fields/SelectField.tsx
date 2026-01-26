@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -35,6 +36,13 @@ export function SelectField({ field }: SelectFieldProps) {
       }
     }
   }
+
+  // Auto-select if there's only one option and no value is set
+  useEffect(() => {
+    if (options.length === 1 && !value) {
+      setFieldValue(field.id, options[0]);
+    }
+  }, [options, value, field.id, setFieldValue]);
 
   const formatOption = (opt: string) => {
     return opt.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
