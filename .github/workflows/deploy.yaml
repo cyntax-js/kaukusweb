@@ -15,7 +15,7 @@ jobs:
       IMAGE_NAME: ghcr.io/dhive-protocol/contisx
       CONTAINER_NAME: contisx
       TRAEFIK_NETWORK: proxy
-      DOMAIN: egoras.example.com
+      DOMAIN: kaucus.org
 
     steps:
       # 1️⃣ Checkout
