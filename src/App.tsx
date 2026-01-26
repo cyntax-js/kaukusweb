@@ -170,12 +170,27 @@ const BrokerModeApp = () => (
             </Route>
             {/* App routes - these are the authenticated/trading pages */}
             <Route path="/markets" element={<BrokerMarketsPage />} />
-            <Route path="/markets/:marketType" element={<BrokerMarketsPage />} />
-            <Route path="/markets/private/:marketId" element={<BrokerMarketsPage />} />
-            <Route path="/markets/secondary/:marketId" element={<BrokerMarketsPage />} />
-            <Route path="/trade/:serviceType/:pair" element={<BrokerTradingPage />} />
+            <Route
+              path="/markets/:marketType"
+              element={<BrokerMarketsPage />}
+            />
+            <Route
+              path="/markets/private/:marketId"
+              element={<BrokerMarketsPage />}
+            />
+            <Route
+              path="/markets/secondary/:marketId"
+              element={<BrokerMarketsPage />}
+            />
+            <Route
+              path="/trade/:serviceType/:pair"
+              element={<BrokerTradingPage />}
+            />
             <Route path="/otc-desk" element={<BrokerOTCDexPage />} />
-            <Route path="/otc-desk/:offerId" element={<BrokerOTCDexDetailPage />} />
+            <Route
+              path="/otc-desk/:offerId"
+              element={<BrokerOTCDexDetailPage />}
+            />
             <Route path="/portfolio" element={<BrokerPortfolioPage />} />
             <Route path="/settings" element={<BrokerSettingsPage />} />
           </Route>
@@ -212,7 +227,7 @@ const PlatformModeApp = () => (
             </Route>
           </Route>
 
-          <Route element={<ProtectedRoute />}>
+          <Route>
             <Route path="/role-selection" element={<RoleSelection />} />
             <Route
               path="/dashboard-selection"
@@ -348,9 +363,7 @@ const PlatformModeApp = () => (
                 <Route path="login" element={<BrokerLoginPage />} />
                 <Route path="signup" element={<BrokerSignupPage />} />
               </Route>
-              <Route path="app">
-                {BrokerAppRoutes()}
-              </Route>
+              <Route path="app">{BrokerAppRoutes()}</Route>
             </Route>
 
             {/* Deployed Broker Runtime - flat structure */}
@@ -379,7 +392,7 @@ const App = () => {
   if (isInBrokerMode()) {
     return <BrokerModeApp />;
   }
-  
+
   return <PlatformModeApp />;
 };
 

@@ -2,6 +2,7 @@ import { Link, useLocation, Outlet } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useBrokerDeploymentStore } from "@/stores/brokerDeploymentStore";
+import { DashboardSwitcher } from "@/components/DashboardSwitcher";
 import {
   Sidebar,
   SidebarContent,
@@ -136,12 +137,17 @@ export default function BrokerAdminLayout() {
       <div className="min-h-screen flex w-full bg-background">
         <BrokerSidebar />
         <main className="flex-1 flex flex-col">
-          <header className="h-14 border-b border-border flex items-center px-4 bg-card">
-            <SidebarTrigger className="mr-4" />
-            <div className="flex items-center gap-2">
-              <Rocket className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium">Broker Administration</span>
+          <header className="h-14 border-b border-border flex items-center justify-between px-4 bg-card">
+            <div className="flex items-center">
+              <SidebarTrigger className="mr-4" />
+              <div className="flex items-center gap-2">
+                <Rocket className="w-4 h-4 text-chart-2" />
+                <span className="text-sm font-medium">
+                  Broker Administration
+                </span>
+              </div>
             </div>
+            <DashboardSwitcher currentDashboard="broker" />
           </header>
           <div className="flex-1 overflow-auto">
             <Outlet />

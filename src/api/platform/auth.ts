@@ -13,24 +13,6 @@ import { getFriendlyErrorMessage } from "@/lib/utils";
 
 export type UserRole = "member" | "broker" | "dealer" | null;
 
-export interface BrokerPlatform {
-  id: number;
-  user_id: number;
-  platform: string;
-  company_id: string;
-  broker_num: string;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface UserLabel {
-  key: string;
-  value: string;
-  scope: string;
-  created_at: string;
-  updated_at: string;
-}
-
 export interface User {
   id: string;
   email: string;
@@ -38,13 +20,6 @@ export interface User {
   role: UserRole;
   state: string;
   createdAt: string;
-  level?: number;
-  otp?: boolean;
-  labels?: UserLabel[];
-  broker_platforms?: BrokerPlatform[];
-  phone?: string | null;
-  profiles?: object[];
-  data_storages?: object[];
 }
 
 export interface LoginRequest {
@@ -91,7 +66,6 @@ const apiURL = import.meta.env.VITE_API_URL;
 export async function login(request: LoginRequest): Promise<AuthResponse> {
   try {
     const response = await apiClient.post("/auth/identity/caucus", request);
-
     console.log(response, "loginresponse");
 
     const data = await response.data;
@@ -104,13 +78,6 @@ export async function login(request: LoginRequest): Promise<AuthResponse> {
         role: data.role,
         state: data.state,
         createdAt: data.created_at,
-        level: data.level,
-        otp: data.otp,
-        labels: data.labels,
-        broker_platforms: data.broker_platforms,
-        phone: data.phone,
-        profiles: data.profiles,
-        data_storages: data.data_storages,
       },
       jwt_token: data.csrf_token,
     };
@@ -136,12 +103,8 @@ export async function signup(request: SignupRequest): Promise<AuthResponse> {
         role: data.role,
         state: data.state,
         createdAt: data.created_at,
-        level: data.level,
-        otp: data.otp,
-        labels: data.labels,
-        broker_platforms: data.broker_platforms,
       },
-      jwt_token: data.csrf_token,
+      jwt_token: data.csrf_token, // the backend is sending it named csrf_token, this line aliases it as jwt_token
     };
   } catch (error) {
     const errorData = error.response?.data;
@@ -209,14 +172,10 @@ export async function verifyOtp(
         email: data.email,
         name: data.username || data.name,
         role: data.role,
-        state: data.state,
+        state: data.state, // active or verified
         createdAt: data.created_at,
-        level: data.level,
-        otp: data.otp,
-        labels: data.labels,
-        broker_platforms: data.broker_platforms,
       },
-      jwt_token: data.csrf_token,
+      jwt_token: data.csrf_token, // the backend is sending it named csrf_token, this line aliases it as jwt_token
     };
   } catch (error) {
     const errorData = error.response?.data;
