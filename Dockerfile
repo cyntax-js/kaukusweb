@@ -24,7 +24,7 @@ RUN yarn build
 FROM nginx:1.27-alpine
 
 # Copy React build from builder stage
-COPY --from=builder /app/build /usr/share/nginx/html/
+COPY --from=builder /app/dist /usr/share/nginx/html/
 
 # Copy custom Nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
