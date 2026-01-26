@@ -13,6 +13,13 @@ import { getFriendlyErrorMessage } from "@/lib/utils";
 
 export type UserRole = "member" | "broker" | "dealer" | null;
 
+export interface BrokerPlatform {
+  id: string;
+  slug: string;
+  platform: string;
+  broker_num?: string;
+}
+
 export interface User {
   id: string;
   email: string;
@@ -20,6 +27,7 @@ export interface User {
   role: UserRole;
   state: string;
   createdAt: string;
+  broker_platforms?: BrokerPlatform[];
 }
 
 export interface LoginRequest {

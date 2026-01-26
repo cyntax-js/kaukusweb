@@ -8,6 +8,7 @@ export interface User {
   role: UserRole;
   createdAt: Date;
   isVerified: boolean;
+  broker_platforms?: Array<{ slug: string }>;
 }
 
 export interface AuthState {
