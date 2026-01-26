@@ -236,6 +236,8 @@ export async function submitCompanyKyc(
 export async function getKycStatus(): Promise<KycStatusResponse> {
   try {
     const response = await apiClient.get("/broker/company-kyc/get-kyc-status");
+    console.log(response, "ffff");
+
     return response.data;
   } catch (error: any) {
     console.log("Error fetching KYC status:", error);

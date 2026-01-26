@@ -40,10 +40,10 @@ export default function Login() {
       setIsCheckingKyc(true);
       try {
         const kycResponse = await platformApi.broker.getKycStatus();
+        console.log(kycResponse, "kycResponse");
 
         if (kycResponse.data && kycResponse.data.length > 0) {
           const item = kycResponse.data[0];
-
           if (item.kyc_status === "pending") {
             // KYC still pending - go to awaiting approval
             navigate("/awaiting-approval");

@@ -303,7 +303,9 @@
     "customizableTemplates": "Customizable templates",
     "userFeeManagement": "User & fee management",
     "becomeDealer": "Become a Dealer",
+    "becomeIssuingHouse": "Submit Issuance License",
     "dealerDescription": "Provide liquidity to the marketplace. Connect your institution and participate in market making.",
+    "issuingHouseDescription": "Launch your own trading platform with our Broker-as-a-Service solution. Serve retail and institutional clients.",
     "directMarketAccess": "Direct market access",
     "institutionalApi": "Institutional-grade API",
     "riskManagementTools": "Risk management tools"

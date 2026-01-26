@@ -6,12 +6,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useAuthStore } from "@/stores/authStore";
 import { useOnboardingStore } from "@/stores/onboardingStore";
 import type { KycType } from "@/api/platform";
-import { 
-  TrendingUp, 
-  Building2, 
-  Landmark, 
-  BarChart3, 
-  ArrowRight, 
+import {
+  TrendingUp,
+  Building2,
+  Landmark,
+  BarChart3,
+  ArrowRight,
   Sparkles,
   CheckCircle2,
 } from "lucide-react";
@@ -92,7 +92,9 @@ export default function RoleSelection() {
 
   const toggleRole = (roleId: KycType) => {
     setSelectedRoles((prev) =>
-      prev.includes(roleId) ? prev.filter((r) => r !== roleId) : [...prev, roleId]
+      prev.includes(roleId)
+        ? prev.filter((r) => r !== roleId)
+        : [...prev, roleId]
     );
   };
 
@@ -101,10 +103,10 @@ export default function RoleSelection() {
 
     // Reset any previous onboarding data
     resetOnboarding();
-    
+
     // Set selected licenses in the onboarding store
     setSelectedLicenses(selectedRoles);
-    
+
     // Set the first role as the selected role for navigation
     if (selectedRoles.includes("broker")) {
       setSelectedRole("broker");
@@ -129,8 +131,9 @@ export default function RoleSelection() {
             {t("roleSelection.chooseYourPath")}
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Select one or more license types you already have or want to apply for. 
-            You'll provide company information and KYC documents for each selected license.
+            Select one or more license types you already have or want to apply
+            for. You'll provide company information and KYC documents for each
+            selected license.
           </p>
         </div>
 
@@ -142,7 +145,9 @@ export default function RoleSelection() {
               <Card
                 key={role.id}
                 className={`p-6 cursor-pointer group relative overflow-hidden transition-all opacity-0 animate-fade-in border-2 ${
-                  isSelected ? "border-primary bg-primary/5" : "border-transparent hover:border-muted"
+                  isSelected
+                    ? "border-primary bg-primary/5"
+                    : "border-transparent hover:border-muted"
                 }`}
                 style={{ animationDelay: `${i * 0.1}s` }}
                 onClick={() => toggleRole(role.id)}
@@ -161,14 +166,18 @@ export default function RoleSelection() {
 
                 <div className="flex items-start gap-4">
                   <div
-                    className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${role.gradient} flex items-center justify-center shrink-0 transition-shadow ${
+                    className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${
+                      role.gradient
+                    } flex items-center justify-center shrink-0 transition-shadow ${
                       isSelected ? "shadow-glow" : ""
                     }`}
                   >
                     <role.icon className="w-7 h-7 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-lg font-bold mb-2">{t(role.titleKey)}</h3>
+                    <h3 className="text-lg font-bold mb-2">
+                      {t(role.titleKey)}
+                    </h3>
                     <p className="text-sm text-muted-foreground mb-4">
                       {t(role.descriptionKey)}
                     </p>
@@ -201,7 +210,11 @@ export default function RoleSelection() {
                         key={roleId}
                         className="text-xs bg-primary/10 text-primary px-3 py-1 rounded-full font-medium"
                       >
-                        {role ? t(role.titleKey).replace("Become a ", "").replace("Become an ", "") : roleId}
+                        {role
+                          ? t(role.titleKey)
+                              .replace("Become a ", "")
+                              .replace("Become an ", "")
+                          : roleId}
                       </span>
                     );
                   })}
@@ -225,7 +238,9 @@ export default function RoleSelection() {
           >
             {selectedRoles.length === 0
               ? "Select at least one license"
-              : `Apply for ${selectedRoles.length} License${selectedRoles.length > 1 ? "s" : ""}`}
+              : `Apply for ${selectedRoles.length} License${
+                  selectedRoles.length > 1 ? "s" : ""
+                }`}
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         </div>
@@ -233,7 +248,11 @@ export default function RoleSelection() {
         {/* Info Footer */}
         <div className="text-center mt-12 text-sm text-muted-foreground">
           <p>{t("roleSelection.notSure")}</p>
-          <Button variant="link" className="text-primary" onClick={() => navigate("/services")}>
+          <Button
+            variant="link"
+            className="text-primary"
+            onClick={() => navigate("/services")}
+          >
             {t("roleSelection.learnMoreAboutRoles")}
           </Button>
         </div>

@@ -1,6 +1,6 @@
 /**
  * Dashboard Selection Page for KYC-Approved Users
- * 
+ *
  * Shows approved licenses and allows selecting which dashboard to enter.
  */
 
@@ -23,13 +23,16 @@ import {
   RefreshCw,
 } from "lucide-react";
 
-const licenseConfig: Record<KycType, {
-  icon: typeof TrendingUp;
-  label: string;
-  dashboardRoute: string;
-  gradient: string;
-  description: string;
-}> = {
+const licenseConfig: Record<
+  KycType,
+  {
+    icon: typeof TrendingUp;
+    label: string;
+    dashboardRoute: string;
+    gradient: string;
+    description: string;
+  }
+> = {
   broker: {
     icon: TrendingUp,
     label: "Broker",
@@ -63,7 +66,7 @@ const licenseConfig: Record<KycType, {
 export default function DashboardSelectionKyc() {
   const navigate = useNavigate();
   const { logout, user } = useAuthStore();
-  
+
   const [approvedLicenses, setApprovedLicenses] = useState<KycType[]>([]);
   const [companyName, setCompanyName] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
@@ -72,21 +75,24 @@ export default function DashboardSelectionKyc() {
     setIsLoading(true);
     try {
       const response = await platformApi.broker.getKycStatus();
-      
+      console.log(response, "checkress");
+
       if (response.data && response.data.length > 0) {
-        const item = response.data[0];
-        
-        if (item.kyc_status === "approved" && item.kyc_types) {
-          setApprovedLicenses(item.kyc_types);
+        const item = response?.data[0];
+
+        if (item?.kyc_status === "approved") {
+          setApprovedLicenses((prev) => {
+            const merged = [...prev, ...(item?.kyc_types ?? [])];
+            return Array.from(new Set(merged)) as KycType[];
+          });
           setCompanyName(item.company_name || "");
-          
           // If only one license, redirect directly
-          if (item.kyc_types.length === 1) {
+          if ((item.kyc_types ?? []).length === 1) {
             const license = item.kyc_types[0];
             navigate(licenseConfig[license]?.dashboardRoute || "/");
             return;
           }
-        } else if (item.kyc_status === "pending") {
+        } else if (item?.kyc_status === "pending") {
           navigate("/awaiting-approval");
           return;
         } else {
@@ -135,18 +141,19 @@ export default function DashboardSelectionKyc() {
           <div className="w-20 h-20 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-6 animate-scale-in">
             <CheckCircle2 className="w-10 h-10 text-success" />
           </div>
-          
+
           {companyName && (
             <Badge variant="secondary" className="mb-4">
               {companyName}
             </Badge>
           )}
-          
+
           <h1 className="text-3xl md:text-4xl font-bold mb-4">
             Select Your Dashboard
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            You have {approvedLicenses.length} approved licenses. Select which dashboard you want to access.
+            You have {approvedLicenses.length} approved licenses. Select which
+            dashboard you want to access.
           </p>
         </div>
 
@@ -175,7 +182,9 @@ export default function DashboardSelectionKyc() {
                     <Icon className="w-7 h-7 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h2 className="text-xl font-bold mb-2">{config.label} Dashboard</h2>
+                    <h2 className="text-xl font-bold mb-2">
+                      {config.label} Dashboard
+                    </h2>
                     <p className="text-sm text-muted-foreground mb-4">
                       {config.description}
                     </p>
