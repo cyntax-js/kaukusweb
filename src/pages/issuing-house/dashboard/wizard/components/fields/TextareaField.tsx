@@ -3,6 +3,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import type { FieldSchema } from "../../schema";
 import { useWizard } from "../../WizardContext";
+import { FieldWrapper } from "../FieldWrapper";
 
 interface TextareaFieldProps {
   field: FieldSchema;
@@ -14,7 +15,7 @@ export function TextareaField({ field }: TextareaFieldProps) {
   const error = errors[field.id];
 
   return (
-    <div className="space-y-2">
+    <FieldWrapper fieldId={field.id} error={error}>
       <Label 
         htmlFor={field.id}
         className={cn(error && "text-destructive")}
@@ -29,15 +30,10 @@ export function TextareaField({ field }: TextareaFieldProps) {
         placeholder={`Enter ${field.label.toLowerCase()}`}
         rows={4}
         className={cn(
-          "resize-none transition-colors",
-          error && "border-destructive focus:ring-destructive"
+          "mt-2 resize-none transition-colors",
+          error && "border-destructive ring-destructive/20 ring-2"
         )}
       />
-      {error && (
-        <p className="text-xs text-destructive animate-in fade-in-0 slide-in-from-top-1">
-          {error}
-        </p>
-      )}
-    </div>
+    </FieldWrapper>
   );
 }

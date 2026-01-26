@@ -3,6 +3,7 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import type { FieldSchema } from "../../schema";
 import { useWizard } from "../../WizardContext";
+import { FieldWrapper } from "../FieldWrapper";
 
 interface CheckboxFieldProps {
   field: FieldSchema;
@@ -14,8 +15,13 @@ export function CheckboxField({ field }: CheckboxFieldProps) {
   const error = errors[field.id];
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-start gap-3 rounded-lg border border-border bg-card/50 p-4">
+    <FieldWrapper fieldId={field.id} error={error}>
+      <div 
+        className={cn(
+          "flex items-start gap-3 rounded-lg border bg-card/50 p-4 transition-colors",
+          error ? "border-destructive ring-destructive/20 ring-2" : "border-border"
+        )}
+      >
         <Checkbox
           id={field.id}
           checked={value ?? false}
@@ -33,11 +39,6 @@ export function CheckboxField({ field }: CheckboxFieldProps) {
           {field.required && <span className="text-destructive ml-1">*</span>}
         </Label>
       </div>
-      {error && (
-        <p className="text-xs text-destructive animate-in fade-in-0 slide-in-from-top-1">
-          {error}
-        </p>
-      )}
-    </div>
+    </FieldWrapper>
   );
 }

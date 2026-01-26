@@ -9,6 +9,7 @@ import {
 import { cn } from "@/lib/utils";
 import type { FieldSchema } from "../../schema";
 import { useWizard } from "../../WizardContext";
+import { FieldWrapper } from "../FieldWrapper";
 
 interface SelectFieldProps {
   field: FieldSchema;
@@ -45,7 +46,7 @@ export function SelectField({ field }: SelectFieldProps) {
   }
 
   return (
-    <div className="space-y-2">
+    <FieldWrapper fieldId={field.id} error={error}>
       <Label 
         htmlFor={field.id}
         className={cn(error && "text-destructive")}
@@ -60,8 +61,8 @@ export function SelectField({ field }: SelectFieldProps) {
         <SelectTrigger 
           id={field.id}
           className={cn(
-            "w-full transition-colors",
-            error && "border-destructive focus:ring-destructive"
+            "w-full mt-2 transition-colors",
+            error && "border-destructive ring-destructive/20 ring-2"
           )}
         >
           <SelectValue placeholder={`Select ${field.label.toLowerCase()}`} />
@@ -74,11 +75,6 @@ export function SelectField({ field }: SelectFieldProps) {
           ))}
         </SelectContent>
       </Select>
-      {error && (
-        <p className="text-xs text-destructive animate-in fade-in-0 slide-in-from-top-1">
-          {error}
-        </p>
-      )}
-    </div>
+    </FieldWrapper>
   );
 }

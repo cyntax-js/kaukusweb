@@ -3,6 +3,7 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import type { FieldSchema } from "../../schema";
 import { useWizard } from "../../WizardContext";
+import { FieldWrapper } from "../FieldWrapper";
 
 interface NumberFieldProps {
   field: FieldSchema;
@@ -39,7 +40,7 @@ export function NumberField({ field }: NumberFieldProps) {
   };
 
   return (
-    <div className="space-y-2">
+    <FieldWrapper fieldId={field.id} error={error}>
       <Label 
         htmlFor={field.id}
         className={cn(error && "text-destructive")}
@@ -47,7 +48,7 @@ export function NumberField({ field }: NumberFieldProps) {
         {field.label}
         {field.required && <span className="text-destructive ml-1">*</span>}
       </Label>
-      <div className="relative">
+      <div className="relative mt-2">
         <Input
           id={field.id}
           type="text"
@@ -59,7 +60,7 @@ export function NumberField({ field }: NumberFieldProps) {
           className={cn(
             "transition-colors",
             isReadOnly && "bg-muted/50 text-muted-foreground cursor-not-allowed",
-            error && "border-destructive focus:ring-destructive"
+            error && "border-destructive ring-destructive/20 ring-2"
           )}
         />
         {isFormula && (
@@ -68,11 +69,6 @@ export function NumberField({ field }: NumberFieldProps) {
           </span>
         )}
       </div>
-      {error && (
-        <p className="text-xs text-destructive animate-in fade-in-0 slide-in-from-top-1">
-          {error}
-        </p>
-      )}
-    </div>
+    </FieldWrapper>
   );
 }
