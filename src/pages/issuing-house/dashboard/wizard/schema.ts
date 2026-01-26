@@ -47,11 +47,13 @@ export interface StepSchema {
 }
 
 export interface WizardSchema {
+  version?: string;
   parValue: number;
   steps: StepSchema[];
 }
 
 export const securityCreationSchema: WizardSchema = {
+  version: "1.0",
   parValue: 1000,
   steps: [
     {
@@ -71,10 +73,7 @@ export const securityCreationSchema: WizardSchema = {
           label: "Issuer Type",
           options: ["GOVERNMENT", "CORPORATE"],
           required: true,
-          visibleWhen: {
-            field: "securityType",
-            in: ["DEBT"],
-          },
+          visibleWhen: { field: "securityType", in: ["DEBT"] },
         },
         {
           id: "issuerType",
@@ -82,32 +81,21 @@ export const securityCreationSchema: WizardSchema = {
           label: "Issuer Type",
           options: ["CORPORATE"],
           required: true,
-          visibleWhen: {
-            field: "securityType",
-            in: ["EQUITY"],
-          },
+          visibleWhen: { field: "securityType", in: ["EQUITY"] },
         },
         {
           id: "marketType",
           type: "select",
           label: "Market Type",
           options: ["PRIMARY", "SECONDARY", "BOTH"],
-          required: true,
-          visibleWhen: {
-            field: "securityType",
-            in: ["DEBT"],
-          },
+          visibleWhen: { field: "securityType", in: ["DEBT"] },
         },
         {
           id: "marketType",
           type: "select",
           label: "Market Type",
           options: ["PRIVATE", "PUBLIC"],
-          required: true,
-          visibleWhen: {
-            field: "securityType",
-            in: ["EQUITY"],
-          },
+          visibleWhen: { field: "securityType", in: ["EQUITY"] },
         },
       ],
     },
@@ -123,11 +111,7 @@ export const securityCreationSchema: WizardSchema = {
             GOVERNMENT: ["TREASURY_BILL", "COMMERCIAL_PAPER", "BOND", "PROMISSORY_NOTE"],
             CORPORATE: ["COMMERCIAL_PAPER", "BOND"],
           },
-          required: true,
-          visibleWhen: {
-            field: "securityType",
-            in: ["DEBT"],
-          },
+          visibleWhen: { field: "securityType", in: ["DEBT"] },
         },
         {
           id: "couponType",
@@ -137,68 +121,71 @@ export const securityCreationSchema: WizardSchema = {
             GOVERNMENT: ["ZERO", "FIXED", "FLOATING", "INFLATION_LINKED"],
             CORPORATE: ["ZERO", "FIXED", "FLOATING"],
           },
-          required: true,
-          visibleWhen: {
-            field: "securityType",
-            in: ["DEBT"],
-          },
+          visibleWhen: { field: "securityType", in: ["DEBT"] },
         },
         {
           id: "discountRate",
           type: "number",
           label: "Discount Rate (%)",
-          visibleWhen: {
-            field: "couponType",
-            in: ["ZERO"],
-          },
+          visibleWhen: { field: "couponType", in: ["ZERO"] },
         },
         {
           id: "couponRate",
           type: "number",
           label: "Coupon Rate (%)",
-          visibleWhen: {
-            field: "couponType",
-            in: ["FIXED"],
-          },
+          visibleWhen: { field: "couponType", in: ["FIXED"] },
         },
         {
           id: "couponFrequency",
           type: "select",
           label: "Coupon Frequency",
           options: ["ANNUAL", "SEMI_ANNUAL"],
-          visibleWhen: {
-            field: "couponType",
-            in: ["FIXED"],
-          },
+          visibleWhen: { field: "couponType", in: ["FIXED"] },
         },
         {
           id: "cbnRate",
           type: "readOnly",
           label: "CBN Reference Rate",
           valueSource: "external",
-          visibleWhen: {
-            field: "couponType",
-            in: ["FLOATING"],
-          },
+          visibleWhen: { field: "couponType", in: ["FLOATING"] },
         },
         {
           id: "spread",
           type: "number",
           label: "Spread (%)",
-          visibleWhen: {
-            field: "couponType",
-            in: ["FLOATING"],
-          },
+          visibleWhen: { field: "couponType", in: ["FLOATING"] },
         },
         {
           id: "inflationIndex",
           type: "readOnly",
           label: "Inflation Index",
           valueSource: "external",
-          visibleWhen: {
-            field: "couponType",
-            in: ["INFLATION_LINKED"],
-          },
+          visibleWhen: { field: "couponType", in: ["INFLATION_LINKED"] },
+        },
+        {
+          id: "equityType",
+          type: "select",
+          label: "Equity Type",
+          options: ["ORDINARY", "PREFERENCE", "OTHER"],
+          visibleWhen: { field: "securityType", in: ["EQUITY"] },
+        },
+        {
+          id: "votingRights",
+          type: "toggle",
+          label: "Voting Rights",
+          visibleWhen: { field: "securityType", in: ["EQUITY"] },
+        },
+        {
+          id: "dividendRights",
+          type: "toggle",
+          label: "Dividend Rights",
+          visibleWhen: { field: "securityType", in: ["EQUITY"] },
+        },
+        {
+          id: "transferRestriction",
+          type: "toggle",
+          label: "Transfer Restriction (OTC Only)",
+          visibleWhen: { field: "securityType", in: ["EQUITY"] },
         },
       ],
     },
@@ -210,7 +197,7 @@ export const securityCreationSchema: WizardSchema = {
           id: "amountToRaise",
           type: "number",
           label: "Amount to Raise (₦)",
-          required: true,
+          visibleWhen: { field: "securityType", in: ["DEBT"] },
         },
         {
           id: "parValue",
@@ -218,6 +205,7 @@ export const securityCreationSchema: WizardSchema = {
           label: "Par Value (₦)",
           value: 1000,
           readOnly: true,
+          visibleWhen: { field: "securityType", in: ["DEBT"] },
         },
         {
           id: "totalUnits",
@@ -225,12 +213,13 @@ export const securityCreationSchema: WizardSchema = {
           label: "Total Units",
           formula: "amountToRaise / parValue",
           readOnly: true,
+          visibleWhen: { field: "securityType", in: ["DEBT"] },
         },
         {
-          id: "maturity",
+          id: "maturityDate",
           type: "date",
           label: "Maturity Date",
-          required: true,
+          visibleWhen: { field: "securityType", in: ["DEBT"] },
         },
         {
           id: "callable",
@@ -241,30 +230,37 @@ export const securityCreationSchema: WizardSchema = {
           id: "convertible",
           type: "toggle",
           label: "Convertible",
-          visibleWhen: {
-            field: "issuerType",
-            in: ["CORPORATE"],
-          },
+          visibleWhen: { field: "issuerType", in: ["CORPORATE"] },
+        },
+        {
+          id: "authorisedShares",
+          type: "number",
+          label: "Total Authorised Shares",
+          visibleWhen: { field: "securityType", in: ["EQUITY"] },
+        },
+        {
+          id: "outstandingShares",
+          type: "number",
+          label: "Outstanding Shares",
+          visibleWhen: { field: "securityType", in: ["EQUITY"] },
+        },
+        {
+          id: "issuedShares",
+          type: "number",
+          label: "Issued Shares",
+          visibleWhen: { field: "securityType", in: ["EQUITY"] },
         },
         {
           id: "sharesToList",
           type: "number",
           label: "Shares to be Listed",
-          required: true,
-          visibleWhen: {
-            field: "securityType",
-            in: ["EQUITY"],
-          },
+          visibleWhen: { field: "securityType", in: ["EQUITY"] },
         },
         {
           id: "targetRaiseAmount",
           type: "number",
           label: "Target Raise Amount (₦)",
-          required: true,
-          visibleWhen: {
-            field: "securityType",
-            in: ["EQUITY"],
-          },
+          visibleWhen: { field: "securityType", in: ["EQUITY"] },
         },
         {
           id: "pricePerShare",
@@ -272,47 +268,28 @@ export const securityCreationSchema: WizardSchema = {
           label: "Price per Share (₦)",
           formula: "targetRaiseAmount / sharesToList",
           readOnly: true,
-          visibleWhen: {
-            field: "securityType",
-            in: ["EQUITY"],
-          },
+          visibleWhen: { field: "securityType", in: ["EQUITY"] },
         },
         {
           id: "minInvestment",
           type: "number",
-          label: "Minimum Investment per Investor",
-          visibleWhen: {
-            field: "securityType",
-            in: ["EQUITY"],
-          },
+          label: "Minimum Investment",
         },
         {
           id: "maxInvestment",
           type: "number",
-          label: "Maximum Investment per Investor",
-          visibleWhen: {
-            field: "securityType",
-            in: ["EQUITY"],
-          },
+          label: "Maximum Investment",
         },
         {
           id: "eligibleInvestors",
           type: "multiSelect",
-          label: "Eligible Investor Types",
+          label: "Eligible Investors",
           options: ["INSTITUTIONAL", "QUALIFIED", "ACCREDITED", "OTHERS"],
-          visibleWhen: {
-            field: "securityType",
-            in: ["EQUITY"],
-          },
         },
         {
           id: "useOfProceeds",
           type: "textarea",
           label: "Use of Proceeds",
-          visibleWhen: {
-            field: "securityType",
-            in: ["EQUITY"],
-          },
         },
       ],
     },
@@ -328,12 +305,9 @@ export const securityCreationSchema: WizardSchema = {
         {
           id: "underwriters",
           type: "multiSelect",
-          label: "Select Underwriter(s)",
+          label: "Underwriters",
           optionsSource: "api/underwriters",
-          visibleWhen: {
-            field: "underwritten",
-            in: [true],
-          },
+          visibleWhen: { field: "underwritten", in: [true] },
         },
         {
           id: "secondaryMarket",
@@ -356,39 +330,23 @@ export const securityCreationSchema: WizardSchema = {
         {
           id: "preMoneyValuation",
           type: "number",
-          label: "Pre-money Valuation (₦)",
-          visibleWhen: {
-            field: "securityType",
-            in: ["EQUITY"],
-          },
+          label: "Pre-money Valuation",
         },
         {
           id: "postMoneyValuation",
           type: "number",
-          label: "Post-money Valuation (₦)",
-          visibleWhen: {
-            field: "securityType",
-            in: ["EQUITY"],
-          },
+          label: "Post-money Valuation",
         },
         {
           id: "valuationMethod",
           type: "select",
           label: "Valuation Method",
           options: ["DCF", "COMPARABLES", "OTHER"],
-          visibleWhen: {
-            field: "securityType",
-            in: ["EQUITY"],
-          },
         },
         {
           id: "valuationDate",
           type: "date",
           label: "Valuation Date",
-          visibleWhen: {
-            field: "securityType",
-            in: ["EQUITY"],
-          },
         },
         {
           id: "capTable",
@@ -397,14 +355,10 @@ export const securityCreationSchema: WizardSchema = {
           columns: [
             { id: "shareholder", label: "Shareholder", type: "string" },
             { id: "preShares", label: "Pre-fund Shares", type: "number" },
-            { id: "prePercent", label: "Pre-fund %", type: "number", formula: "preShares / totalPreShares * 100" },
+            { id: "prePercent", label: "Pre-fund %", type: "number" },
             { id: "postShares", label: "Post-fund Shares", type: "number" },
-            { id: "postPercent", label: "Post-fund %", type: "number", formula: "postShares / totalPostShares * 100" },
+            { id: "postPercent", label: "Post-fund %", type: "number" },
           ],
-          visibleWhen: {
-            field: "securityType",
-            in: ["EQUITY"],
-          },
         },
       ],
     },
@@ -421,28 +375,19 @@ export const securityCreationSchema: WizardSchema = {
           id: "auditYears",
           type: "number",
           label: "Years Covered",
-          visibleWhen: {
-            field: "auditedFinancials",
-            in: [true],
-          },
+          visibleWhen: { field: "auditedFinancials", in: [true] },
         },
         {
           id: "auditorName",
           type: "string",
           label: "Auditor Name",
-          visibleWhen: {
-            field: "auditedFinancials",
-            in: [true],
-          },
+          visibleWhen: { field: "auditedFinancials", in: [true] },
         },
         {
           id: "auditDocs",
           type: "file",
-          label: "Upload Audited Docs",
-          visibleWhen: {
-            field: "auditedFinancials",
-            in: [true],
-          },
+          label: "Audited Documents",
+          visibleWhen: { field: "auditedFinancials", in: [true] },
         },
         {
           id: "boardMembers",
@@ -453,6 +398,7 @@ export const securityCreationSchema: WizardSchema = {
             { id: "role", type: "string", label: "Role" },
             { id: "nationality", type: "string", label: "Nationality" },
             { id: "appointmentDate", type: "date", label: "Appointment Date" },
+            { id: "photo", type: "file", label: "Photo" },
           ],
         },
         {
@@ -463,16 +409,13 @@ export const securityCreationSchema: WizardSchema = {
             { id: "name", type: "string", label: "Name" },
             { id: "position", type: "string", label: "Position" },
             { id: "experience", type: "textarea", label: "Experience" },
+            { id: "photo", type: "file", label: "Photo" },
           ],
         },
         {
           id: "shareholdersAgreement",
           type: "file",
           label: "Shareholders Agreement",
-          visibleWhen: {
-            field: "securityType",
-            in: ["EQUITY"],
-          },
         },
         {
           id: "pendingLitigation",
@@ -503,7 +446,7 @@ export const securityCreationSchema: WizardSchema = {
         {
           id: "memart",
           type: "file",
-          label: "Memorandum & Articles of Association",
+          label: "Memorandum & Articles",
         },
         {
           id: "boardResolution",
@@ -516,7 +459,7 @@ export const securityCreationSchema: WizardSchema = {
           label: "Legal Opinion",
         },
         {
-          id: "dueDiligenceReport",
+          id: "dueDiligence",
           type: "file",
           label: "Issuing House Due Diligence Report",
         },
@@ -529,7 +472,7 @@ export const securityCreationSchema: WizardSchema = {
         {
           id: "declaration",
           type: "checkbox",
-          label: "I declare that all information is true and complete.",
+          label: "I declare all information is true and complete.",
         },
       ],
     },
@@ -538,7 +481,7 @@ export const securityCreationSchema: WizardSchema = {
       title: "Post Approval",
       fields: [
         {
-          id: "listingRef",
+          id: "listingReference",
           type: "readOnly",
           label: "Listing Reference Number",
         },
