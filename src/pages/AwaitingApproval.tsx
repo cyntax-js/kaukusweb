@@ -1,8 +1,8 @@
 /**
  * Awaiting Approval Page
- * 
- * Shows KYC submission status with refresh functionality.
- * Handles navigation to appropriate dashboard(s) when approved.
+ *
+ * Redesigned page showing KYC submission status.
+ * Displays both pending and approved licenses with visual differentiation.
  */
 
 import { useState, useEffect, useCallback } from "react";
@@ -11,14 +11,13 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuthStore } from "@/stores/authStore";
-import { platformApi, type KycType } from "@/api/platform";
+import { platformApi, type KycType, type KycStatusItem } from "@/api/platform";
 import {
   Clock,
   CheckCircle2,
   FileSearch,
   Shield,
   ArrowRight,
-  Mail,
   RefreshCw,
   LogOut,
   TrendingUp,
@@ -26,21 +25,19 @@ import {
   Landmark,
   BarChart3,
   Loader2,
+  AlertCircle,
+  Sparkles,
 } from "lucide-react";
 
-const reviewSteps = [
-  { id: "received", label: "Application Received", icon: FileSearch },
-  { id: "documents", label: "Document Verification", icon: Shield },
-  { id: "compliance", label: "Compliance Check", icon: Shield },
-  { id: "approval", label: "Approval", icon: CheckCircle2 },
-];
-
-const licenseConfig: Record<KycType, {
-  icon: typeof TrendingUp;
-  label: string;
-  dashboardRoute: string;
-  gradient: string;
-}> = {
+const licenseConfig: Record<
+  KycType,
+  {
+    icon: typeof TrendingUp;
+    label: string;
+    dashboardRoute: string;
+    gradient: string;
+  }
+> = {
   broker: {
     icon: TrendingUp,
     label: "Broker",
@@ -67,51 +64,67 @@ const licenseConfig: Record<KycType, {
   },
 };
 
-interface KycStatusData {
+interface LicenseStatus {
+  type: KycType;
   status: "pending" | "approved" | "rejected";
-  approvedKycTypes?: KycType[];
   companyName?: string;
 }
 
 export default function AwaitingApproval() {
   const navigate = useNavigate();
-  const { logout } = useAuthStore();
-  
-  const [statusData, setStatusData] = useState<KycStatusData>({ status: "pending" });
+  const { logout, user } = useAuthStore();
+
+  const [licenses, setLicenses] = useState<LicenseStatus[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
 
   const checkStatus = useCallback(async () => {
     setIsRefreshing(true);
     try {
       const response = await platformApi.broker.getKycStatus();
-      
+
       if (response.data && response.data.length > 0) {
-        const item = response.data[0];
-        const status = item.kyc_status;
-        
-        setStatusData({
-          status,
-          approvedKycTypes: item.kyc_types,
-          companyName: item.company_name,
+        const allLicenses: LicenseStatus[] = [];
+
+        response.data.forEach((item: KycStatusItem) => {
+          if (item.kyc_types) {
+            // Handle case where kyc_types is a single string
+            const types = Array.isArray(item.kyc_types)
+              ? item.kyc_types
+              : [item.kyc_types];
+            types.forEach((type) => {
+              allLicenses.push({
+                type: type as KycType,
+                status: item.kyc_status,
+                companyName: item.company_name,
+              });
+            });
+          }
         });
 
-        // If approved, handle navigation
-        if (status === "approved" && item.kyc_types && item.kyc_types.length > 0) {
-          if (item.kyc_types.length === 1) {
-            // Single license - go directly to dashboard
-            const license = item.kyc_types[0];
-            navigate(licenseConfig[license]?.dashboardRoute || "/");
+        setLicenses(allLicenses);
+
+        // Check if all are approved
+        const approvedLicenses = allLicenses.filter(
+          (l) => l.status === "approved"
+        );
+        if (approvedLicenses.length === allLicenses.length && allLicenses.length > 0) {
+          // All approved - navigate to dashboard selection if multiple, else direct
+          if (approvedLicenses.length === 1) {
+            navigate(licenseConfig[approvedLicenses[0].type]?.dashboardRoute || "/");
+          } else {
+            navigate("/dashboard-selection-kyc");
           }
-          // Multiple licenses - show selection (handled in render)
         }
       }
-      
+
       setLastRefreshed(new Date());
     } catch (error) {
       console.error("Error checking status:", error);
     } finally {
       setIsRefreshing(false);
+      setIsLoading(false);
     }
   }, [navigate]);
 
@@ -123,243 +136,252 @@ export default function AwaitingApproval() {
     logout();
   };
 
-  const handleSelectDashboard = (license: KycType) => {
-    navigate(licenseConfig[license]?.dashboardRoute || "/");
+  const handleGoToDashboard = (license: LicenseStatus) => {
+    navigate(licenseConfig[license.type]?.dashboardRoute || "/");
   };
 
-  const isApproved = statusData.status === "approved";
-  const hasMultipleLicenses = isApproved && statusData.approvedKycTypes && statusData.approvedKycTypes.length > 1;
+  const pendingLicenses = licenses.filter((l) => l.status === "pending");
+  const approvedLicenses = licenses.filter((l) => l.status === "approved");
+  const hasApproved = approvedLicenses.length > 0;
+  const hasPending = pendingLicenses.length > 0;
 
-  // Show dashboard selection for multiple approved licenses
-  if (hasMultipleLicenses && statusData.approvedKycTypes) {
+  if (isLoading) {
     return (
-      <div className="min-h-screen bg-background py-12 px-4">
-        <div className="max-w-4xl mx-auto animate-fade-in">
-          {/* Header */}
-          <div className="text-center mb-12">
-            <div className="w-20 h-20 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-6 animate-scale-in">
-              <CheckCircle2 className="w-10 h-10 text-success" />
-            </div>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-success/10 text-success text-sm font-medium mb-4">
-              <CheckCircle2 className="w-4 h-4" />
-              Multiple Licenses Approved
-            </div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">
-              Congratulations!
-            </h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Your applications have been approved. Select which dashboard you want to access.
-            </p>
-          </div>
-
-          {/* Dashboard Cards */}
-          <div className="grid md:grid-cols-2 gap-6 mb-8">
-            {statusData.approvedKycTypes.map((license, i) => {
-              const config = licenseConfig[license];
-              if (!config) return null;
-              const Icon = config.icon;
-
-              return (
-                <Card
-                  key={license}
-                  className="p-6 hover-lift cursor-pointer group relative overflow-hidden transition-all opacity-0 animate-fade-in"
-                  style={{ animationDelay: `${i * 0.1}s` }}
-                  onClick={() => handleSelectDashboard(license)}
-                >
-                  <Badge className="absolute top-4 right-4 bg-success/10 text-success">
-                    Approved
-                  </Badge>
-
-                  <div className="flex items-start gap-4">
-                    <div
-                      className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${config.gradient} flex items-center justify-center shrink-0 group-hover:shadow-glow transition-shadow`}
-                    >
-                      <Icon className="w-7 h-7 text-white" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h2 className="text-xl font-bold mb-2">{config.label} Dashboard</h2>
-                      <p className="text-sm text-muted-foreground mb-4">
-                        Access your {config.label.toLowerCase()} operations and management tools
-                      </p>
-                      <Button className="w-full group-hover:shadow-glow">
-                        Enter Dashboard
-                        <ArrowRight className="w-4 h-4 ml-2" />
-                      </Button>
-                    </div>
-                  </div>
-                </Card>
-              );
-            })}
-          </div>
-
-          {/* Logout */}
-          <div className="text-center">
-            <Button variant="ghost" onClick={handleLogout}>
-              <LogOut className="w-4 h-4 mr-2" />
-              Logout
-            </Button>
-          </div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
+          <p className="text-muted-foreground">Checking your application status...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl animate-fade-in">
-        <Card className="p-8 md:p-12">
-          {/* Header */}
-          <div className="text-center mb-8">
-            {isApproved ? (
-              <>
-                <div className="w-20 h-20 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-6 animate-scale-in">
-                  <CheckCircle2 className="w-10 h-10 text-success" />
-                </div>
-                <h1 className="text-2xl md:text-3xl font-bold mb-2">
-                  Application Approved!
-                </h1>
-                <p className="text-muted-foreground">
-                  Congratulations! Your license application has been approved.
-                </p>
-              </>
+    <div className="min-h-screen bg-background py-12 px-4">
+      <div className="max-w-3xl mx-auto animate-fade-in">
+        {/* Header */}
+        <div className="text-center mb-10">
+          <div
+            className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 animate-scale-in ${
+              hasApproved && !hasPending
+                ? "bg-success/10"
+                : hasPending
+                ? "gradient-primary"
+                : "bg-muted"
+            }`}
+          >
+            {hasApproved && !hasPending ? (
+              <CheckCircle2 className="w-10 h-10 text-success" />
             ) : (
-              <>
-                <div className="w-20 h-20 rounded-full gradient-primary flex items-center justify-center mx-auto mb-6">
-                  <Clock className="w-10 h-10 text-primary-foreground animate-pulse" />
-                </div>
-                <h1 className="text-2xl md:text-3xl font-bold mb-2">
-                  Application Under Review
-                </h1>
-                <p className="text-muted-foreground">
-                  Your application is being reviewed by our compliance team. This typically takes 12-24 hours.
-                </p>
-              </>
+              <Clock className="w-10 h-10 text-primary-foreground animate-pulse" />
             )}
           </div>
 
-          {/* Company Info */}
-          {statusData.companyName && (
-            <div className="text-center mb-6">
-              <Badge variant="secondary" className="text-sm">
-                {statusData.companyName}
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">
+            {hasApproved && !hasPending
+              ? "All Applications Approved!"
+              : hasPending && hasApproved
+              ? "Some Applications Under Review"
+              : "Application Under Review"}
+          </h1>
+          <p className="text-muted-foreground max-w-xl mx-auto">
+            {hasPending
+              ? "Your compliance team is reviewing your applications. This typically takes 12-24 hours."
+              : "All your license applications have been approved. You can now access your dashboards."}
+          </p>
+        </div>
+
+        {/* Approved Licenses Section */}
+        {approvedLicenses.length > 0 && (
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-4">
+              <CheckCircle2 className="w-5 h-5 text-success" />
+              <h2 className="font-semibold text-lg">Approved Licenses</h2>
+              <Badge className="bg-success/10 text-success border-success/20 ml-2">
+                {approvedLicenses.length}
               </Badge>
             </div>
-          )}
+            <div className="grid gap-4">
+              {approvedLicenses.map((license, i) => {
+                const config = licenseConfig[license.type];
+                if (!config) return null;
+                const Icon = config.icon;
 
-          {/* Review Steps */}
-          <div className="space-y-4 mb-8">
-            {reviewSteps.map((step, index) => {
-              const isCompleted = isApproved || index < 2; // Show first 2 as complete when pending
-              const isActive = !isApproved && index === 2;
+                return (
+                  <Card
+                    key={`${license.type}-${i}`}
+                    className="p-5 hover-lift cursor-pointer group transition-all border-success/20 bg-success/5"
+                    onClick={() => handleGoToDashboard(license)}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div
+                        className={`w-12 h-12 rounded-xl bg-gradient-to-br ${config.gradient} flex items-center justify-center shrink-0 group-hover:shadow-glow transition-shadow`}
+                      >
+                        <Icon className="w-6 h-6 text-white" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-semibold">{config.label} License</h3>
+                          <Badge className="bg-success/10 text-success border-0">
+                            Approved
+                          </Badge>
+                        </div>
+                        {license.companyName && (
+                          <p className="text-sm text-muted-foreground">
+                            {license.companyName}
+                          </p>
+                        )}
+                      </div>
+                      <Button size="sm" className="group-hover:shadow-glow">
+                        Enter Dashboard
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
-              return (
-                <div
-                  key={step.id}
-                  className={`flex items-center gap-4 p-4 rounded-lg transition-all border ${
-                    isCompleted
-                      ? "bg-success/10 border-success/20"
-                      : isActive
-                        ? "bg-primary/10 border-primary/20"
-                        : "bg-secondary/50 border-border"
-                  }`}
-                >
+        {/* Pending Licenses Section */}
+        {pendingLicenses.length > 0 && (
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-4">
+              <Clock className="w-5 h-5 text-warning" />
+              <h2 className="font-semibold text-lg">Pending Review</h2>
+              <Badge variant="outline" className="border-warning/30 text-warning ml-2">
+                {pendingLicenses.length}
+              </Badge>
+            </div>
+            <div className="grid gap-4">
+              {pendingLicenses.map((license, i) => {
+                const config = licenseConfig[license.type];
+                if (!config) return null;
+                const Icon = config.icon;
+
+                return (
+                  <Card
+                    key={`${license.type}-${i}`}
+                    className="p-5 border-warning/20 bg-warning/5"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center shrink-0">
+                        <Icon className="w-6 h-6 text-muted-foreground" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-semibold">{config.label} License</h3>
+                          <Badge variant="outline" className="border-warning/30 text-warning">
+                            <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                            Pending
+                          </Badge>
+                        </div>
+                        {license.companyName && (
+                          <p className="text-sm text-muted-foreground">
+                            {license.companyName}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Review Progress */}
+        {hasPending && (
+          <Card className="p-6 mb-8 bg-secondary/30">
+            <h3 className="font-semibold mb-4 flex items-center gap-2">
+              <FileSearch className="w-5 h-5" />
+              Review Process
+            </h3>
+            <div className="space-y-3">
+              {[
+                { label: "Application Received", done: true },
+                { label: "Document Verification", done: true },
+                { label: "Compliance Check", active: true },
+                { label: "Final Approval", done: false },
+              ].map((step, i) => (
+                <div key={i} className="flex items-center gap-3">
                   <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                      isCompleted
+                    className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                      step.done
                         ? "bg-success text-success-foreground"
-                        : isActive
-                          ? "gradient-primary text-primary-foreground"
-                          : "bg-muted text-muted-foreground"
+                        : step.active
+                        ? "gradient-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground"
                     }`}
                   >
-                    {isCompleted ? (
-                      <CheckCircle2 className="w-5 h-5" />
-                    ) : isActive ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
+                    {step.done ? (
+                      <CheckCircle2 className="w-4 h-4" />
+                    ) : step.active ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
                     ) : (
-                      <step.icon className="w-5 h-5" />
+                      <span className="text-xs font-medium">{i + 1}</span>
                     )}
                   </div>
-                  <div className="flex-1">
-                    <span className={`font-medium ${isCompleted || isActive ? "text-foreground" : "text-muted-foreground"}`}>
-                      {step.label}
-                    </span>
-                    {isCompleted && (
-                      <p className="text-xs text-success">Completed</p>
-                    )}
-                    {isActive && (
-                      <p className="text-xs text-primary">In progress...</p>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Refresh Status */}
-          {!isApproved && (
-            <div className="flex items-center justify-between p-4 rounded-lg border border-border mb-6">
-              <div className="flex items-center gap-3">
-                <Mail className="w-5 h-5 text-muted-foreground" />
-                <div>
-                  <p className="text-sm text-muted-foreground">
-                    We'll notify you once your application is approved.
-                  </p>
-                  {lastRefreshed && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Last checked: {lastRefreshed.toLocaleTimeString()}
-                    </p>
+                  <span
+                    className={
+                      step.done || step.active
+                        ? "text-foreground"
+                        : "text-muted-foreground"
+                    }
+                  >
+                    {step.label}
+                  </span>
+                  {step.done && (
+                    <span className="text-xs text-success ml-auto">Complete</span>
+                  )}
+                  {step.active && (
+                    <span className="text-xs text-primary ml-auto">In Progress</span>
                   )}
                 </div>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={checkStatus}
-                disabled={isRefreshing}
-              >
-                {isRefreshing ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <RefreshCw className="w-4 h-4" />
-                )}
-                <span className="ml-2">Refresh</span>
-              </Button>
+              ))}
             </div>
-          )}
+          </Card>
+        )}
 
-          {/* CTA Buttons */}
-          <div className="space-y-3">
-            {isApproved && statusData.approvedKycTypes && statusData.approvedKycTypes.length === 1 ? (
-              <Button
-                className="w-full shadow-glow"
-                size="lg"
-                onClick={() => handleSelectDashboard(statusData.approvedKycTypes![0])}
-              >
-                Go to {licenseConfig[statusData.approvedKycTypes[0]]?.label} Dashboard
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-            ) : !isApproved ? (
-              <Button
-                className="w-full"
-                size="lg"
-                variant="secondary"
-                onClick={() => navigate("/")}
-              >
-                Go to Home
-              </Button>
-            ) : null}
-
-            <Button
-              variant="ghost"
-              className="w-full"
-              onClick={handleLogout}
-            >
-              <LogOut className="w-4 h-4 mr-2" />
-              Logout
-            </Button>
+        {/* Refresh Status */}
+        <div className="flex items-center justify-between p-4 rounded-lg border border-border mb-6">
+          <div className="flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 text-muted-foreground" />
+            <div>
+              <p className="text-sm">
+                We'll notify you via email once your application is approved.
+              </p>
+              {lastRefreshed && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  Last checked: {lastRefreshed.toLocaleTimeString()}
+                </p>
+              )}
+            </div>
           </div>
-        </Card>
+          <Button variant="outline" size="sm" onClick={checkStatus} disabled={isRefreshing}>
+            {isRefreshing ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <RefreshCw className="w-4 h-4" />
+            )}
+            <span className="ml-2">Refresh</span>
+          </Button>
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center justify-center gap-4">
+          {approvedLicenses.length > 1 && (
+            <Button onClick={() => navigate("/dashboard-selection-kyc")}>
+              <Sparkles className="w-4 h-4 mr-2" />
+              View All Dashboards
+            </Button>
+          )}
+          <Button variant="ghost" onClick={handleLogout}>
+            <LogOut className="w-4 h-4 mr-2" />
+            Logout
+          </Button>
+        </div>
       </div>
     </div>
   );

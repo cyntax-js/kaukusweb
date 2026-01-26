@@ -27,12 +27,12 @@ interface AuthStore {
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  selectedRole: UserRole | null; // Allow null for initial state
+  selectedRole: UserRole | null;
   pendingEmail: string | null;
   _hasHydrated: boolean;
 
   // Actions
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<User | null>;
   signup: (email: string, password: string) => Promise<boolean>;
   verifyOtp: (code: string) => Promise<boolean>;
   getUser: () => Promise<boolean>;
@@ -41,6 +41,8 @@ interface AuthStore {
   getSelectedRole: () => UserRole | null;
   setUser: (user: User) => void;
   setHasHydrated: (state: boolean) => void;
+  getBrokerPlatforms: () => User["broker_platforms"];
+  hasPlatform: (platform: string) => boolean;
 }
 
 export type UserRole = "broker" | "dealer" | "member";
@@ -63,6 +65,7 @@ export const useAuthStore = create<AuthStore>()(
 
       /**
        * Log in with email and password
+       * Returns user object on success, null on failure
        */
       login: async (email: string, password: string) => {
         set({ isLoading: true });
@@ -81,10 +84,10 @@ export const useAuthStore = create<AuthStore>()(
             isLoading: false,
           });
 
-          return true;
+          return response.user;
         } catch {
           set({ isLoading: false });
-          return false;
+          return null;
         }
       },
 
@@ -95,10 +98,6 @@ export const useAuthStore = create<AuthStore>()(
         set({ isLoading: true });
         try {
           const response = await platformApi.auth.signup({ email, password });
-          // save JWT Token to localStorage
-          // if (response.jwt_token) {
-          //   localStorage.setItem("auth_token", response.jwt_token);
-          // }
 
           if (response.user.state === "pending") {
             set({
@@ -168,13 +167,9 @@ export const useAuthStore = create<AuthStore>()(
        * Log out the current user
        */
       logout: async () => {
-        // Call API logout if exists
         await platformApi.auth.logout();
-
-        // Clear the JWT token (expire it)
         localStorage.removeItem("auth_token");
 
-        // Clear the Store State
         set({
           user: null,
           isAuthenticated: false,
@@ -190,7 +185,6 @@ export const useAuthStore = create<AuthStore>()(
       setSelectedRole: (role: UserRole) => {
         set({ selectedRole: role });
 
-        // Update user object with role
         const currentUser = get().user;
         if (currentUser) {
           set({ user: { ...currentUser, role } });
@@ -217,11 +211,25 @@ export const useAuthStore = create<AuthStore>()(
       setHasHydrated: (state: boolean) => {
         set({ _hasHydrated: state });
       },
+
+      /**
+       * Get user's broker platforms
+       */
+      getBrokerPlatforms: () => {
+        return get().user?.broker_platforms || [];
+      },
+
+      /**
+       * Check if user has a specific platform
+       */
+      hasPlatform: (platform: string) => {
+        const platforms = get().user?.broker_platforms || [];
+        return platforms.some((p) => p.platform === platform);
+      },
     }),
     {
       name: STORAGE_KEYS.USER,
       storage: createJSONStorage(() => indexedDBStateStorage),
-      // only persist non-sensitive, UI-critical data
       partialize: (state) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,

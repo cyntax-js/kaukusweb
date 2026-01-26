@@ -1,7 +1,8 @@
 /**
  * Dashboard Selection Page for KYC-Approved Users
  *
- * Shows approved licenses and allows selecting which dashboard to enter.
+ * Shows approved licenses from broker_platforms in auth store,
+ * plus fetches from KYC API to get the latest status.
  */
 
 import { useState, useEffect, useCallback } from "react";
@@ -10,7 +11,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuthStore } from "@/stores/authStore";
-import { platformApi, type KycType } from "@/api/platform";
+import { platformApi, type KycType, type KycStatusItem } from "@/api/platform";
 import {
   CheckCircle2,
   ArrowRight,
@@ -21,10 +22,12 @@ import {
   BarChart3,
   Loader2,
   RefreshCw,
+  Clock,
+  Plus,
 } from "lucide-react";
 
 const licenseConfig: Record<
-  KycType,
+  string,
   {
     icon: typeof TrendingUp;
     label: string;
@@ -63,64 +66,96 @@ const licenseConfig: Record<
   },
 };
 
+interface DashboardLicense {
+  type: string;
+  status: "approved" | "pending";
+  companyName?: string;
+}
+
 export default function DashboardSelectionKyc() {
   const navigate = useNavigate();
-  const { logout, user } = useAuthStore();
+  const { logout, user, getBrokerPlatforms } = useAuthStore();
 
-  const [approvedLicenses, setApprovedLicenses] = useState<KycType[]>([]);
-  const [companyName, setCompanyName] = useState<string>("");
+  const [licenses, setLicenses] = useState<DashboardLicense[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const checkStatus = useCallback(async () => {
+  const loadLicenses = useCallback(async () => {
     setIsLoading(true);
+
+    // Start with broker_platforms from user object
+    const brokerPlatforms = getBrokerPlatforms();
+    const platformLicenses: DashboardLicense[] = brokerPlatforms.map((bp) => ({
+      type: bp.platform,
+      status: "approved" as const,
+    }));
+
+    // Also fetch from KYC API to get pending ones
     try {
       const response = await platformApi.broker.getKycStatus();
-      console.log(response, "checkress");
 
       if (response.data && response.data.length > 0) {
-        const item = response?.data[0];
-
-        if (item?.kyc_status === "approved") {
-          setApprovedLicenses((prev) => {
-            const merged = [...prev, ...(item?.kyc_types ?? [])];
-            return Array.from(new Set(merged)) as KycType[];
-          });
-          setCompanyName(item.company_name || "");
-          // If only one license, redirect directly
-          if ((item.kyc_types ?? []).length === 1) {
-            const license = item.kyc_types[0];
-            navigate(licenseConfig[license]?.dashboardRoute || "/");
-            return;
+        response.data.forEach((item: KycStatusItem) => {
+          if (item.kyc_types) {
+            const types = Array.isArray(item.kyc_types)
+              ? item.kyc_types
+              : [item.kyc_types];
+            types.forEach((type) => {
+              // Check if this type already exists from broker_platforms
+              const existingIndex = platformLicenses.findIndex(
+                (l) => l.type === type
+              );
+              if (existingIndex === -1) {
+                // Add if not exists
+                platformLicenses.push({
+                  type: type as string,
+                  status: item.kyc_status === "approved" ? "approved" : "pending",
+                  companyName: item.company_name,
+                });
+              } else if (item.kyc_status === "pending") {
+                // Update status if pending (pending takes precedence for display)
+                platformLicenses[existingIndex].status = "pending";
+                platformLicenses[existingIndex].companyName = item.company_name;
+              }
+            });
           }
-        } else if (item?.kyc_status === "pending") {
-          navigate("/awaiting-approval");
-          return;
-        } else {
-          navigate("/role-selection");
-          return;
-        }
-      } else {
-        navigate("/role-selection");
+        });
       }
     } catch (error) {
-      console.error("Error checking status:", error);
-      navigate("/role-selection");
-    } finally {
-      setIsLoading(false);
+      console.error("Error fetching KYC status:", error);
     }
-  }, [navigate]);
+
+    setLicenses(platformLicenses);
+    setIsLoading(false);
+
+    // If only one approved license and no pending, redirect directly
+    const approvedOnly = platformLicenses.filter((l) => l.status === "approved");
+    const hasPending = platformLicenses.some((l) => l.status === "pending");
+    if (approvedOnly.length === 1 && !hasPending) {
+      const config = licenseConfig[approvedOnly[0].type];
+      if (config) {
+        navigate(config.dashboardRoute);
+      }
+    }
+  }, [getBrokerPlatforms, navigate]);
 
   useEffect(() => {
-    checkStatus();
-  }, [checkStatus]);
+    loadLicenses();
+  }, [loadLicenses]);
 
-  const handleSelectDashboard = (license: KycType) => {
-    navigate(licenseConfig[license]?.dashboardRoute || "/");
+  const handleSelectDashboard = (license: DashboardLicense) => {
+    if (license.status !== "approved") return;
+    const config = licenseConfig[license.type];
+    if (config) {
+      navigate(config.dashboardRoute);
+    }
   };
 
   const handleLogout = () => {
     logout();
   };
+
+  const approvedLicenses = licenses.filter((l) => l.status === "approved");
+  const pendingLicenses = licenses.filter((l) => l.status === "pending");
 
   if (isLoading) {
     return (
@@ -142,31 +177,53 @@ export default function DashboardSelectionKyc() {
             <CheckCircle2 className="w-10 h-10 text-success" />
           </div>
 
-          {companyName && (
-            <Badge variant="secondary" className="mb-4">
-              {companyName}
-            </Badge>
+          {user?.name && (
+            <p className="text-muted-foreground mb-2">Welcome back, {user.name}</p>
           )}
 
           <h1 className="text-3xl md:text-4xl font-bold mb-4">
             Select Your Dashboard
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            You have {approvedLicenses.length} approved licenses. Select which
-            dashboard you want to access.
+            You have {approvedLicenses.length} approved license
+            {approvedLicenses.length !== 1 ? "s" : ""}
+            {pendingLicenses.length > 0 &&
+              ` and ${pendingLicenses.length} pending`}
+            . Select which dashboard you want to access.
           </p>
         </div>
+
+        {/* Pending Licenses Banner */}
+        {pendingLicenses.length > 0 && (
+          <Card className="p-4 mb-6 border-warning/30 bg-warning/5">
+            <div className="flex items-center gap-3">
+              <Clock className="w-5 h-5 text-warning" />
+              <div className="flex-1">
+                <p className="font-medium">
+                  {pendingLicenses.length} License
+                  {pendingLicenses.length !== 1 ? "s" : ""} Pending Review
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {pendingLicenses.map((l) => licenseConfig[l.type]?.label || l.type).join(", ")}
+                </p>
+              </div>
+              <Button variant="outline" size="sm" onClick={() => navigate("/awaiting-approval")}>
+                View Status
+              </Button>
+            </div>
+          </Card>
+        )}
 
         {/* Dashboard Cards */}
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           {approvedLicenses.map((license, i) => {
-            const config = licenseConfig[license];
+            const config = licenseConfig[license.type];
             if (!config) return null;
             const Icon = config.icon;
 
             return (
               <Card
-                key={license}
+                key={license.type}
                 className="p-6 hover-lift cursor-pointer group relative overflow-hidden transition-all opacity-0 animate-fade-in"
                 style={{ animationDelay: `${i * 0.1}s` }}
                 onClick={() => handleSelectDashboard(license)}
@@ -199,9 +256,21 @@ export default function DashboardSelectionKyc() {
           })}
         </div>
 
+        {/* Add More Licenses */}
+        <div className="text-center mb-8">
+          <Button
+            variant="outline"
+            onClick={() => navigate("/role-selection")}
+            className="gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            Apply for More Licenses
+          </Button>
+        </div>
+
         {/* Actions */}
         <div className="flex items-center justify-center gap-4">
-          <Button variant="outline" onClick={checkStatus}>
+          <Button variant="outline" onClick={loadLicenses}>
             <RefreshCw className="w-4 h-4 mr-2" />
             Refresh
           </Button>

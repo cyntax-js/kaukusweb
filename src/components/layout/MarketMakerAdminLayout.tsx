@@ -110,7 +110,7 @@ export default function MarketMakerAdminLayout() {
                 <span className="text-sm font-medium">Market Maker Administration</span>
               </div>
             </div>
-            <DashboardSwitcher currentDashboard="market_maker" />
+            <DashboardSwitcher currentDashboard="market_makers" />
           </header>
           <div className="flex-1 overflow-auto">
             <Outlet />
