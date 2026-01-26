@@ -3,7 +3,7 @@ name: 🚀 Build & Deploy contisx (Traefik / Production)
 on:
   push:
     branches:
-      - joy1.0
+      - dev5
   workflow_dispatch:
 
 jobs:
