@@ -112,7 +112,7 @@ export default function IssuingHouseAdminLayout() {
                 <span className="text-sm font-medium">Issuing House Administration</span>
               </div>
             </div>
-            <DashboardSwitcher currentDashboard="issuing_house" />
+            <DashboardSwitcher currentDashboard="issuer" />
           </header>
           <div className="flex-1 overflow-auto">
             <Outlet />

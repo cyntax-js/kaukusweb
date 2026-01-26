@@ -24,8 +24,10 @@ import {
   CheckCircle,
   ExternalLink,
   Palette,
+  Award,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { LicenseManagement } from "@/components/LicenseManagement";
 
 export default function BrokerSettings() {
   const { toast } = useToast();
@@ -151,10 +153,14 @@ export default function BrokerSettings() {
       </Card>
 
       <Tabs defaultValue="general" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
+        <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:inline-grid">
           <TabsTrigger value="general" className="gap-2">
             <Building2 className="w-4 h-4" />
             <span className="hidden sm:inline">General</span>
+          </TabsTrigger>
+          <TabsTrigger value="licenses" className="gap-2">
+            <Award className="w-4 h-4" />
+            <span className="hidden sm:inline">Licenses</span>
           </TabsTrigger>
           <TabsTrigger value="domain" className="gap-2">
             <Globe className="w-4 h-4" />
@@ -271,6 +277,10 @@ export default function BrokerSettings() {
               </div>
             </div>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="licenses" className="space-y-6">
+          <LicenseManagement />
         </TabsContent>
 
         <TabsContent value="domain" className="space-y-6">

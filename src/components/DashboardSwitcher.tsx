@@ -1,8 +1,8 @@
 /**
  * Dashboard Switcher Component
- * 
+ *
  * Allows users with multiple approved licenses to switch between dashboards.
- * Shown in all admin layout headers (except broker).
+ * Uses broker_platforms from the auth store to determine available dashboards.
  */
 
 import { useNavigate } from "react-router-dom";
@@ -15,23 +15,36 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useLicenseStore, type LicenseType } from "@/stores/licenseStore";
-import { 
-  Building2, 
-  Landmark, 
-  BarChart3, 
+import { useAuthStore } from "@/stores/authStore";
+import {
+  Building2,
+  Landmark,
+  BarChart3,
   ChevronDown,
   CheckCircle2,
   ArrowLeftRight,
+  TrendingUp,
 } from "lucide-react";
 
-const dashboardConfig: Record<Exclude<LicenseType, 'broker'>, {
-  icon: typeof Building2;
-  title: string;
-  shortTitle: string;
-  route: string;
-  color: string;
-}> = {
+type PlatformType = "broker" | "dealer" | "issuer" | "market_makers";
+
+const dashboardConfig: Record<
+  PlatformType,
+  {
+    icon: typeof Building2;
+    title: string;
+    shortTitle: string;
+    route: string;
+    color: string;
+  }
+> = {
+  broker: {
+    icon: TrendingUp,
+    title: "Broker Dashboard",
+    shortTitle: "Broker",
+    route: "/broker/dashboard",
+    color: "text-primary",
+  },
   dealer: {
     icon: Building2,
     title: "Dealer Dashboard",
@@ -39,14 +52,14 @@ const dashboardConfig: Record<Exclude<LicenseType, 'broker'>, {
     route: "/dealer/dashboard",
     color: "text-chart-2",
   },
-  issuing_house: {
+  issuer: {
     icon: Landmark,
     title: "Issuing House Dashboard",
     shortTitle: "Issuing House",
     route: "/issuing-house/dashboard",
     color: "text-chart-4",
   },
-  market_maker: {
+  market_makers: {
     icon: BarChart3,
     title: "Market Maker Dashboard",
     shortTitle: "Market Maker",
@@ -56,28 +69,24 @@ const dashboardConfig: Record<Exclude<LicenseType, 'broker'>, {
 };
 
 interface DashboardSwitcherProps {
-  currentDashboard: Exclude<LicenseType, 'broker'>;
+  currentDashboard: PlatformType;
 }
 
 export function DashboardSwitcher({ currentDashboard }: DashboardSwitcherProps) {
   const navigate = useNavigate();
-  const { getApprovedLicenses, setActiveDashboard } = useLicenseStore();
+  const { getBrokerPlatforms } = useAuthStore();
 
-  const approvedLicenses = getApprovedLicenses().filter(
-    (l) => l.type !== 'broker'
-  );
+  const brokerPlatforms = getBrokerPlatforms();
 
-  // Only show switcher if user has multiple approved non-broker licenses
-  if (approvedLicenses.length <= 1) {
+  // Only show switcher if user has multiple platforms
+  if (!brokerPlatforms || brokerPlatforms.length <= 1) {
     return null;
   }
 
   const currentConfig = dashboardConfig[currentDashboard];
-  const CurrentIcon = currentConfig.icon;
 
-  const handleSwitch = (type: Exclude<LicenseType, 'broker'>) => {
-    setActiveDashboard(type);
-    navigate(dashboardConfig[type].route);
+  const handleSwitch = (platform: PlatformType) => {
+    navigate(dashboardConfig[platform].route);
   };
 
   return (
@@ -92,17 +101,19 @@ export function DashboardSwitcher({ currentDashboard }: DashboardSwitcherProps) 
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>Switch Dashboard</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {approvedLicenses.map((license) => {
-          if (license.type === 'broker') return null;
-          const config = dashboardConfig[license.type as Exclude<LicenseType, 'broker'>];
+        {brokerPlatforms.map((bp) => {
+          const platform = bp.platform as PlatformType;
+          const config = dashboardConfig[platform];
+          if (!config) return null;
+
           const Icon = config.icon;
-          const isCurrent = license.type === currentDashboard;
+          const isCurrent = platform === currentDashboard;
 
           return (
             <DropdownMenuItem
-              key={license.type}
-              onClick={() => !isCurrent && handleSwitch(license.type as Exclude<LicenseType, 'broker'>)}
-              className={`gap-3 cursor-pointer ${isCurrent ? 'bg-accent' : ''}`}
+              key={bp.id}
+              onClick={() => !isCurrent && handleSwitch(platform)}
+              className={`gap-3 cursor-pointer ${isCurrent ? "bg-accent" : ""}`}
             >
               <Icon className={`w-4 h-4 ${config.color}`} />
               <span className="flex-1">{config.shortTitle}</span>
@@ -112,7 +123,7 @@ export function DashboardSwitcher({ currentDashboard }: DashboardSwitcherProps) 
         })}
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onClick={() => navigate("/dashboard-selection")}
+          onClick={() => navigate("/dashboard-selection-kyc")}
           className="gap-3 cursor-pointer text-muted-foreground"
         >
           <ArrowLeftRight className="w-4 h-4" />

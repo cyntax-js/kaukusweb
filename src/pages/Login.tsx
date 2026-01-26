@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,7 +8,7 @@ import { platformApi, type KycType } from "@/api/platform";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-const dashboardRoutes: Record<KycType, string> = {
+const dashboardRoutes: Record<string, string> = {
   broker: "/broker/dashboard",
   dealer: "/dealer/dashboard",
   issuer: "/issuing-house/dashboard",
@@ -33,54 +33,80 @@ export default function Login() {
       setError(t("auth.pleaseAllFields"));
       return;
     }
-    const success = await login(email, password);
 
-    if (success) {
-      // Check KYC status before navigating
-      setIsCheckingKyc(true);
-      try {
-        const kycResponse = await platformApi.broker.getKycStatus();
-        console.log(kycResponse, "kycResponse");
+    try {
+      const user = await login(email, password);
 
-        if (kycResponse.data && kycResponse.data.length > 0) {
-          const item = kycResponse.data[0];
-          if (item.kyc_status === "pending") {
-            // KYC still pending - go to awaiting approval
-            navigate("/awaiting-approval");
-          } else if (item.kyc_status === "approved" && item.kyc_types) {
-            if (item.kyc_types.length === 1) {
-              // Single approved license - go directly to that dashboard
-              const license = item.kyc_types[0];
-              navigate(dashboardRoutes[license] || "/");
-            } else if (item.kyc_types.length > 1) {
-              // Multiple approved licenses - go to dashboard selection
-              navigate("/dashboard-selection-kyc");
+      if (user) {
+        const brokerPlatforms = user.broker_platforms || [];
+
+        // Case 1: User has broker platforms from login response
+        if (brokerPlatforms.length > 0) {
+          if (brokerPlatforms.length === 1) {
+            // Single platform - navigate directly to that dashboard
+            const platform = brokerPlatforms[0].platform;
+            navigate(dashboardRoutes[platform] || "/broker/dashboard");
+          } else {
+            // Multiple platforms - go to dashboard selection
+            navigate("/dashboard-selection-kyc");
+          }
+          return;
+        }
+
+        // Case 2: No broker platforms - check KYC status
+        setIsCheckingKyc(true);
+        try {
+          const kycResponse = await platformApi.broker.getKycStatus();
+          console.log(kycResponse, "kycResponse");
+
+          if (kycResponse.data && kycResponse.data.length > 0) {
+            // Check for any approved licenses
+            const approvedItems = kycResponse.data.filter(
+              (item) => item.kyc_status === "approved"
+            );
+            const pendingItems = kycResponse.data.filter(
+              (item) => item.kyc_status === "pending"
+            );
+
+            if (approvedItems.length > 0) {
+              // Has approved licenses
+              const allApprovedTypes = approvedItems.flatMap(
+                (item) => item.kyc_types || []
+              );
+              const uniqueTypes = [...new Set(allApprovedTypes)];
+
+              if (uniqueTypes.length === 1) {
+                // Single approved license
+                navigate(dashboardRoutes[uniqueTypes[0]] || "/");
+              } else if (uniqueTypes.length > 1) {
+                // Multiple approved licenses
+                navigate("/dashboard-selection-kyc");
+              } else {
+                navigate("/role-selection");
+              }
+            } else if (pendingItems.length > 0) {
+              // All are pending - show awaiting approval
+              navigate("/awaiting-approval");
             } else {
-              // No licenses - go to role selection
+              // No approved or pending - go to role selection
               navigate("/role-selection");
             }
-          } else if (item.kyc_status === "rejected") {
-            // Rejected - show error or go to role selection
-            navigate("/role-selection");
           } else {
-            // No KYC data - go to role selection for new application
+            // No KYC data - go to role selection
             navigate("/role-selection");
           }
-        } else {
-          // No KYC data - go to role selection for new application
+        } catch (error) {
+          console.error("Error checking KYC status:", error);
           navigate("/role-selection");
+        } finally {
+          setIsCheckingKyc(false);
         }
-      } catch (error) {
-        // Error checking KYC - default to role selection
-        console.error("Error checking KYC status:", error);
-        navigate("/role-selection");
-      } finally {
-        setIsCheckingKyc(false);
+      } else {
+        setError(t("auth.invalidCredentials"));
       }
-    } else {
+    } catch {
       setError(t("auth.invalidCredentials"));
     }
-    await login(email, password);
   };
 
   return (
