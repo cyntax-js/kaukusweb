@@ -57,6 +57,63 @@ export const securityCreationSchema: WizardSchema = {
   parValue: 1000,
   steps: [
     {
+      id: "issuerInfo",
+      title: "Issuer Information",
+      fields: [
+        {
+          id: "issuerLegalName",
+          type: "string",
+          label: "Legal Name",
+          required: true,
+        },
+        {
+          id: "issuerBrandName",
+          type: "string",
+          label: "Brand Name",
+        },
+        {
+          id: "issuerCountry",
+          type: "string",
+          label: "Country of Incorporation",
+          required: true,
+        },
+        {
+          id: "issuerIncorporationDate",
+          type: "date",
+          label: "Date of Incorporation",
+          required: true,
+        },
+        {
+          id: "issuerRegistrationNumber",
+          type: "string",
+          label: "Registration Number",
+          required: true,
+        },
+        {
+          id: "issuerRegisteredAddress",
+          type: "textarea",
+          label: "Registered Address",
+          required: true,
+        },
+        {
+          id: "issuerSector",
+          type: "string",
+          label: "Sector",
+          required: true,
+        },
+        {
+          id: "issuerDescription",
+          type: "textarea",
+          label: "Brief Description",
+        },
+        {
+          id: "issuerWebsite",
+          type: "string",
+          label: "Website",
+        },
+      ],
+    },
+    {
       id: "overview",
       title: "Security Overview",
       fields: [
@@ -108,7 +165,12 @@ export const securityCreationSchema: WizardSchema = {
           type: "select",
           label: "Instrument Type",
           options: {
-            GOVERNMENT: ["TREASURY_BILL", "COMMERCIAL_PAPER", "BOND", "PROMISSORY_NOTE"],
+            GOVERNMENT: [
+              "TREASURY_BILL",
+              "COMMERCIAL_PAPER",
+              "BOND",
+              "PROMISSORY_NOTE",
+            ],
             CORPORATE: ["COMMERCIAL_PAPER", "BOND"],
           },
           visibleWhen: { field: "securityType", in: ["DEBT"] },
