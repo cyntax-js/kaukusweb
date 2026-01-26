@@ -1,4 +1,4 @@
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -7,8 +7,33 @@ import { useWizard } from "../WizardContext";
 import { Stepper } from "./Stepper";
 import { FieldRenderer } from "./FieldRenderer";
 import { ReviewStep } from "./ReviewStep";
+import { ApprovalStep } from "./ApprovalStep";
 import type { FieldSchema } from "../schema";
 import { useToast } from "@/hooks/use-toast";
+import { useOfferStore, type CreatedOffer } from "@/stores/offerStore";
+import { v4 as uuidv4 } from "uuid";
+
+// Helper to determine offer type from form values
+function getOfferType(formValues: Record<string, unknown>): string {
+  const securityType = formValues.securityType as string;
+  const marketType = formValues.marketType as string;
+  const instrumentType = formValues.instrumentType as string;
+  
+  if (securityType === "EQUITY") {
+    if (marketType === "PUBLIC") return "Initial Public Offering";
+    if (marketType === "PRIVATE") return "Private Placement";
+    return "Rights Issue";
+  }
+  
+  if (securityType === "DEBT") {
+    if (instrumentType === "BOND") return "Corporate Bond";
+    if (instrumentType === "COMMERCIAL_PAPER") return "Commercial Paper";
+    if (instrumentType === "TREASURY_BILL") return "Treasury Bill";
+    return "Debt Instrument";
+  }
+  
+  return "Securities Offering";
+}
 
 export function FormRenderer() {
   const {
@@ -21,9 +46,13 @@ export function FormRenderer() {
     formValues,
     errors,
     isFieldVisible,
+    clearDraft,
   } = useWizard();
   const formRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const { addOffer } = useOfferStore();
+  const [submittedOfferId, setSubmittedOfferId] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const currentStepData = steps[currentStep];
   const isFirstStep = currentStep === 0;
@@ -67,13 +96,84 @@ export function FormRenderer() {
   const handleSubmit = () => {
     const isValid = validateStep(currentStep);
     if (isValid) {
-      console.log("Submitting form:", formValues);
+      setIsSubmitting(true);
+      
+      // Create the offer from form values
+      const offerId = uuidv4();
+      const securityType = formValues.securityType as "DEBT" | "EQUITY";
+      
+      // Calculate target amount based on security type
+      let targetAmount = 0;
+      if (securityType === "DEBT") {
+        targetAmount = (formValues.amountToRaise as number) || 0;
+      } else {
+        targetAmount = (formValues.targetRaiseAmount as number) || 0;
+      }
+      
+      const newOffer: CreatedOffer = {
+        id: offerId,
+        name: `${formValues.issuerType || "New"} ${securityType} Offering`,
+        type: getOfferType(formValues),
+        securityType,
+        issuerType: formValues.issuerType as string,
+        marketType: formValues.marketType as string,
+        instrumentType: formValues.instrumentType as string,
+        couponType: formValues.couponType as string,
+        equityType: formValues.equityType as string,
+        targetAmount,
+        raisedAmount: 0,
+        subscriptionRate: 0,
+        status: "pending_approval",
+        createdAt: new Date(),
+        investors: 0,
+        minInvestment: formValues.minInvestment as number,
+        maxInvestment: formValues.maxInvestment as number,
+        pricePerUnit: securityType === "DEBT" 
+          ? (formValues.parValue as number) || 1000 
+          : (formValues.pricePerShare as number),
+        totalUnits: securityType === "DEBT" 
+          ? (formValues.totalUnits as number) 
+          : (formValues.sharesToList as number),
+        soldUnits: 0,
+        issuer: `${formValues.issuerType} Entity`,
+        sector: "Financial Services",
+        description: formValues.useOfProceeds as string || "New securities offering for capital raising.",
+        hasSecondaryTrading: formValues.secondaryMarket as boolean || false,
+        regulatoryApproval: "Pending",
+        votingRights: formValues.votingRights as boolean,
+        dividendRights: formValues.dividendRights as boolean,
+        transferRestriction: formValues.transferRestriction as boolean,
+        discountRate: formValues.discountRate as number,
+        couponRate: formValues.couponRate as number,
+        couponFrequency: formValues.couponFrequency as string,
+        spread: formValues.spread as number,
+        maturityDate: formValues.maturityDate as Date,
+        callable: formValues.callable as boolean,
+        convertible: formValues.convertible as boolean,
+        creditRating: formValues.creditRating as string,
+        preMoneyValuation: formValues.preMoneyValuation as number,
+        postMoneyValuation: formValues.postMoneyValuation as number,
+        valuationMethod: formValues.valuationMethod as string,
+        eligibleInvestors: formValues.eligibleInvestors as string[],
+        useOfProceeds: formValues.useOfProceeds as string,
+        formValues: { ...formValues },
+      };
+      
+      // Add offer to store
+      addOffer(newOffer);
+      setSubmittedOfferId(offerId);
+      
+      // Clear draft
+      clearDraft();
+      
       toast({
         title: "Submission Successful",
-        description: "Your security offering has been submitted for review.",
+        description: "Your security offering has been submitted for regulatory review.",
       });
+      
       // Move to post-approval step
       setCurrentStep(currentStep + 1);
+      setIsSubmitting(false);
     } else {
       scrollToFirstError();
       toast({
@@ -163,7 +263,9 @@ export function FormRenderer() {
           </CardHeader>
 
           <CardContent className="p-6" ref={formRef}>
-            {isReviewStep ? (
+            {isPostApproval && submittedOfferId ? (
+              <ApprovalStep offerId={submittedOfferId} />
+            ) : isReviewStep ? (
               <ReviewStep />
             ) : (
               <div className="space-y-6">
@@ -193,20 +295,14 @@ export function FormRenderer() {
               <Button
                 type="button"
                 onClick={handleSubmit}
+                disabled={isSubmitting}
                 className="gap-2 bg-primary hover:bg-primary/90"
               >
                 <Check className="h-4 w-4" />
-                Submit for Review
+                {isSubmitting ? "Submitting..." : "Submit for Review"}
               </Button>
             ) : isPostApproval ? (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setCurrentStep(0)}
-                className="gap-2"
-              >
-                Start New Offering
-              </Button>
+              null // Hide navigation during approval process
             ) : (
               <Button
                 type="button"

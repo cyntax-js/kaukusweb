@@ -3,3 +3,4 @@ export { FieldRenderer } from "./FieldRenderer";
 export { FieldWrapper } from "./FieldWrapper";
 export { FormRenderer } from "./FormRenderer";
 export { ReviewStep } from "./ReviewStep";
+export { ApprovalStep } from "./ApprovalStep";
