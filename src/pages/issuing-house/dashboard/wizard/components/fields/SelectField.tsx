@@ -33,18 +33,16 @@ export function SelectField({ field }: SelectFieldProps) {
         break;
       }
     }
-    // Fallback to first available options if no match
-    if (options.length === 0) {
-      const issuerType = formValues["issuerType"] as string;
-      if (issuerType && field.options[issuerType]) {
-        options = field.options[issuerType];
-      }
-    }
   }
 
   const formatOption = (opt: string) => {
     return opt.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
   };
+
+  // Don't render if no options available (for dynamic fields awaiting parent selection)
+  if (options.length === 0) {
+    return null;
+  }
 
   return (
     <div className="space-y-2">
@@ -56,7 +54,7 @@ export function SelectField({ field }: SelectFieldProps) {
         {field.required && <span className="text-destructive ml-1">*</span>}
       </Label>
       <Select
-        value={value}
+        value={value || ""}
         onValueChange={(val) => setFieldValue(field.id, val)}
       >
         <SelectTrigger 
