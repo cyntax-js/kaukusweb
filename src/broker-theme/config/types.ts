@@ -18,7 +18,7 @@ export type BrokerService =
   | "stock" // Stock trading (buy/sell assets)
   | "futures" // Futures/derivatives trading
   | "options" // Options trading
-  | "private_markets"; // Private/OTC markets
+  | "private_market"; // Private/OTC markets
 
 // ============================================================
 // THEME CONFIGURATION

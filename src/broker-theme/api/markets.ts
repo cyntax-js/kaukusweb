@@ -17,7 +17,7 @@ import { mockResponse, DELAYS } from "./client";
 // TYPES
 // ============================================================
 
-export type MarketType = "stock" | "futures" | "options" | "private_markets";
+export type MarketType = "stock" | "futures" | "options" | "private_market";
 
 export interface MarketPair {
   id: string;
@@ -192,7 +192,7 @@ const MOCK_PAIRS: Record<MarketType, MarketPair[]> = {
       marketType: "options",
     },
   ],
-  private_markets: [
+  private_market: [
     {
       id: "spx-fund",
       symbol: "SPX-FUND",
@@ -202,7 +202,7 @@ const MOCK_PAIRS: Record<MarketType, MarketPair[]> = {
       price: 10000.0,
       change24h: 0.12,
       volume24h: "25M",
-      marketType: "private_markets",
+      marketType: "private_market",
     },
     {
       id: "real-estate-i",
@@ -213,7 +213,7 @@ const MOCK_PAIRS: Record<MarketType, MarketPair[]> = {
       price: 5000.0,
       change24h: 0.08,
       volume24h: "15M",
-      marketType: "private_markets",
+      marketType: "private_market",
     },
     {
       id: "venture-tech",
@@ -224,7 +224,7 @@ const MOCK_PAIRS: Record<MarketType, MarketPair[]> = {
       price: 25000.0,
       change24h: 0.45,
       volume24h: "8M",
-      marketType: "private_markets",
+      marketType: "private_market",
     },
   ],
 };
@@ -245,7 +245,7 @@ export const MARKET_TYPE_INFO: Record<MarketType, MarketTypeInfo> = {
     description: "Trade call and put options",
     urlSlug: "options",
   },
-  private_markets: {
+  private_market: {
     label: "Private Markets",
     description: "Access exclusive private investments",
     urlSlug: "private-market",
@@ -284,7 +284,7 @@ export function urlToMarketType(urlSlug: string): MarketType | null {
     stock: "stock",
     futures: "futures",
     options: "options",
-    "private-market": "private_markets",
+    "private-market": "private_market",
   };
   return mapping[urlSlug.toLowerCase()] || null;
 }

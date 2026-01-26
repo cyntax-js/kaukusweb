@@ -105,7 +105,7 @@ interface BrokerConfig {
   brokerName: string;
   subdomain: string; // e.g., "fbs" → fbs.ContiSX.com
 
-  services: BrokerService[]; // ['stock', 'futures', 'options', 'private_markets']
+  services: BrokerService[]; // ['stock', 'futures', 'options', 'private_market']
 
   template: BrokerTemplate; // 'classic' | 'modern' | 'professional' | etc.
   theme: BrokerTheme; // Colors, typography, layout variants

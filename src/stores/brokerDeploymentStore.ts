@@ -121,7 +121,7 @@ const SERVICE_OPTIONS: ServiceOption[] = [
     price: 399,
   },
   {
-    id: "private_markets",
+    id: "private_market",
     name: "Private Markets",
     description: "Access to private market offerings",
     price: 599,

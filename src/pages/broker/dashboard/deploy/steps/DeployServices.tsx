@@ -10,7 +10,7 @@ const serviceIcons: Record<BrokerService, string> = {
   stock: "TrendingUp",
   futures: "LineChart",
   options: "Layers",
-  private_markets: "Lock",
+  private_market: "Lock",
 };
 
 export default function DeployServices() {

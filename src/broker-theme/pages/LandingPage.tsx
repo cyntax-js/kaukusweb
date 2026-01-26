@@ -44,7 +44,7 @@ const serviceInfo = {
     description: "Advanced derivatives strategies for sophisticated traders",
     icon: <Layers className="h-6 w-6" />,
   },
-  private_markets: {
+  private_market: {
     title: "Private Markets",
     description: "Exclusive access to pre-IPO and private equity investments",
     icon: <Lock className="h-6 w-6" />,
@@ -111,7 +111,7 @@ const LandingPage = () => {
 
   const defaultMarketPath = services.includes("stock")
     ? `${appPrefix}/markets/stock`
-    : services.includes("private_markets")
+    : services.includes("private_market")
     ? `${appPrefix}/markets/private`
     : `${appPrefix}/markets`;
 

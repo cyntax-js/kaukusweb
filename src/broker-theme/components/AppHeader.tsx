@@ -39,9 +39,10 @@ const AppHeader = ({ className }: AppHeaderProps) => {
   const { config } = useTheme();
   const { user, isAuthenticated, logout } = useBrokerAuthStore();
   const location = useLocation();
-  
+
   // Use navigation hook that preserves broker param
-  const { navigate, homeLink, buildPublicLink, buildAppLink } = useBrokerNavigation();
+  const { navigate, homeLink, buildPublicLink, buildAppLink } =
+    useBrokerNavigation();
 
   const [marketsOpen, setMarketsOpen] = useState(false);
   const [assetsOpen, setAssetsOpen] = useState(false);
@@ -71,7 +72,7 @@ const AppHeader = ({ className }: AppHeaderProps) => {
           id: "private",
           label: "Private Market",
           path: "/markets/private",
-          enabled: config.services.includes("private_markets"),
+          enabled: config.services.includes("private_market"),
         },
         {
           id: "secondary",
@@ -83,11 +84,11 @@ const AppHeader = ({ className }: AppHeaderProps) => {
     [config.services]
   );
 
-  const hasPrivateMarkets = config.services.includes("private_markets");
+  const hasPrivateMarkets = config.services.includes("private_market");
   const onlyPrivateMarket =
     Array.isArray(config.services) &&
     new Set(config.services).size === 1 &&
-    config.services.includes("private_markets");
+    config.services.includes("private_market");
 
   const userInitials = user
     ? `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase()
@@ -96,7 +97,7 @@ const AppHeader = ({ className }: AppHeaderProps) => {
   const requireAuth = (action: () => void) => {
     if (!isAuthenticated) {
       toast.error("Please login to continue");
-      navigate(buildPublicLink('/login'));
+      navigate(buildPublicLink("/login"));
       return;
     }
     action();

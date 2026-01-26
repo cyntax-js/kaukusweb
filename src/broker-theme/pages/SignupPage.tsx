@@ -64,7 +64,7 @@ const SignupPage = () => {
   const onlyPrivateMarket =
     Array.isArray(config.services) &&
     new Set(config.services).size === 1 &&
-    config.services.includes("private_markets");
+    config.services.includes("private_market");
 
   // ── Form Submit Handler ───────────────────────────────────
   const handleSubmit = async (e: React.FormEvent) => {
