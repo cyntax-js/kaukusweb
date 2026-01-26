@@ -12,7 +12,7 @@ jobs:
     runs-on: [self-hosted]
 
     env:
-      IMAGE_NAME: ghcr.io/contisx-dev/contisx
+      IMAGE_NAME: ghcr.io/dhive-protocol/contisx
       CONTAINER_NAME: contisx
       TRAEFIK_NETWORK: proxy
       DOMAIN: egoras.example.com
