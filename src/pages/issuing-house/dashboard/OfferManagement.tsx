@@ -4,7 +4,7 @@
  * Click on an offer to see full details
  */
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +19,6 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
-import { activeOfferings } from "@/mocks/rolesDashboardData";
 import {
   PlusCircle,
   Search,
@@ -39,43 +38,31 @@ import {
   BarChart3,
   Globe,
   Shield,
+  Vote,
+  DollarSign,
+  Lock,
+  Percent,
+  Tag,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useOfferStore, type CreatedOffer } from "@/stores/offerStore";
+import { format } from "date-fns";
 
-interface OfferDetails {
-  id: string;
-  name: string;
-  type: string;
-  targetAmount: number;
-  raisedAmount: number;
-  subscriptionRate: number;
-  status: "active" | "upcoming" | "completed" | "cancelled";
-  startDate: Date;
-  endDate: Date;
-  investors: number;
-  minInvestment: number;
-  maxInvestment: number;
-  pricePerUnit: number;
-  totalUnits: number;
-  soldUnits: number;
-  issuer: string;
-  sector: string;
-  description: string;
-  underwriter?: string;
-  hasSecondaryTrading: boolean;
-  regulatoryApproval: string;
-  prospectusUrl?: string;
-}
-
-const enhancedOfferings: OfferDetails[] = [
+// Mock data for existing offers (will be merged with store offers)
+const mockOfferings: CreatedOffer[] = [
   {
-    id: "o1",
+    id: "mock-1",
     name: "TechCorp Nigeria IPO",
     type: "Initial Public Offering",
+    securityType: "EQUITY",
+    issuerType: "CORPORATE",
+    marketType: "PUBLIC",
+    equityType: "ORDINARY",
     targetAmount: 50000000000,
     raisedAmount: 32500000000,
     subscriptionRate: 65,
     status: "active",
+    createdAt: new Date("2024-12-15"),
     startDate: new Date("2025-01-01"),
     endDate: new Date("2025-02-15"),
     investors: 1250,
@@ -91,16 +78,26 @@ const enhancedOfferings: OfferDetails[] = [
     underwriter: "FirstBank Capital Markets",
     hasSecondaryTrading: true,
     regulatoryApproval: "SEC Approved",
-    prospectusUrl: "#",
+    votingRights: true,
+    dividendRights: true,
+    eligibleInvestors: ["INSTITUTIONAL", "QUALIFIED", "ACCREDITED"],
   },
   {
-    id: "o2",
+    id: "mock-2",
     name: "Energy Corp Bond",
     type: "Corporate Bond",
+    securityType: "DEBT",
+    issuerType: "CORPORATE",
+    marketType: "PRIMARY",
+    instrumentType: "BOND",
+    couponType: "FIXED",
+    couponRate: 12,
+    couponFrequency: "SEMI_ANNUAL",
     targetAmount: 100000000000,
     raisedAmount: 78000000000,
     subscriptionRate: 78,
     status: "active",
+    createdAt: new Date("2024-12-20"),
     startDate: new Date("2025-01-05"),
     endDate: new Date("2025-02-28"),
     investors: 890,
@@ -116,16 +113,22 @@ const enhancedOfferings: OfferDetails[] = [
     underwriter: "Access Bank Investment Banking",
     hasSecondaryTrading: true,
     regulatoryApproval: "SEC Approved",
-    prospectusUrl: "#",
+    maturityDate: new Date("2035-01-05"),
+    creditRating: "AA",
   },
   {
-    id: "o3",
+    id: "mock-3",
     name: "FinTech Solutions Rights Issue",
     type: "Rights Issue",
+    securityType: "EQUITY",
+    issuerType: "CORPORATE",
+    marketType: "PRIVATE",
+    equityType: "ORDINARY",
     targetAmount: 25000000000,
     raisedAmount: 0,
     subscriptionRate: 0,
     status: "upcoming",
+    createdAt: new Date("2025-01-10"),
     startDate: new Date("2025-02-01"),
     endDate: new Date("2025-03-15"),
     investors: 0,
@@ -140,16 +143,22 @@ const enhancedOfferings: OfferDetails[] = [
       "Rights issue offering existing shareholders the opportunity to purchase additional shares at a discounted price. Funds will support expansion of mobile banking platform.",
     hasSecondaryTrading: false,
     regulatoryApproval: "Pending",
-    prospectusUrl: "#",
+    votingRights: true,
+    dividendRights: true,
   },
   {
-    id: "o4",
+    id: "mock-4",
     name: "AgriTech Nigeria Seed Round",
     type: "Private Placement",
+    securityType: "EQUITY",
+    issuerType: "CORPORATE",
+    marketType: "PRIVATE",
+    equityType: "PREFERENCE",
     targetAmount: 5000000000,
     raisedAmount: 5000000000,
     subscriptionRate: 100,
     status: "completed",
+    createdAt: new Date("2024-09-15"),
     startDate: new Date("2024-10-01"),
     endDate: new Date("2024-12-15"),
     investors: 45,
@@ -165,20 +174,43 @@ const enhancedOfferings: OfferDetails[] = [
     underwriter: "Coronation Securities",
     hasSecondaryTrading: false,
     regulatoryApproval: "SEC Approved",
-    prospectusUrl: "#",
+    preMoneyValuation: 20000000000,
+    postMoneyValuation: 25000000000,
+    valuationMethod: "COMPARABLES",
   },
 ];
 
 export default function OfferManagement() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedOffer, setSelectedOffer] = useState<OfferDetails | null>(null);
+  const [selectedOffer, setSelectedOffer] = useState<CreatedOffer | null>(null);
+  const { offers: storeOffers } = useOfferStore();
 
-  const draftOffers = enhancedOfferings.filter((o) => o.status === "upcoming");
-  const activeOffers = enhancedOfferings.filter((o) => o.status === "active");
-  const closedOffers = enhancedOfferings.filter(
+  // Merge store offers with mock data
+  const allOffers = useMemo(() => {
+    return [...storeOffers, ...mockOfferings];
+  }, [storeOffers]);
+
+  // Filter offers by status
+  const upcomingOffers = allOffers.filter(
+    (o) => o.status === "upcoming" || o.status === "pending_approval"
+  );
+  const activeOffers = allOffers.filter((o) => o.status === "active");
+  const closedOffers = allOffers.filter(
     (o) => o.status === "completed" || o.status === "cancelled"
   );
+
+  // Filter by search
+  const filterBySearch = (offers: CreatedOffer[]) => {
+    if (!searchQuery) return offers;
+    const query = searchQuery.toLowerCase();
+    return offers.filter(
+      (o) =>
+        o.name.toLowerCase().includes(query) ||
+        o.type.toLowerCase().includes(query) ||
+        o.issuer?.toLowerCase().includes(query)
+    );
+  };
 
   const formatCurrency = (value: number) => {
     if (value >= 1000000000) return `₦${(value / 1000000000).toFixed(1)}B`;
@@ -186,7 +218,25 @@ export default function OfferManagement() {
     return `₦${value.toLocaleString()}`;
   };
 
-  const OfferCard = ({ offer }: { offer: OfferDetails }) => (
+  const getStatusBadgeVariant = (status: CreatedOffer["status"]) => {
+    switch (status) {
+      case "active":
+        return "default";
+      case "completed":
+        return "secondary";
+      case "upcoming":
+        return "outline";
+      case "pending_approval":
+        return "outline";
+      case "cancelled":
+      case "rejected":
+        return "destructive";
+      default:
+        return "outline";
+    }
+  };
+
+  const OfferCard = ({ offer }: { offer: CreatedOffer }) => (
     <Card
       className="p-6 hover:border-primary/50 transition-colors cursor-pointer"
       onClick={() => setSelectedOffer(offer)}
@@ -195,21 +245,13 @@ export default function OfferManagement() {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <h3 className="font-semibold">{offer.name}</h3>
-            <Badge
-              variant={
-                offer.status === "active"
-                  ? "default"
-                  : offer.status === "completed"
-                  ? "secondary"
-                  : offer.status === "upcoming"
-                  ? "outline"
-                  : "destructive"
-              }
-            >
-              {offer.status}
+            <Badge variant={getStatusBadgeVariant(offer.status)}>
+              {offer.status === "pending_approval" ? "Pending" : offer.status}
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground">{offer.type}</p>
+          <p className="text-sm text-muted-foreground">
+            {offer.type} • {offer.securityType}
+          </p>
         </div>
         <Button variant="ghost" size="icon">
           <Eye className="w-4 h-4" />
@@ -244,8 +286,9 @@ export default function OfferManagement() {
       <div className="flex items-center justify-between mt-4 pt-4 border-t text-xs text-muted-foreground">
         <div className="flex items-center gap-1">
           <Calendar className="w-3 h-3" />
-          {offer.startDate.toLocaleDateString()} -{" "}
-          {offer.endDate.toLocaleDateString()}
+          {offer.startDate
+            ? format(new Date(offer.startDate), "MMM d, yyyy")
+            : format(new Date(offer.createdAt), "MMM d, yyyy")}
         </div>
         <span className="text-primary font-medium">View Details →</span>
       </div>
@@ -278,7 +321,7 @@ export default function OfferManagement() {
               <FileText className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-2xl font-bold">{draftOffers.length}</p>
+              <p className="text-2xl font-bold">{upcomingOffers.length}</p>
               <p className="text-xs text-muted-foreground">Upcoming</p>
             </div>
           </div>
@@ -313,7 +356,7 @@ export default function OfferManagement() {
             <div>
               <p className="text-2xl font-bold">
                 {formatCurrency(
-                  enhancedOfferings.reduce((sum, o) => sum + o.raisedAmount, 0)
+                  allOffers.reduce((sum, o) => sum + o.raisedAmount, 0)
                 )}
               </p>
               <p className="text-xs text-muted-foreground">Total Raised</p>
@@ -340,10 +383,10 @@ export default function OfferManagement() {
       </div>
 
       {/* Tabs */}
-      <Tabs defaultValue="active" className="space-y-4">
+      <Tabs defaultValue="upcoming" className="space-y-4">
         <TabsList>
           <TabsTrigger value="upcoming">
-            Upcoming ({draftOffers.length})
+            Upcoming ({upcomingOffers.length})
           </TabsTrigger>
           <TabsTrigger value="active">
             Active ({activeOffers.length})
@@ -354,9 +397,9 @@ export default function OfferManagement() {
         </TabsList>
 
         <TabsContent value="upcoming" className="space-y-4">
-          {draftOffers.length > 0 ? (
+          {filterBySearch(upcomingOffers).length > 0 ? (
             <div className="grid md:grid-cols-2 gap-4">
-              {draftOffers.map((offer) => (
+              {filterBySearch(upcomingOffers).map((offer) => (
                 <OfferCard key={offer.id} offer={offer} />
               ))}
             </div>
@@ -379,19 +422,39 @@ export default function OfferManagement() {
         </TabsContent>
 
         <TabsContent value="active" className="space-y-4">
-          <div className="grid md:grid-cols-2 gap-4">
-            {activeOffers.map((offer) => (
-              <OfferCard key={offer.id} offer={offer} />
-            ))}
-          </div>
+          {filterBySearch(activeOffers).length > 0 ? (
+            <div className="grid md:grid-cols-2 gap-4">
+              {filterBySearch(activeOffers).map((offer) => (
+                <OfferCard key={offer.id} offer={offer} />
+              ))}
+            </div>
+          ) : (
+            <Card className="p-12 text-center">
+              <CheckCircle2 className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="font-semibold mb-2">No Active Offers</h3>
+              <p className="text-sm text-muted-foreground">
+                Active offers will appear here once approved
+              </p>
+            </Card>
+          )}
         </TabsContent>
 
         <TabsContent value="closed" className="space-y-4">
-          <div className="grid md:grid-cols-2 gap-4">
-            {closedOffers.map((offer) => (
-              <OfferCard key={offer.id} offer={offer} />
-            ))}
-          </div>
+          {filterBySearch(closedOffers).length > 0 ? (
+            <div className="grid md:grid-cols-2 gap-4">
+              {filterBySearch(closedOffers).map((offer) => (
+                <OfferCard key={offer.id} offer={offer} />
+              ))}
+            </div>
+          ) : (
+            <Card className="p-12 text-center">
+              <Clock className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="font-semibold mb-2">No Closed Offers</h3>
+              <p className="text-sm text-muted-foreground">
+                Completed and cancelled offers will appear here
+              </p>
+            </Card>
+          )}
         </TabsContent>
       </Tabs>
 
@@ -402,18 +465,10 @@ export default function OfferManagement() {
             <div className="flex items-center gap-2">
               <SheetTitle>{selectedOffer?.name}</SheetTitle>
               {selectedOffer && (
-                <Badge
-                  variant={
-                    selectedOffer.status === "active"
-                      ? "default"
-                      : selectedOffer.status === "completed"
-                      ? "secondary"
-                      : selectedOffer.status === "upcoming"
-                      ? "outline"
-                      : "destructive"
-                  }
-                >
-                  {selectedOffer.status}
+                <Badge variant={getStatusBadgeVariant(selectedOffer.status)}>
+                  {selectedOffer.status === "pending_approval"
+                    ? "Pending Approval"
+                    : selectedOffer.status}
                 </Badge>
               )}
             </div>
@@ -491,17 +546,252 @@ export default function OfferManagement() {
 
               <Separator />
 
-              {/* Description */}
+              {/* Security Type Specific Details */}
               <div>
-                <h4 className="font-semibold mb-2">Description</h4>
-                <p className="text-sm text-muted-foreground">
-                  {selectedOffer.description}
-                </p>
+                <h4 className="font-semibold mb-3 flex items-center gap-2">
+                  <Tag className="w-4 h-4" />
+                  Security Details
+                </h4>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="p-3 rounded-lg bg-muted/50">
+                    <span className="text-muted-foreground">Security Type</span>
+                    <p className="font-medium">{selectedOffer.securityType}</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-muted/50">
+                    <span className="text-muted-foreground">Issuer Type</span>
+                    <p className="font-medium">{selectedOffer.issuerType}</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-muted/50">
+                    <span className="text-muted-foreground">Market Type</span>
+                    <p className="font-medium">{selectedOffer.marketType}</p>
+                  </div>
+                  {selectedOffer.instrumentType && (
+                    <div className="p-3 rounded-lg bg-muted/50">
+                      <span className="text-muted-foreground">Instrument</span>
+                      <p className="font-medium">
+                        {selectedOffer.instrumentType.replace(/_/g, " ")}
+                      </p>
+                    </div>
+                  )}
+                  {selectedOffer.equityType && (
+                    <div className="p-3 rounded-lg bg-muted/50">
+                      <span className="text-muted-foreground">Equity Type</span>
+                      <p className="font-medium">{selectedOffer.equityType}</p>
+                    </div>
+                  )}
+                  {selectedOffer.couponType && (
+                    <div className="p-3 rounded-lg bg-muted/50">
+                      <span className="text-muted-foreground">Coupon Type</span>
+                      <p className="font-medium">{selectedOffer.couponType}</p>
+                    </div>
+                  )}
+                </div>
               </div>
+
+              {/* Debt-specific fields */}
+              {selectedOffer.securityType === "DEBT" && (
+                <>
+                  <Separator />
+                  <div>
+                    <h4 className="font-semibold mb-3 flex items-center gap-2">
+                      <Percent className="w-4 h-4" />
+                      Debt Instrument Details
+                    </h4>
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      {selectedOffer.couponRate && (
+                        <div className="p-3 rounded-lg bg-muted/50">
+                          <span className="text-muted-foreground">
+                            Coupon Rate
+                          </span>
+                          <p className="font-medium">
+                            {selectedOffer.couponRate}%
+                          </p>
+                        </div>
+                      )}
+                      {selectedOffer.couponFrequency && (
+                        <div className="p-3 rounded-lg bg-muted/50">
+                          <span className="text-muted-foreground">
+                            Coupon Frequency
+                          </span>
+                          <p className="font-medium">
+                            {selectedOffer.couponFrequency.replace(/_/g, " ")}
+                          </p>
+                        </div>
+                      )}
+                      {selectedOffer.maturityDate && (
+                        <div className="p-3 rounded-lg bg-muted/50">
+                          <span className="text-muted-foreground">
+                            Maturity Date
+                          </span>
+                          <p className="font-medium">
+                            {format(
+                              new Date(selectedOffer.maturityDate),
+                              "MMM d, yyyy"
+                            )}
+                          </p>
+                        </div>
+                      )}
+                      {selectedOffer.creditRating && (
+                        <div className="p-3 rounded-lg bg-muted/50">
+                          <span className="text-muted-foreground">
+                            Credit Rating
+                          </span>
+                          <p className="font-medium">
+                            {selectedOffer.creditRating}
+                          </p>
+                        </div>
+                      )}
+                      {selectedOffer.discountRate && (
+                        <div className="p-3 rounded-lg bg-muted/50">
+                          <span className="text-muted-foreground">
+                            Discount Rate
+                          </span>
+                          <p className="font-medium">
+                            {selectedOffer.discountRate}%
+                          </p>
+                        </div>
+                      )}
+                      {selectedOffer.spread && (
+                        <div className="p-3 rounded-lg bg-muted/50">
+                          <span className="text-muted-foreground">Spread</span>
+                          <p className="font-medium">{selectedOffer.spread}%</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* Equity-specific fields */}
+              {selectedOffer.securityType === "EQUITY" && (
+                <>
+                  <Separator />
+                  <div>
+                    <h4 className="font-semibold mb-3 flex items-center gap-2">
+                      <Vote className="w-4 h-4" />
+                      Equity Rights & Features
+                    </h4>
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="p-3 rounded-lg bg-muted/50 text-center">
+                        <Vote
+                          className={`w-5 h-5 mx-auto mb-1 ${
+                            selectedOffer.votingRights
+                              ? "text-success"
+                              : "text-muted-foreground"
+                          }`}
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Voting Rights
+                        </p>
+                        <p className="font-medium text-sm">
+                          {selectedOffer.votingRights ? "Yes" : "No"}
+                        </p>
+                      </div>
+                      <div className="p-3 rounded-lg bg-muted/50 text-center">
+                        <DollarSign
+                          className={`w-5 h-5 mx-auto mb-1 ${
+                            selectedOffer.dividendRights
+                              ? "text-success"
+                              : "text-muted-foreground"
+                          }`}
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Dividend Rights
+                        </p>
+                        <p className="font-medium text-sm">
+                          {selectedOffer.dividendRights ? "Yes" : "No"}
+                        </p>
+                      </div>
+                      <div className="p-3 rounded-lg bg-muted/50 text-center">
+                        <Lock
+                          className={`w-5 h-5 mx-auto mb-1 ${
+                            selectedOffer.transferRestriction
+                              ? "text-warning"
+                              : "text-muted-foreground"
+                          }`}
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Transfer Restriction
+                        </p>
+                        <p className="font-medium text-sm">
+                          {selectedOffer.transferRestriction ? "Yes" : "No"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Valuation */}
+                  {(selectedOffer.preMoneyValuation ||
+                    selectedOffer.postMoneyValuation) && (
+                    <>
+                      <Separator />
+                      <div>
+                        <h4 className="font-semibold mb-3">Valuation</h4>
+                        <div className="grid grid-cols-2 gap-3 text-sm">
+                          {selectedOffer.preMoneyValuation && (
+                            <div className="p-3 rounded-lg bg-muted/50">
+                              <span className="text-muted-foreground">
+                                Pre-money Valuation
+                              </span>
+                              <p className="font-medium">
+                                {formatCurrency(selectedOffer.preMoneyValuation)}
+                              </p>
+                            </div>
+                          )}
+                          {selectedOffer.postMoneyValuation && (
+                            <div className="p-3 rounded-lg bg-muted/50">
+                              <span className="text-muted-foreground">
+                                Post-money Valuation
+                              </span>
+                              <p className="font-medium">
+                                {formatCurrency(
+                                  selectedOffer.postMoneyValuation
+                                )}
+                              </p>
+                            </div>
+                          )}
+                          {selectedOffer.valuationMethod && (
+                            <div className="p-3 rounded-lg bg-muted/50">
+                              <span className="text-muted-foreground">
+                                Valuation Method
+                              </span>
+                              <p className="font-medium">
+                                {selectedOffer.valuationMethod}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
 
               <Separator />
 
-              {/* Details Grid */}
+              {/* Description */}
+              {selectedOffer.description && (
+                <div>
+                  <h4 className="font-semibold mb-2">Description</h4>
+                  <p className="text-sm text-muted-foreground">
+                    {selectedOffer.description}
+                  </p>
+                </div>
+              )}
+
+              {/* Use of Proceeds */}
+              {selectedOffer.useOfProceeds && (
+                <div>
+                  <h4 className="font-semibold mb-2">Use of Proceeds</h4>
+                  <p className="text-sm text-muted-foreground">
+                    {selectedOffer.useOfProceeds}
+                  </p>
+                </div>
+              )}
+
+              <Separator />
+
+              {/* Investment Details */}
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <span className="text-muted-foreground">Sector</span>
@@ -510,46 +800,53 @@ export default function OfferManagement() {
                 <div>
                   <span className="text-muted-foreground">Price per Unit</span>
                   <p className="font-medium">
-                    ₦{selectedOffer.pricePerUnit.toLocaleString()}
+                    ₦{selectedOffer.pricePerUnit?.toLocaleString() || "N/A"}
                   </p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Min Investment</span>
                   <p className="font-medium">
-                    {formatCurrency(selectedOffer.minInvestment)}
+                    {selectedOffer.minInvestment
+                      ? formatCurrency(selectedOffer.minInvestment)
+                      : "N/A"}
                   </p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Max Investment</span>
                   <p className="font-medium">
-                    {formatCurrency(selectedOffer.maxInvestment)}
+                    {selectedOffer.maxInvestment
+                      ? formatCurrency(selectedOffer.maxInvestment)
+                      : "N/A"}
                   </p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Total Units</span>
                   <p className="font-medium">
-                    {selectedOffer.totalUnits.toLocaleString()}
+                    {selectedOffer.totalUnits?.toLocaleString() || "N/A"}
                   </p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Units Sold</span>
                   <p className="font-medium">
-                    {selectedOffer.soldUnits.toLocaleString()}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Start Date</span>
-                  <p className="font-medium">
-                    {selectedOffer.startDate.toLocaleDateString()}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">End Date</span>
-                  <p className="font-medium">
-                    {selectedOffer.endDate.toLocaleDateString()}
+                    {selectedOffer.soldUnits?.toLocaleString() || 0}
                   </p>
                 </div>
               </div>
+
+              {/* Eligible Investors */}
+              {selectedOffer.eligibleInvestors &&
+                selectedOffer.eligibleInvestors.length > 0 && (
+                  <div>
+                    <h4 className="font-semibold mb-2">Eligible Investors</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedOffer.eligibleInvestors.map((investor) => (
+                        <Badge key={investor} variant="secondary">
+                          {investor}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
               <Separator />
 
@@ -577,6 +874,19 @@ export default function OfferManagement() {
                     </p>
                   </div>
                 </div>
+                {selectedOffer.listingReference && (
+                  <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                    <FileText className="w-5 h-5 text-muted-foreground" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">
+                        Listing Reference
+                      </p>
+                      <p className="font-medium">
+                        {selectedOffer.listingReference}
+                      </p>
+                    </div>
+                  </div>
+                )}
                 <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
                   <Globe className="w-5 h-5 text-muted-foreground" />
                   <div>
@@ -584,9 +894,7 @@ export default function OfferManagement() {
                       Secondary Trading
                     </p>
                     <p className="font-medium">
-                      {selectedOffer.hasSecondaryTrading
-                        ? "Enabled"
-                        : "Disabled"}
+                      {selectedOffer.hasSecondaryTrading ? "Enabled" : "Disabled"}
                     </p>
                   </div>
                 </div>
