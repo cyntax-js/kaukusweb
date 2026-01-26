@@ -1,12 +1,14 @@
+import { useRef, useCallback } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { ArrowLeft, ArrowRight, Check, Save, Cloud } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Save, Cloud, AlertCircle } from "lucide-react";
 import { useWizard } from "../WizardContext";
 import { Stepper } from "./Stepper";
 import { FieldRenderer } from "./FieldRenderer";
 import { ReviewStep } from "./ReviewStep";
 import type { FieldSchema } from "../schema";
+import { useToast } from "@/hooks/use-toast";
 
 export function FormRenderer() {
   const {
@@ -17,7 +19,10 @@ export function FormRenderer() {
     saveDraft,
     savedDraft,
     formValues,
+    errors,
   } = useWizard();
+  const formRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
   const currentStepData = steps[currentStep];
   const isFirstStep = currentStep === 0;
@@ -25,10 +30,31 @@ export function FormRenderer() {
   const isReviewStep = currentStepData?.id === "review";
   const isPostApproval = currentStepData?.id === "postApproval";
 
+  const scrollToFirstError = useCallback(() => {
+    // Wait for DOM update after validation
+    setTimeout(() => {
+      const firstError = formRef.current?.querySelector('[data-error="true"]');
+      if (firstError) {
+        firstError.scrollIntoView({ behavior: "smooth", block: "center" });
+        // Add shake animation
+        firstError.classList.add("animate-shake");
+        setTimeout(() => firstError.classList.remove("animate-shake"), 500);
+      }
+    }, 100);
+  }, []);
+
   const handleNext = () => {
-    if (validateStep(currentStep)) {
+    const isValid = validateStep(currentStep);
+    if (isValid) {
       setCurrentStep(currentStep + 1);
       window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      scrollToFirstError();
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: "Please fill in all required fields before continuing.",
+      });
     }
   };
 
@@ -38,10 +64,22 @@ export function FormRenderer() {
   };
 
   const handleSubmit = () => {
-    if (validateStep(currentStep)) {
+    const isValid = validateStep(currentStep);
+    if (isValid) {
       console.log("Submitting form:", formValues);
+      toast({
+        title: "Submission Successful",
+        description: "Your security offering has been submitted for review.",
+      });
       // Move to post-approval step
       setCurrentStep(currentStep + 1);
+    } else {
+      scrollToFirstError();
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: "Please complete the declaration before submitting.",
+      });
     }
   };
 
@@ -57,6 +95,8 @@ export function FormRenderer() {
       return true;
     });
   };
+
+  const errorCount = Object.keys(errors).length;
 
   if (!currentStepData) {
     return null;
@@ -78,32 +118,40 @@ export function FormRenderer() {
                   Step {currentStep + 1} of {steps.length}
                 </CardDescription>
               </div>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={saveDraft}
-                className={cn(
-                  "gap-2 transition-all",
-                  savedDraft && "text-primary"
+              <div className="flex items-center gap-3">
+                {errorCount > 0 && (
+                  <div className="flex items-center gap-1.5 text-destructive text-sm animate-in fade-in-0 slide-in-from-right-2">
+                    <AlertCircle className="h-4 w-4" />
+                    <span>{errorCount} {errorCount === 1 ? 'error' : 'errors'}</span>
+                  </div>
                 )}
-              >
-                {savedDraft ? (
-                  <>
-                    <Cloud className="h-4 w-4" />
-                    Saved
-                  </>
-                ) : (
-                  <>
-                    <Save className="h-4 w-4" />
-                    Save Draft
-                  </>
-                )}
-              </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={saveDraft}
+                  className={cn(
+                    "gap-2 transition-all",
+                    savedDraft && "text-primary"
+                  )}
+                >
+                  {savedDraft ? (
+                    <>
+                      <Cloud className="h-4 w-4" />
+                      Saved
+                    </>
+                  ) : (
+                    <>
+                      <Save className="h-4 w-4" />
+                      Save Draft
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
           </CardHeader>
 
-          <CardContent className="p-6">
+          <CardContent className="p-6" ref={formRef}>
             {isReviewStep ? (
               <ReviewStep />
             ) : (

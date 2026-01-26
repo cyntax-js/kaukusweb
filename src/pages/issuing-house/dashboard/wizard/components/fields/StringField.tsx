@@ -3,6 +3,7 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import type { FieldSchema } from "../../schema";
 import { useWizard } from "../../WizardContext";
+import { FieldWrapper } from "../FieldWrapper";
 
 interface StringFieldProps {
   field: FieldSchema;
@@ -14,7 +15,7 @@ export function StringField({ field }: StringFieldProps) {
   const error = errors[field.id];
 
   return (
-    <div className="space-y-2">
+    <FieldWrapper fieldId={field.id} error={error}>
       <Label 
         htmlFor={field.id}
         className={cn(error && "text-destructive")}
@@ -29,15 +30,10 @@ export function StringField({ field }: StringFieldProps) {
         onChange={(e) => setFieldValue(field.id, e.target.value)}
         placeholder={`Enter ${field.label.toLowerCase()}`}
         className={cn(
-          "transition-colors",
-          error && "border-destructive focus:ring-destructive"
+          "mt-2 transition-colors",
+          error && "border-destructive ring-destructive/20 ring-2"
         )}
       />
-      {error && (
-        <p className="text-xs text-destructive animate-in fade-in-0 slide-in-from-top-1">
-          {error}
-        </p>
-      )}
-    </div>
+    </FieldWrapper>
   );
 }
