@@ -26,11 +26,16 @@ export function SelectField({ field }: SelectFieldProps) {
   if (Array.isArray(field.options)) {
     options = field.options;
   } else if (field.options && typeof field.options === "object") {
-    // Get options based on dependent field (e.g., issuerType)
-    const dependentFields = Object.keys(field.options);
-    for (const depField of dependentFields) {
-      const depValue = formValues[depField] as string;
-      if (depValue && field.options[depValue]) {
+    // Options are keyed by possible values of a dependent field (e.g., issuerType: { GOVERNMENT: [...], CORPORATE: [...] })
+    // We need to find which form field has a value matching one of these keys
+    const optionKeys = Object.keys(field.options);
+    
+    // Check common dependent fields for dynamic options
+    const possibleDependentFields = ["issuerType", "securityType", "instrumentType", "couponType"];
+    
+    for (const depFieldName of possibleDependentFields) {
+      const depValue = formValues[depFieldName] as string;
+      if (depValue && optionKeys.includes(depValue) && field.options[depValue]) {
         options = field.options[depValue];
         break;
       }
