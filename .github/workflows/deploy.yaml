@@ -1,0 +1,91 @@
+name: 🚀 Build & Deploy contisx (Traefik / Production)
+
+on:
+  push:
+    branches:
+      - dev5
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy on Server
+    runs-on: [self-hosted]
+
+    env:
+      IMAGE_NAME: ghcr.io/dhive-protocol/contisx
+      CONTAINER_NAME: contisx
+      TRAEFIK_NETWORK: proxy
+      DOMAIN: kaucus.org
+
+    steps:
+      # 1️⃣ Checkout
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2️⃣ Login to GHCR
+      - name: Authenticate with GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GHCR_USERNAME }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      # 3️⃣ Build & Push Image
+      - name: Build and push image
+        run: |
+          set -e
+
+          IMAGE_TAG=${GITHUB_SHA::7}
+          FULL_IMAGE=${IMAGE_NAME}:${IMAGE_TAG}
+
+          echo "🛠 Building $FULL_IMAGE"
+          docker build -t $FULL_IMAGE .
+
+          echo "📤 Pushing image"
+          docker push $FULL_IMAGE
+
+          echo "FULL_IMAGE=$FULL_IMAGE" >> $GITHUB_ENV
+
+      # 4️⃣ Ensure Traefik network exists
+      - name: Ensure Traefik network
+        run: |
+          docker network inspect $TRAEFIK_NETWORK >/dev/null 2>&1 || \
+          docker network create $TRAEFIK_NETWORK
+
+      # 5️⃣ Stop old container safely
+      - name: Stop old container
+        run: |
+          docker stop $CONTAINER_NAME || true
+          docker rm $CONTAINER_NAME || true
+
+      # 6️⃣ Run container (Traefik-managed)
+      - name: Run new container
+        run: |
+          docker run -d \
+            --name $CONTAINER_NAME \
+            --network $TRAEFIK_NETWORK \
+            --restart unless-stopped \
+            \
+            --label "traefik.enable=true" \
+            --label "traefik.docker.network=$TRAEFIK_NETWORK" \
+            \
+            --label "traefik.http.routers.$CONTAINER_NAME.rule=Host(\`${DOMAIN}\`) || HostRegexp(\`{subdomain:[a-z0-9-]+}.$DOMAIN\`)" \
+            --label "traefik.http.routers.$CONTAINER_NAME.entrypoints=websecure" \
+            --label "traefik.http.routers.$CONTAINER_NAME.priority=1" \
+            \
+            --label "traefik.http.routers.$CONTAINER_NAME.tls=true" \
+            --label "traefik.http.routers.$CONTAINER_NAME.tls.certresolver=letsencrypt" \
+            \
+            --label "traefik.http.services.$CONTAINER_NAME.loadbalancer.server.port=80" \
+            \
+            $FULL_IMAGE
+
+      # 7️⃣ Verify container
+      - name: Verify deployment
+        run: |
+          docker ps --filter "name=$CONTAINER_NAME"
+          echo "✅ contisx deployed and managed by Traefik"
+
+      # 8️⃣ Cleanup old images
+      - name: Cleanup unused images
+        run: docker image prune -f
