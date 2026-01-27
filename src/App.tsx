@@ -229,6 +229,7 @@ const PlatformModeApp = () => (
 
           <Route>
             {/* <Route element={<ProtectedRoute />}> */}
+            {/* <Route element={<ProtectedRoute />}> */}
             <Route path="/role-selection" element={<RoleSelection />} />
             <Route
               path="/dashboard-selection"
