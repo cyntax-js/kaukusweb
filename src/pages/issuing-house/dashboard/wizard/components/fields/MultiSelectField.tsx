@@ -1,6 +1,12 @@
 import { Label } from "@/components/ui/label";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { Check } from "lucide-react";
+import { Check, HelpCircle } from "lucide-react";
 import type { FieldSchema } from "../../schema";
 import { useWizard } from "../../WizardContext";
 
@@ -45,10 +51,33 @@ export function MultiSelectField({ field }: MultiSelectFieldProps) {
 
   return (
     <div className="space-y-3">
-      <Label className={cn(error && "text-destructive")}>
-        {field.label}
-        {field.required && <span className="text-destructive ml-1">*</span>}
-      </Label>
+      <div className="flex items-center gap-2">
+        <Label className={cn(error && "text-destructive")}>
+          {field.label}
+          {field.required && <span className="text-destructive ml-1">*</span>}
+        </Label>
+        {field.helpText && (
+          <TooltipProvider delayDuration={300}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label="Help"
+                >
+                  <HelpCircle className="h-4 w-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent 
+                side="top" 
+                className="max-w-xs text-sm bg-popover border border-border shadow-lg"
+              >
+                <p>{field.helpText}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
+      </div>
       
       <div className="grid gap-2 sm:grid-cols-2">
         {options.map((option) => {

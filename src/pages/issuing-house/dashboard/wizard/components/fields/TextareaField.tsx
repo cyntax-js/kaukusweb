@@ -15,7 +15,7 @@ export function TextareaField({ field }: TextareaFieldProps) {
   const error = errors[field.id];
 
   return (
-    <FieldWrapper fieldId={field.id} error={error}>
+    <FieldWrapper fieldId={field.id} error={error} helpText={field.helpText}>
       <Label 
         htmlFor={field.id}
         className={cn(error && "text-destructive")}
